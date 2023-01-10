@@ -10,7 +10,14 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.config.SwerveModuleConstants;
 
 public class Constants {
-    
+  public static final class JoystickConstants {
+    public static final int driverJoystickNumber = 0;
+    public static final int operatorJoystickNumber = 1;
+    public static final int XboxLeftYAxis = 1;
+    public static final int XboxRightXAxis = 4;
+    public static final int XboxRightYAxis = 5;
+    public static final double DeadZone = 0.05;
+  }
   public static final class Swerve {
     public static final double stickDeadband = 0.1;
 
