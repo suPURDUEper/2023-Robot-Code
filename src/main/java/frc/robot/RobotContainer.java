@@ -10,8 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Subsystems.Swerve;
+
 
 public class RobotContainer {
 
@@ -35,16 +34,8 @@ public class RobotContainer {
 
   /* Subsystems */
 
-  private final Swerve swerve = new Swerve();;
 
   public RobotContainer() {
-    swerve.setDefaultCommand(new TeleopSwerve(
-      swerve,
-      () -> driverJoystick.getRawAxis(translationAxis),
-      () -> driverJoystick.getRawAxis(strafeAxis),
-      () -> driverJoystick.getRawAxis(rotationAxis),
-      () -> driverLB.getAsBoolean()
-    ));
 
     
 
@@ -54,8 +45,6 @@ public class RobotContainer {
   private void configureBindings() {
     /* Driver Buttons */
 
-    
-    driverB.whileTrue(new InstantCommand(() -> swerve.zeroGyro()));
     
 
     /* Operator Buttons */
