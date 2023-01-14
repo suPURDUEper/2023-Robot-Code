@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.util.trajectory;
+package org.littletonrobotics.frc2023.util.trajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;

@@ -1,8 +1,8 @@
-package org.supurdueper.frc2023.oi;
+package org.littletonrobotics.frc2023.oi;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import org.supurdueper.frc2023.util.Alert;
-import org.supurdueper.frc2023.util.Alert.AlertType;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
 /**
  * Utility class for selecting the appropriate OI implementations based on the connected joysticks.

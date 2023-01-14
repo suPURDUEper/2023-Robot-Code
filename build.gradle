@@ -5,8 +5,8 @@ plugins {
     id 'com.diffplug.spotless' version '6.12.0'
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -138,6 +138,7 @@ spotless {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
             exclude '**/BuildConstants.java'
+            exclude '**/*AutoLogged.java'
         }
         toggleOffOn()
         googleJavaFormat()

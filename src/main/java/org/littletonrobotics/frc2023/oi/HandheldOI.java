@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.oi;
+package org.littletonrobotics.frc2023.oi;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 

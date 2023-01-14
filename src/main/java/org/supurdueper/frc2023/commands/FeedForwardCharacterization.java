@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.supurdueper.frc2023.util.PolynomialRegression;
+import org.littletonrobotics.frc2023.util.PolynomialRegression;
 
 public class FeedForwardCharacterization extends CommandBase {
   private static final double startDelaySecs = 2.0;

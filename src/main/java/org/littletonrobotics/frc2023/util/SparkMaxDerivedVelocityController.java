@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.util;
+package org.littletonrobotics.frc2023.util;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;

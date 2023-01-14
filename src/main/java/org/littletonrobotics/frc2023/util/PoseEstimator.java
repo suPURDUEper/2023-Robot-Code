@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.supurdueper.frc2023.util;
+package org.littletonrobotics.frc2023.util;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
