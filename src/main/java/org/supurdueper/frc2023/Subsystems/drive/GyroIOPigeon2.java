@@ -13,7 +13,7 @@ public class GyroIOPigeon2 implements GyroIO {
 
   public GyroIOPigeon2() {
     switch (Constants.Swerve.getRobot()) {
-      case ROBOT_2023P:
+      case ROBOT_2023C:
         pigeon = new Pigeon2(0);
         break;
       default:

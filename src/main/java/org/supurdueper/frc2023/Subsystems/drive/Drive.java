@@ -53,7 +53,7 @@ public class Drive extends SubsystemBase {
 
   static {
     switch (Constants.Swerve.getRobot()) {
-      case ROBOT_2023P:
+      case ROBOT_2023C:
       case ROBOT_SIMBOT:
         maxLinearSpeed.initDefault(Units.feetToMeters(14.5));
         trackWidthX.initDefault(Units.inchesToMeters(25.0));

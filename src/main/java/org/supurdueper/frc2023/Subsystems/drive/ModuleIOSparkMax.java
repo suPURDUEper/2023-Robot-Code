@@ -28,7 +28,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
   public ModuleIOSparkMax(int index) {
     switch (Constants.Swerve.getRobot()) {
-      case ROBOT_2023P:
+      case ROBOT_2023C:
         switch (index) {
           case 0:
             driveSparkMax = new CANSparkMax(15, MotorType.kBrushless);
