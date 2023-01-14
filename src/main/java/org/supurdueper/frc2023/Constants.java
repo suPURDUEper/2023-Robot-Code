@@ -1,18 +1,61 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package org.supurdueper.frc2023;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
+import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Map;
+import org.supurdueper.frc2023.util.Alert;
+import org.supurdueper.frc2023.util.Alert.AlertType;
+
 public final class Constants {
+  public static final class Swerve {
+    private static final RobotType robot = RobotType.ROBOT_2023P;
+  public static final double loopPeriodSecs = 0.02;
+  public static final boolean tuningMode = false;
+
+  private static final Alert invalidRobotAlert =
+      new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR);
+
+  public static RobotType getRobot() {
+    if (RobotBase.isReal()) {
+      if (robot == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
+        invalidRobotAlert.set(true);
+        return RobotType.ROBOT_2023C;
+      } else {
+        return robot;
+      }
+    } else {
+      return robot;
+    }
+  }
+
+  public static Mode getMode() {
+    switch (getRobot()) {
+      case ROBOT_2023C:
+      case ROBOT_2023P:
+        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+
+      case ROBOT_SIMBOT:
+        return Mode.SIM;
+
+      default:
+        return Mode.REAL;
+    }
+  }
+
+  public static final Map<RobotType, String> logFolders =
+      Map.of(RobotType.ROBOT_2023P, "/media/sda2/");
+
+  public static enum RobotType {
+    ROBOT_2023C,
+    ROBOT_2023P,
+    ROBOT_SIMBOT
+  }
+
+  public static enum Mode {
+    REAL,
+    REPLAY,
+    SIM
+  }
+  }
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
