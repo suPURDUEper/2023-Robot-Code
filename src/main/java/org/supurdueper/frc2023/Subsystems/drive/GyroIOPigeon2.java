@@ -14,7 +14,7 @@ public class GyroIOPigeon2 implements GyroIO {
   public GyroIOPigeon2() {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
-        pigeon = new Pigeon2(0);
+        pigeon = new Pigeon2(25);
         break;
       default:
         throw new RuntimeException("Invalid robot for GyroIOPigeon2");
