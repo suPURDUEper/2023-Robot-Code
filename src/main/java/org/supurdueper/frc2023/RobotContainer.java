@@ -44,8 +44,6 @@ public class RobotContainer {
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
         case ROBOT_2023C:
-          break;
-        case ROBOT_2023P:
           drive =
               new Drive(
                   new GyroIOPigeon2(),
