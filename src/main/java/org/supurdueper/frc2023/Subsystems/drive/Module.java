@@ -31,12 +31,12 @@ public class Module {
 
   private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
   private final PIDController driveFeedback =
-      new PIDController(0.0, 0.0, 0.0, Constants.Swerve.loopPeriodSecs);
+      new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
   private final PIDController turnFeedback =
-      new PIDController(0.0, 0.0, 0.0, Constants.Swerve.loopPeriodSecs);
+      new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
 
   static {
-    switch (Constants.Swerve.getRobot()) {
+    switch (Constants.getRobot()) {
       case ROBOT_2023P:
         wheelRadius.initDefault(Units.inchesToMeters(2.0));
         driveKp.initDefault(0.1);

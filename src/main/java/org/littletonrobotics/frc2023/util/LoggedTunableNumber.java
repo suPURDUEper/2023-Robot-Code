@@ -47,7 +47,7 @@ public class LoggedTunableNumber {
     if (!hasDefault) {
       hasDefault = true;
       this.defaultValue = defaultValue;
-      if (Constants.Swerve.tuningMode) {
+      if (Constants.tuningMode) {
         dashboardNumber = new LoggedDashboardNumber(key, defaultValue);
       }
     }
@@ -62,7 +62,7 @@ public class LoggedTunableNumber {
     if (!hasDefault) {
       return 0.0;
     } else {
-      return Constants.Swerve.tuningMode ? dashboardNumber.get() : defaultValue;
+      return Constants.tuningMode ? dashboardNumber.get() : defaultValue;
     }
   }
 

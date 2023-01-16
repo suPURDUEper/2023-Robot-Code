@@ -52,7 +52,7 @@ public class Drive extends SubsystemBase {
   private Rotation2d lastGyroYaw = new Rotation2d();
 
   static {
-    switch (Constants.Swerve.getRobot()) {
+    switch (Constants.getRobot()) {
       case ROBOT_2023P:
       case ROBOT_SIMBOT:
         maxLinearSpeed.initDefault(Units.feetToMeters(14.5));
@@ -128,15 +128,14 @@ public class Drive extends SubsystemBase {
           new Pose2d()
               .log(
                   new Pose2d(
-                      setpoint.vxMetersPerSecond * Constants.Swerve.loopPeriodSecs,
-                      setpoint.vyMetersPerSecond * Constants.Swerve.loopPeriodSecs,
-                      new Rotation2d(
-                          setpoint.omegaRadiansPerSecond * Constants.Swerve.loopPeriodSecs)));
+                      setpoint.vxMetersPerSecond * Constants.loopPeriodSecs,
+                      setpoint.vyMetersPerSecond * Constants.loopPeriodSecs,
+                      new Rotation2d(setpoint.omegaRadiansPerSecond * Constants.loopPeriodSecs)));
       var adjustedSpeeds =
           new ChassisSpeeds(
-              setpointTwist.dx / Constants.Swerve.loopPeriodSecs,
-              setpointTwist.dy / Constants.Swerve.loopPeriodSecs,
-              setpointTwist.dtheta / Constants.Swerve.loopPeriodSecs);
+              setpointTwist.dx / Constants.loopPeriodSecs,
+              setpointTwist.dy / Constants.loopPeriodSecs,
+              setpointTwist.dtheta / Constants.loopPeriodSecs);
       SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(adjustedSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxLinearSpeed.get());
 

@@ -27,7 +27,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final Rotation2d absoluteEncoderOffset;
 
   public ModuleIOSparkMax(int index) {
-    switch (Constants.Swerve.getRobot()) {
+    switch (Constants.getRobot()) {
       case ROBOT_2023P:
         switch (index) {
           case 0:

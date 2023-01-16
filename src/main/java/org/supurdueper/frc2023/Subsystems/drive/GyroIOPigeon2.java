@@ -12,7 +12,7 @@ public class GyroIOPigeon2 implements GyroIO {
   private final double[] xyzDps = new double[3];
 
   public GyroIOPigeon2() {
-    switch (Constants.Swerve.getRobot()) {
+    switch (Constants.getRobot()) {
       case ROBOT_2023P:
         pigeon = new Pigeon2(0);
         break;

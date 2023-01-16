@@ -15,10 +15,10 @@ public class ModuleIOSim implements ModuleIO {
   private double turnAppliedVolts = 0.0;
 
   public void updateInputs(ModuleIOInputs inputs) {
-    driveSim.update(Constants.Swerve.loopPeriodSecs);
-    turnSim.update(Constants.Swerve.loopPeriodSecs);
+    driveSim.update(Constants.loopPeriodSecs);
+    turnSim.update(Constants.loopPeriodSecs);
 
-    double angleDiffRad = turnSim.getAngularVelocityRadPerSec() * Constants.Swerve.loopPeriodSecs;
+    double angleDiffRad = turnSim.getAngularVelocityRadPerSec() * Constants.loopPeriodSecs;
     turnRelativePositionRad += angleDiffRad;
     turnAbsolutePositionRad += angleDiffRad;
     while (turnAbsolutePositionRad < 0) {
@@ -30,7 +30,7 @@ public class ModuleIOSim implements ModuleIO {
 
     inputs.drivePositionRad =
         inputs.drivePositionRad
-            + (driveSim.getAngularVelocityRadPerSec() * Constants.Swerve.loopPeriodSecs);
+            + (driveSim.getAngularVelocityRadPerSec() * Constants.loopPeriodSecs);
     inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.driveCurrentAmps = new double[] {Math.abs(driveSim.getCurrentDrawAmps())};
