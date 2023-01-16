@@ -31,26 +31,26 @@ public class ModuleIOSparkMax implements ModuleIO {
       case ROBOT_2023P:
         switch (index) {
           case 0:
-            driveSparkMax = new CANSparkMax(15, MotorType.kBrushless);
-            turnSparkMax = new CANSparkMax(11, MotorType.kBrushless);
+            driveSparkMax = new CANSparkMax(2, MotorType.kBrushless);
+            turnSparkMax = new CANSparkMax(1, MotorType.kBrushless);
             turnAbsoluteEncoder = new AnalogInput(0);
             absoluteEncoderOffset = new Rotation2d(-0.036);
             break;
           case 1:
-            driveSparkMax = new CANSparkMax(12, MotorType.kBrushless);
-            turnSparkMax = new CANSparkMax(9, MotorType.kBrushless);
+            driveSparkMax = new CANSparkMax(4, MotorType.kBrushless);
+            turnSparkMax = new CANSparkMax(3, MotorType.kBrushless);
             turnAbsoluteEncoder = new AnalogInput(1);
             absoluteEncoderOffset = new Rotation2d(1.0185);
             break;
           case 2:
-            driveSparkMax = new CANSparkMax(14, MotorType.kBrushless);
-            turnSparkMax = new CANSparkMax(10, MotorType.kBrushless);
+            driveSparkMax = new CANSparkMax(6, MotorType.kBrushless);
+            turnSparkMax = new CANSparkMax(5, MotorType.kBrushless);
             turnAbsoluteEncoder = new AnalogInput(2);
             absoluteEncoderOffset = new Rotation2d(1.0705);
             break;
           case 3:
-            driveSparkMax = new CANSparkMax(13, MotorType.kBrushless);
-            turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
+            driveSparkMax = new CANSparkMax(8, MotorType.kBrushless);
+            turnSparkMax = new CANSparkMax(7, MotorType.kBrushless);
             turnAbsoluteEncoder = new AnalogInput(3);
             absoluteEncoderOffset = new Rotation2d(0.7465);
             break;

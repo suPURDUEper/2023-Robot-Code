@@ -4,15 +4,115 @@
 
 package org.supurdueper.frc2023;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import org.littletonrobotics.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
+import org.littletonrobotics.frc2023.oi.HandheldOI;
+import org.littletonrobotics.frc2023.oi.OISelector;
+import org.littletonrobotics.frc2023.oi.OverrideOI;
+import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.subsystems.drive.GyroIO;
+import org.littletonrobotics.frc2023.subsystems.drive.GyroIOPigeon2;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIO;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSim;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSparkMax;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
+import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
+
+  /* Subsytems */
+  private Drive drive;
+
+  /* OI Objects */
+  private OverrideOI overrideOI;
+  private HandheldOI handheldOI;
+
+  /* Choosers */
+  private final LoggedDashboardChooser<Command> autoChooser =
+      new LoggedDashboardChooser<>("Auto Routine");
+
   public RobotContainer() {
-    configureBindings();
+    /* Check If Flash Should Be Burned */
+    SparkMaxBurnManager.update();
+    // Instantiate active subsystems
+    if (Constants.getMode() != Mode.REPLAY) {
+      switch (Constants.getRobot()) {
+        case ROBOT_2023C:
+          break;
+        case ROBOT_2023P:
+          drive =
+              new Drive(
+                  new GyroIOPigeon2(),
+                  new ModuleIOSparkMax(0),
+                  new ModuleIOSparkMax(1),
+                  new ModuleIOSparkMax(2),
+                  new ModuleIOSparkMax(3));
+          break;
+        case ROBOT_SIMBOT:
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim());
+          break;
+      }
+    }
+
+    // Instantiate missing subsystems
+    drive =
+        drive != null
+            ? drive
+            : new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+
+    // Set up subsystems
+    drive.setDefaultCommand(
+        new DriveWithJoysticks(
+            drive,
+            () -> handheldOI.getLeftDriveX(),
+            () -> handheldOI.getLeftDriveY(),
+            () -> handheldOI.getRightDriveY(),
+            () -> overrideOI.getRobotRelative()));
+
+    // Set up auto routines
+    autoChooser.addDefaultOption("Do Nothing", null);
+    autoChooser.addDefaultOption(
+        "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    // Alert if in tuning mode
+    if (Constants.tuningMode) {
+      new Alert("Tuning mode active, do not use in competition.", AlertType.INFO).set(true);
+    }
+
+    // Instantiate OI classes and bind buttons
+    updateOI();
   }
 
-  private void configureBindings() {}
+  public void updateOI() {
+    if (!OISelector.didJoysticksChange()) {
+      return;
+    }
+
+    CommandScheduler.getInstance().getActiveButtonLoop().clear();
+    overrideOI = OISelector.findOverrideOI();
+    handheldOI = OISelector.findHandheldOI();
+
+    // *** DRIVER CONTROLS ***
+
+    // *** OPERATOR CONTROLS ***
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
