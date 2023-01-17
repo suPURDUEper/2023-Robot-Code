@@ -2,7 +2,6 @@ package org.littletonrobotics.frc2023.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 

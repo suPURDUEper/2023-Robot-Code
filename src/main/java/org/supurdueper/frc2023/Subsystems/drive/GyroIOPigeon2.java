@@ -1,10 +1,9 @@
 package org.supurdueper.frc2023.subsystems.drive;
 
-import org.littletonrobotics.frc2023.Constants;
-
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.frc2023.Constants;
 
 /** IO implementation for Pigeon2 */
 public class GyroIOPigeon2 implements GyroIO {

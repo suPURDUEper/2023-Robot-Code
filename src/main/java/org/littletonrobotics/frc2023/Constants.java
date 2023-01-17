@@ -1,9 +1,7 @@
 package org.littletonrobotics.frc2023;
 
 import edu.wpi.first.wpilibj.RobotBase;
-
 import java.util.Map;
-
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
