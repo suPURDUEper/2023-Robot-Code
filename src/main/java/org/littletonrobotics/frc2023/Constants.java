@@ -1,6 +1,9 @@
-package org.supurdueper.frc2023;
+package org.littletonrobotics.frc2023;
 
 import edu.wpi.first.wpilibj.RobotBase;
+
+import java.util.Map;
+
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
@@ -38,6 +41,9 @@ public final class Constants {
     }
   }
 
+  public static final Map<RobotType, String> logFolders =
+      Map.of(RobotType.ROBOT_2023C, "/media/sda2/");
+
   public static enum RobotType {
     ROBOT_2023C,
     ROBOT_SIMBOT
@@ -48,6 +54,4 @@ public final class Constants {
     REPLAY,
     SIM
   }
-
-  public static final Mode currentMode = Mode.REAL;
 }

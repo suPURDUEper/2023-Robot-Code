@@ -26,20 +26,21 @@ import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
 
 public class RobotContainer {
 
-  /* Subsytems */
+  // Subsystems
   private Drive drive;
 
-  /* OI Objects */
-  private OverrideOI overrideOI;
-  private HandheldOI handheldOI;
+  // OI objects
+  private OverrideOI overrideOI = new OverrideOI();
+  private HandheldOI handheldOI = new HandheldOI();
 
-  /* Choosers */
+  // Choosers
   private final LoggedDashboardChooser<Command> autoChooser =
       new LoggedDashboardChooser<>("Auto Routine");
 
   public RobotContainer() {
-    /* Check If Flash Should Be Burned */
+    // Check if flash should be burned
     SparkMaxBurnManager.update();
+
     // Instantiate active subsystems
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
@@ -98,6 +99,10 @@ public class RobotContainer {
     updateOI();
   }
 
+  /**
+   * This method scans for any changes to the connected joystick. If anything changed, it creates
+   * new OI objects and binds all of the buttons to commands.
+   */
   public void updateOI() {
     if (!OISelector.didJoysticksChange()) {
       return;
@@ -112,6 +117,7 @@ public class RobotContainer {
     // *** OPERATOR CONTROLS ***
   }
 
+  /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }

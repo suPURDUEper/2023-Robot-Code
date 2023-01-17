@@ -2,8 +2,9 @@ package org.littletonrobotics.frc2023.util;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import org.supurdueper.frc2023.Constants;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or

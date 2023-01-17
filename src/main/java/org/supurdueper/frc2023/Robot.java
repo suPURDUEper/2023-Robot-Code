@@ -4,24 +4,50 @@
 
 package org.supurdueper.frc2023;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
-  private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private Command autoCommand;
+  private double autoStart;
+  private boolean autoMessagePrinted;
+
+  private final Alert logNoFileAlert =
+      new Alert("No log path set for current robot. Data will NOT be logged.", AlertType.WARNING);
+  private final Alert logReceiverQueueAlert =
+      new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
+
+  public Robot() {
+    super(Constants.loopPeriodSecs);
+  }
 
   @Override
   public void robotInit() {
     Logger logger = Logger.getInstance();
 
     // Record metadata
+    logger.recordMetadata("Robot", Constants.getRobot().toString());
+    logger.recordMetadata("TuningMode", Boolean.toString(Constants.tuningMode));
+    logger.recordMetadata("RuntimeType", getRuntimeType().toString());
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -41,52 +67,98 @@ public class Robot extends LoggedRobot {
 
     // Set up data receivers & replay source
     switch (Constants.getMode()) {
-        // Running on a real robot, log to a USB stick
       case REAL:
-        logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+        String folder = Constants.logFolders.get(Constants.getRobot());
+        if (folder != null) {
+          logger.addDataReceiver(new WPILOGWriter(folder));
+        } else {
+          logNoFileAlert.set(true);
+        }
         logger.addDataReceiver(new NT4Publisher());
+        LoggedPowerDistribution.getInstance();
         break;
 
-        // Running a physics simulator, log to local folder
       case SIM:
-        logger.addDataReceiver(new WPILOGWriter(""));
         logger.addDataReceiver(new NT4Publisher());
         break;
 
-        // Replaying a log, set up replay source
       case REPLAY:
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        logger.setReplaySource(new WPILOGReader(logPath));
-        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        String path = LogFileUtil.findReplayLog();
+        logger.setReplaySource(new WPILOGReader(path));
+        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(path, "_sim")));
         break;
     }
 
     // Start AdvantageKit logger
+    setUseTiming(Constants.getMode() != Mode.REPLAY);
     logger.start();
+
+    // Log active commands
+    Map<String, Integer> commandCounts = new HashMap<>();
+    BiConsumer<Command, Boolean> logCommandFunction =
+        (Command command, Boolean active) -> {
+          String name = command.getName();
+          int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+          commandCounts.put(name, count);
+          Logger.getInstance()
+              .recordOutput(
+                  "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+          Logger.getInstance().recordOutput("CommandsAll/" + name, count > 0);
+        };
+    CommandScheduler.getInstance()
+        .onCommandInitialize(
+            (Command command) -> {
+              logCommandFunction.accept(command, true);
+            });
+    CommandScheduler.getInstance()
+        .onCommandFinish(
+            (Command command) -> {
+              logCommandFunction.accept(command, false);
+            });
+    CommandScheduler.getInstance()
+        .onCommandInterrupt(
+            (Command command) -> {
+              logCommandFunction.accept(command, false);
+            });
+
+    // Instantiate RobotContainer
     robotContainer = new RobotContainer();
   }
 
   @Override
   public void robotPeriodic() {
+    Threads.setCurrentThreadPriority(true, 99);
     CommandScheduler.getInstance().run();
+
+    // Check logging fault
+    logReceiverQueueAlert.set(Logger.getInstance().getReceiverQueueFault());
+
+    // Print auto duration
+    if (autoCommand != null) {
+      if (!autoCommand.isScheduled() && !autoMessagePrinted) {
+        if (DriverStation.isAutonomousEnabled()) {
+          System.out.println(
+              String.format(
+                  "*** Auto finished in %.2f secs ***", Timer.getFPGATimestamp() - autoStart));
+        } else {
+          System.out.println(
+              String.format(
+                  "*** Auto cancelled in %.2f secs ***", Timer.getFPGATimestamp() - autoStart));
+        }
+        autoMessagePrinted = true;
+      }
+    }
+
+    Threads.setCurrentThreadPriority(true, 10);
   }
 
   @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {}
-
-  @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
-
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
+    autoStart = Timer.getFPGATimestamp();
+    autoMessagePrinted = false;
+    autoCommand = robotContainer.getAutonomousCommand();
+    if (autoCommand != null) {
+      autoCommand.schedule();
     }
   }
 
@@ -94,12 +166,9 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
-
-  @Override
   public void teleopInit() {
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
+    if (autoCommand != null) {
+      autoCommand.cancel();
     }
   }
 
@@ -107,16 +176,22 @@ public class Robot extends LoggedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {}
+  public void disabledInit() {}
 
   @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
+  public void disabledPeriodic() {
+    robotContainer.updateOI();
   }
+
+  @Override
+  public void testInit() {}
 
   @Override
   public void testPeriodic() {}
 
   @Override
-  public void testExit() {}
+  public void simulationInit() {}
+
+  @Override
+  public void simulationPeriodic() {}
 }
