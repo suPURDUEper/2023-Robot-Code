@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.subsystems.drive;
+package org.littletonrobotics.frc2023.subsystems.drive;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.frc2023.util.SparkMaxDerivedVelocityController;
-import org.supurdueper.frc2023.Constants;
+import org.littletonrobotics.frc2023.Constants;
 
 public class ModuleIOSparkMax implements ModuleIO {
   private final CANSparkMax driveSparkMax;

@@ -15,7 +15,7 @@ import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.supurdueper.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.Constants.Mode;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;

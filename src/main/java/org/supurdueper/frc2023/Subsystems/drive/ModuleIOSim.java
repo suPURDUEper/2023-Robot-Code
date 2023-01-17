@@ -3,7 +3,7 @@ package org.supurdueper.frc2023.subsystems.drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import org.supurdueper.frc2023.Constants;
+import org.littletonrobotics.frc2023.Constants;
 
 public class ModuleIOSim implements ModuleIO {
   private FlywheelSim driveSim = new FlywheelSim(DCMotor.getNEO(1), 6.75, 0.025);
