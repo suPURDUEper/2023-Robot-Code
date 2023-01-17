@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.Subsystems.drive;
+package org.supurdueper.frc2023.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;

@@ -16,13 +16,13 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.Constants.Mode;
-import org.supurdueper.frc2023.Subsystems.drive.Drive;
-import org.supurdueper.frc2023.Subsystems.drive.GyroIO;
-import org.supurdueper.frc2023.Subsystems.drive.GyroIOPigeon2;
-import org.supurdueper.frc2023.Subsystems.drive.ModuleIO;
-import org.supurdueper.frc2023.Subsystems.drive.ModuleIOSim;
-import org.supurdueper.frc2023.Subsystems.drive.ModuleIOSparkMax;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
+import org.supurdueper.frc2023.subsystems.drive.Drive;
+import org.supurdueper.frc2023.subsystems.drive.GyroIO;
+import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
+import org.supurdueper.frc2023.subsystems.drive.ModuleIO;
+import org.supurdueper.frc2023.subsystems.drive.ModuleIOSim;
+import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
 
 public class RobotContainer {
 

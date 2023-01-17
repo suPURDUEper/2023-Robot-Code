@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.Subsystems.drive;
+package org.supurdueper.frc2023.subsystems.drive;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
