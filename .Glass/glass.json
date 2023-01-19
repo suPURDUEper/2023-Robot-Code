@@ -1,5 +1,27 @@
 {
+  "NetworkTables": {
+    "transitory": {
+      "AdvantageKit": {
+        "Drive": {
+          "Module0": {
+            "open": true
+          },
+          "Module2": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Angular Speed Limit": "String Chooser",
+      "/SmartDashboard/Auto Routine": "String Chooser",
+      "/SmartDashboard/Linear Speed Limit": "String Chooser"
+    }
+  },
   "NetworkTables Settings": {
-    "mode": "Client (NT4)"
+    "mode": "Client (NT3)"
   }
 }
