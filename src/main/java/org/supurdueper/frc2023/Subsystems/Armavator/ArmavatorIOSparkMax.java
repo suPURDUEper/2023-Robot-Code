@@ -3,6 +3,8 @@ package org.supurdueper.frc2023.subsystems.Armavator;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.RobotController;
 
 public class ArmavatorIOSparkMax implements ArmavatorIO {
@@ -35,5 +37,14 @@ public class ArmavatorIOSparkMax implements ArmavatorIO {
 
     inputs.armTemp = new double[] {armSparkMax.getMotorTemperature()};
     inputs.elevatorTemp = new double[] {elevatorSparkMax.getMotorTemperature()};
+  }
+  public void setArmVoltage(double volts) {
+    armSparkMax.setVoltage(volts);
+  }
+  public void setElevatorVoltage(double volts) {
+    elevatorSparkMax.setVoltage(volts);
+  }
+  public void setArmBrakeMode(boolean enable) {
+    armSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }
 }

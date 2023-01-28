@@ -44,7 +44,7 @@ public class Drive extends SubsystemBase {
   private boolean isCharacterizing = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
   private double characterizationVolts = 0.0;
-  private boolean isBrakeMode = false;
+  private boolean isBrakeMode = true;
   private Timer lastMovementTimer = new Timer();
 
   private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.1, 0.1, 0.1));
