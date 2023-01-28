@@ -4,10 +4,17 @@
 
 package org.supurdueper.frc2023.subsystems.Armavator;
 
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Armavator extends SubsystemBase {
   /** Creates a new Armavator. */
+  CANSparkMax armSparkmax;
+
+  CANSparkMax elevatoSparkMax;
+
+  boolean isBrakeMode = true;
+
   public Armavator() {}
 
   @Override

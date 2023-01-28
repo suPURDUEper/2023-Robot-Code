@@ -1,20 +1,19 @@
 package org.supurdueper.frc2023.subsystems.Armavator;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj.RobotController;
 
-public class ArmavatorIOSparkMax implements ArmavatorIO {
+public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final CANSparkMax armSparkMax;
   private final CANSparkMax elevatorSparkMax;
 
   private final RelativeEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
-  public ArmavatorIOSparkMax() {
+  public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
     armSparkMax = new CANSparkMax(10, MotorType.kBrushless);
 
@@ -24,7 +23,7 @@ public class ArmavatorIOSparkMax implements ArmavatorIO {
     elevatorEncoder.setPosition(0);
   }
 
-  public void updateInputs(ArmavatorIOInputs inputs) {
+  public void updateInputs(ArmavatorMotorIOInputs inputs) {
     inputs.armPosition = armSparkMax.getEncoder().getPosition();
     inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition();
 
@@ -38,12 +37,15 @@ public class ArmavatorIOSparkMax implements ArmavatorIO {
     inputs.armTemp = new double[] {armSparkMax.getMotorTemperature()};
     inputs.elevatorTemp = new double[] {elevatorSparkMax.getMotorTemperature()};
   }
+
   public void setArmVoltage(double volts) {
     armSparkMax.setVoltage(volts);
   }
+
   public void setElevatorVoltage(double volts) {
     elevatorSparkMax.setVoltage(volts);
   }
+
   public void setArmBrakeMode(boolean enable) {
     armSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }

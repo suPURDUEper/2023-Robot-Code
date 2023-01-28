@@ -2,9 +2,9 @@ package org.supurdueper.frc2023.subsystems.Armavator;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ArmavatorIO {
+public interface ArmavatorMotorIO {
   @AutoLog
-  public static class ArmavatorIOInputs {
+  public static class ArmavatorMotorIOInputs {
     public double armPosition = 0.0;
     public double armVelocity = 0.0;
     public double armAppliedVolts = 0.0;
@@ -18,7 +18,7 @@ public interface ArmavatorIO {
     public double[] elevatorTemp = new double[] {};
   }
   /* Updates the sets of loggable inputs */
-  public default void updateArmavatorInputs(ArmavatorIOInputs Inputs) {}
+  public default void updateArmavatorInputs(ArmavatorMotorIOInputs Inputs) {}
   /* Run the arm motor at a specifc Voltage */
   public default void setArmVoltage(double volts) {}
   /* Run the elevator motor at a specifc Voltage */
