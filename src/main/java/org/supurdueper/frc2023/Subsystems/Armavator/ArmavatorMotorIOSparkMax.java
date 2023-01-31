@@ -8,14 +8,21 @@ import edu.wpi.first.wpilibj.RobotController;
 
 public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final CANSparkMax armSparkMax;
+  private final CANSparkMax armFollowSparkMax;
   private final CANSparkMax elevatorSparkMax;
+  private final CANSparkMax elevatorFollowSparkMax;
 
   private final RelativeEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
   public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
-    armSparkMax = new CANSparkMax(10, MotorType.kBrushless);
+    elevatorFollowSparkMax = new CANSparkMax(10, MotorType.kBrushless);
+    armSparkMax = new CANSparkMax(11, MotorType.kBrushless);
+    armFollowSparkMax = new CANSparkMax(12, MotorType.kBrushless);
+
+    elevatorFollowSparkMax.follow(elevatorSparkMax);
+    armFollowSparkMax.follow(armSparkMax);
 
     armEncoder = armSparkMax.getEncoder();
     armEncoder.setPosition(0);
