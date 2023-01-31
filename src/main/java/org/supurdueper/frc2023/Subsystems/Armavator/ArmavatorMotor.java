@@ -1,10 +1,11 @@
-package org.supurdueper.frc2023.subsystems.Armavator;
+package org.supurdueper.frc2023.subsystems.armavator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorMotorIOInputsAutoLogged;
 
 public class ArmavatorMotor {
   private final ArmavatorMotorIO io;
