@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.subsystems.Armavator;
+package org.supurdueper.frc2023.subsystems.armavator;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
