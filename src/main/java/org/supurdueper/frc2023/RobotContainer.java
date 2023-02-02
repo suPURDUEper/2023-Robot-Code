@@ -18,6 +18,8 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
+import org.supurdueper.frc2023.subsystems.armavator.Armavator;
+import org.supurdueper.frc2023.subsystems.armavator.ArmavatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;
 import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
@@ -29,6 +31,7 @@ public class RobotContainer {
 
   // Subsystems
   private Drive drive;
+  private Armavator armavator;
 
   // OI objects
   private OverrideOI overrideOI = new OverrideOI();
@@ -53,6 +56,8 @@ public class RobotContainer {
                   new ModuleIOSparkMax(1),
                   new ModuleIOSparkMax(2),
                   new ModuleIOSparkMax(3));
+          armavator =
+          new Armavator(new ArmavatorMotorIOSparkMax());
           break;
         case ROBOT_SIMBOT:
           drive =

@@ -5,11 +5,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
-import org.supurdueper.frc2023.subsystems.armavator.ArmavatorMotorIOInputsAutoLogged;
 
 public class ArmavatorMotor {
   private final ArmavatorMotorIO io;
-  private final int index;
   private final ArmavatorMotorIOInputsAutoLogged inputs = new ArmavatorMotorIOInputsAutoLogged();
 
   private final double sprocketPitch = 1.75;
@@ -44,14 +42,13 @@ public class ArmavatorMotor {
     elevatorKv.initDefault(0.13477);
   }
 
-  public ArmavatorMotor(ArmavatorMotorIO io, int index) {
+  public ArmavatorMotor(ArmavatorMotorIO io) {
     this.io = io;
-    this.index = index;
   }
 
   public void periodic() {
     io.updateArmavatorInputs(inputs);
-    Logger.getInstance().processInputs("Armavator/Motors" + Integer.toString(index), inputs);
+    Logger.getInstance().processInputs("Armavator/Motors", inputs);
 
     // Update controllers if tunable numbers have changed
     if (armKp.hasChanged(hashCode()) || armKd.hasChanged(hashCode())) {

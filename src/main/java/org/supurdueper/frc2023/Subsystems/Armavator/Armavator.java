@@ -8,22 +8,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Armavator extends SubsystemBase {
   /** Creates a new Armavator. */
-  ArmavatorMotor elevatorMotor;
-  ArmavatorMotor armMotor;
+  ArmavatorMotor armavatorMotor;
 
   boolean isBrakeMode = true;
 
-  public Armavator(ArmavatorMotorIO elevatorMotorIo, ArmavatorMotorIO armMotorIo  ) {
-    elevatorMotor = new ArmavatorMotor(elevatorMotorIo, 0);
-    armMotor = new ArmavatorMotor(armMotorIo, 0);
-
-    elevatorMotor.setBrakeMode(isBrakeMode);
-    armMotor.setBrakeMode(isBrakeMode);
+  public Armavator(ArmavatorMotorIO armavatorMotorIo) {
+    armavatorMotor = new ArmavatorMotor(armavatorMotorIo);
+    
+    armavatorMotor.setBrakeMode(isBrakeMode);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    armavatorMotor.periodic();
   }
 }
