@@ -4,21 +4,26 @@
 
 package org.supurdueper.frc2023.subsystems.armavator;
 
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Armavator extends SubsystemBase {
   /** Creates a new Armavator. */
-  CANSparkMax armSparkmax;
-
-  CANSparkMax elevatoSparkMax;
+  ArmavatorMotor elevatorMotor;
+  ArmavatorMotor armMotor;
 
   boolean isBrakeMode = true;
 
-  public Armavator() {}
+  public Armavator(ArmavatorMotorIO elevatorMotorIo, ArmavatorMotorIO armMotorIo  ) {
+    elevatorMotor = new ArmavatorMotor(elevatorMotorIo, 0);
+    armMotor = new ArmavatorMotor(armMotorIo, 0);
+
+    elevatorMotor.setBrakeMode(isBrakeMode);
+    armMotor.setBrakeMode(isBrakeMode);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 }
