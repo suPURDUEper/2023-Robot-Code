@@ -59,14 +59,16 @@ public class ArmavatorMotor {
     if (elevatorKp.hasChanged(hashCode()) || elevatorKd.hasChanged(hashCode())) {
       elevatorFeedback.setPID(elevatorKp.get(), 0.0, elevatorKd.get());
     }
-    if (armKs.hasChanged(hashCode()) || armKv.hasChanged(hashCode()) || armKg.hasChanged(hashCode())) {
-      armFeedforward = new ArmFeedforward(armKs.get(),armKg.get(), armKv.get());
+    if (armKs.hasChanged(hashCode())
+        || armKv.hasChanged(hashCode())
+        || armKg.hasChanged(hashCode())) {
+      armFeedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
     }
     if (elevatorKs.hasChanged(hashCode()) || elevatorKv.hasChanged(hashCode())) {
       elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
     }
   }
-
+  
   public void Stop() {
     io.setArmVoltage(0);
     io.setElevatorVoltage(0);

@@ -15,37 +15,35 @@ public class Armavator extends SubsystemBase {
 
   public Armavator(ArmavatorMotorIO armavatorMotorIo) {
     armavatorMotor = new ArmavatorMotor(armavatorMotorIo);
-    
+
     armavatorMotor.setBrakeMode(isBrakeMode);
   }
+
   public static record ArmavatorPose(Rotation2d armAngle, double elevatorDistance) {
     public static enum armavatorPreset {
-      stowed(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.0)),
-      intake(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.5)),
-      low(new ArmavatorPose(new Rotation2d(Math.PI/4), 1.0)),
-      midCone(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.5)),
-      midCube(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.5)),
-      highCone(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.5)),
-      highCube(new ArmavatorPose(new Rotation2d(Math.PI/4), 0.5));
-
+      stowed(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.0)),
+      intake(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
+      low(new ArmavatorPose(new Rotation2d(Math.PI / 4), 1.0)),
+      midCone(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
+      midCube(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
+      highCone(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
+      highCube(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5));
 
       private ArmavatorPose pose;
 
-    private armavatorPreset(ArmavatorPose pose) {
-      this.pose = pose;
-    }
+      private armavatorPreset(ArmavatorPose pose) {
+        this.pose = pose;
+      }
 
-    private void setPreset(ArmavatorPose pose) {
-      this.pose = pose;
-    }
+      private void setPreset(ArmavatorPose pose) {
+        this.pose = pose;
+      }
 
-    public ArmavatorPose getPose() {
-      return pose;
+      public ArmavatorPose getPose() {
+        return pose;
+      }
     }
-    }
-   }
-  
-
+  }
 
   @Override
   public void periodic() {
