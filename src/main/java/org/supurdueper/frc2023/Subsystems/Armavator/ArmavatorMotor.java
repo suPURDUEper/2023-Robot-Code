@@ -1,5 +1,6 @@
 package org.supurdueper.frc2023.subsystems.armavator;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import org.littletonrobotics.frc2023.Constants;
@@ -14,6 +15,7 @@ public class ArmavatorMotor {
   private static final LoggedTunableNumber armKp = new LoggedTunableNumber("Arm/Motor/Kp");
   private static final LoggedTunableNumber armKd = new LoggedTunableNumber("Arm/Motor/Kd");
   private static final LoggedTunableNumber armKs = new LoggedTunableNumber("Arm/Motor/Ks");
+  private static final LoggedTunableNumber armKg = new LoggedTunableNumber("Arm/Motor/Kg");
   private static final LoggedTunableNumber armKv = new LoggedTunableNumber("Arm/Motor/Kv");
   private static final LoggedTunableNumber elevatorKp =
       new LoggedTunableNumber("Elevator/Motor/Kp");
@@ -24,7 +26,7 @@ public class ArmavatorMotor {
   private static final LoggedTunableNumber elevatorKv =
       new LoggedTunableNumber("Elevator/Motor/Kv");
 
-  private SimpleMotorFeedforward armFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+  private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
   private SimpleMotorFeedforward elevatorFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
   private final PIDController armFeedback =
       new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
@@ -57,8 +59,8 @@ public class ArmavatorMotor {
     if (elevatorKp.hasChanged(hashCode()) || elevatorKd.hasChanged(hashCode())) {
       elevatorFeedback.setPID(elevatorKp.get(), 0.0, elevatorKd.get());
     }
-    if (armKs.hasChanged(hashCode()) || armKv.hasChanged(hashCode())) {
-      armFeedforward = new SimpleMotorFeedforward(armKs.get(), armKv.get());
+    if (armKs.hasChanged(hashCode()) || armKv.hasChanged(hashCode()) || armKg.hasChanged(hashCode())) {
+      armFeedforward = new ArmFeedforward(armKs.get(),armKg.get(), armKv.get());
     }
     if (elevatorKs.hasChanged(hashCode()) || elevatorKv.hasChanged(hashCode())) {
       elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
