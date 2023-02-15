@@ -1,76 +1,36 @@
-package org.supurdueper.frc2023.Subsystems.Intake;
+package org.supurdueper.frc2023.subsystems.Intake;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PWM;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.littletonrobotics.frc2023.Constants;
-import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
 public class IntakeIOTalonFX implements IntakeIO {
-  private final TalonFX     Roller;
-  private final SupplyCurrentLimitConfiguration IntakeCurrentConfig;
-
-  private final PWM armAbsoluteEncoder;
-  private final Encoder armRelativeEncoder;
-  private final RelativeEncoder armInternalEncoder;
-
-  private final boolean armInvert;
-  private final boolean armExternalEncoderInvert;
-  private final boolean rollerInvert;
-  private final double armInternalEncoderReduction;
-  private final Rotation2d armAbsoluteEncoderOffset;
+  private final WPI_TalonFX roller;
+  private final SupplyCurrentLimitConfiguration intakeCurrentConfig;
 
   public IntakeIOTalonFX() {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
-        Roller = new TalonFX(0);
-        IntakeCurrentConfig = new SupplyCurrentLimitConfiguration(true,15, 15, 0);
-
-        rollerInvert = false;
-
-
+        roller = new WPI_TalonFX(13);
+        intakeCurrentConfig = new SupplyCurrentLimitConfiguration(true, 15, 15, 0);
+        break;
       default:
         throw new RuntimeException("Invalid robot for CubeIntakeIOSparkMax!");
     }
-
-  /*   if (SparkMaxBurnManager.shouldBurn()) {
-      armSparkMax.restoreFactoryDefaults();
-      armSparkmax2.restoreFactoryDefaults();
-    } */
-
-
-
-    Roller.configSupplyCurrentLimit(IntakeCurrentConfig);
-
-    Roller.configVoltageCompSaturation(10.0);
-    Roller.enableVoltageCompensation(true);
-
-  /*  if (SparkMaxBurnManager.shouldBurn()) {
-      armSparkMax.burnFlash();
-      armSparkmax2.burnFlash();
-    } */
+    roller.configSupplyCurrentLimit(intakeCurrentConfig);
+    roller.configVoltageCompSaturation(10.0);
+    roller.enableVoltageCompensation(true);
   }
 
   @Override
-  public void updateInputs(CubeIntakeIOInputs inputs) {
-  
-
-    inputs.rollerAppliedVolts = rollerTalonFX.getAppliedOutput() * rollerTalonFX.getBusVoltage();
-    //inputs.rollerCurrentAmps = new double[] {rollerSparkMax.getOutputCurrent()};
-  }
-
- /*  @Override
-  public void setArmVoltage(double voltage) {
-    armSparkMax.setVoltage(voltage);
+  public void updateInputs(IntakeIOInputs inputs) {
+    inputs.rollerAppliedVolts = roller.getMotorOutputVoltage();
+    inputs.rollerCurrentAmps = roller.getStatorCurrent();
+    inputs.rollerTempCelcius = roller.getTemperature();
   }
 
   @Override
   public void setRollerVoltage(double voltage) {
-    rollerSparkMax.setVoltage(voltage);
-  } */
+    roller.setVoltage(voltage);
+  }
 }

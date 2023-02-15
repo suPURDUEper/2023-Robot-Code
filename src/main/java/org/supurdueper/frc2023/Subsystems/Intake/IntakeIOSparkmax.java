@@ -1,116 +1,45 @@
-package org.supurdueper.frc2023.Subsystems.Intake;
+package org.supurdueper.frc2023.subsystems.Intake;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PWM;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
-public class IntakeIOSparkmax implements IntakeIO {
-  private final CANSparkMax armSparkMax;
-  private final CANSparkMax armSparkmax2;
-  private final TalonFX     IntakeMotor;
-  private final SupplyCurrentLimitConfiguration IntakeCurrentConfig;
+public class IntakeIOSparkMax implements IntakeIO {
+  private final CANSparkMax roller;
 
-  private final PWM armAbsoluteEncoder;
-  private final Encoder armRelativeEncoder;
-  private final RelativeEncoder armInternalEncoder;
-
-  private final boolean armInvert;
-  private final boolean armExternalEncoderInvert;
-  private final boolean rollerInvert;
-  private final double armInternalEncoderReduction;
-  private final Rotation2d armAbsoluteEncoderOffset;
-
-  public IntakeIOSparkmax() {
+  public IntakeIOSparkMax() {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
-        armSparkMax = new CANSparkMax(0, MotorType.kBrushless);
-        armSparkmax2 = new CANSparkMax(1, MotorType.kBrushless);
-        IntakeMotor = new TalonFX(0);
-        IntakeCurrentConfig = new SupplyCurrentLimitConfiguration(true,15, 15, 0);
-
-        armInvert = false;
-        armExternalEncoderInvert = false;
-        rollerInvert = false;
-        armInternalEncoderReduction = 1.0;
-        armAbsoluteEncoderOffset = new Rotation2d(0.0);
-
-        armAbsoluteEncoder = new PWM(0, false);
-        armRelativeEncoder = new Encoder(0, 1, false);
-        armRelativeEncoder.setDistancePerPulse((2 * Math.PI) / 8192);
+        roller = new CANSparkMax(13, MotorType.kBrushless);
         break;
-
       default:
         throw new RuntimeException("Invalid robot for CubeIntakeIOSparkMax!");
     }
 
     if (SparkMaxBurnManager.shouldBurn()) {
-      armSparkMax.restoreFactoryDefaults();
-      armSparkmax2.restoreFactoryDefaults();
+      roller.restoreFactoryDefaults();
     }
 
-    armInternalEncoder = armSparkMax.getEncoder();
-    armInternalEncoder.setPosition(0.0);
-    armInternalEncoder.setMeasurementPeriod(10);
-    armInternalEncoder.setAverageDepth(2);
-
-    armSparkMax.setInverted(armInvert);
-    armSparkmax2.setInverted(armInvert);
-
-    armSparkMax.setSmartCurrentLimit(30);
-    armSparkmax2.setSmartCurrentLimit(30);
-    IntakeMotor.configSupplyCurrentLimit(IntakeCurrentConfig);
-
-    armSparkMax.enableVoltageCompensation(12.0);
-    armSparkmax2.enableVoltageCompensation(12.0);
-
-    armSparkMax.setCANTimeout(0);
-    armSparkmax2.setCANTimeout(0);
+    roller.setInverted(true);
+    roller.setSmartCurrentLimit(30);
+    roller.enableVoltageCompensation(12.0);
+    roller.setCANTimeout(0);
 
     if (SparkMaxBurnManager.shouldBurn()) {
-      armSparkMax.burnFlash();
-      armSparkmax2.burnFlash();
+      roller.burnFlash();
     }
   }
 
   @Override
-  public void updateInputs(CubeIntakeIOInputs inputs) {
-    inputs.armAbsolutePositionRad =
-        MathUtil.angleModulus(
-            armAbsoluteEncoder.getPosition() * 2 * Math.PI * (armExternalEncoderInvert ? -1 : 1)
-                - armAbsoluteEncoderOffset.getRadians());
-    inputs.armRelativePositionRad =
-        armRelativeEncoder.getDistance() * (armExternalEncoderInvert ? -1 : 1);
-    inputs.armInternalPositionRad =
-        Units.rotationsToRadians(armInternalEncoder.getPosition()) / armInternalEncoderReduction;
-    inputs.armRelativeVelocityRadPerSec =
-        armRelativeEncoder.getRate() * (armExternalEncoderInvert ? -1 : 1);
-    inputs.armInternalVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(armInternalEncoder.getPosition())
-            / armInternalEncoderReduction;
-    inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * armSparkMax.getBusVoltage();
-    inputs.armCurrentAmps = new double[] {armSparkMax.getOutputCurrent()};
-    inputs.armTempCelcius = new double[] {armSparkMax.getMotorTemperature()};
-
-    //inputs.rollerAppliedVolts = rollerSparkMax.getAppliedOutput() * rollerSparkMax.getBusVoltage();
-    //inputs.rollerCurrentAmps = new double[] {rollerSparkMax.getOutputCurrent()};
-  }
-
- /*  @Override
-  public void setArmVoltage(double voltage) {
-    armSparkMax.setVoltage(voltage);
+  public void updateInputs(IntakeIOInputs inputs) {
+    inputs.rollerAppliedVolts = roller.getAppliedOutput() * roller.getBusVoltage();
+    inputs.rollerCurrentAmps = roller.getOutputCurrent();
+    inputs.rollerTempCelcius = roller.getMotorTemperature();
   }
 
   @Override
   public void setRollerVoltage(double voltage) {
-    rollerSparkMax.setVoltage(voltage);
-  } */
+    roller.setVoltage(voltage);
+  }
 }

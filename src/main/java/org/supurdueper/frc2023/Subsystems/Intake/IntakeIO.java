@@ -1,24 +1,17 @@
-package org.supurdueper.frc2023.Subsystems.Intake;
+package org.supurdueper.frc2023.subsystems.Intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
   @AutoLog
-  public static class CubeIntakeIOInputs {
-    public double armAbsolutePositionRad = 0.0;
-    public double armRelativePositionRad = 0.0;
-    public double armInternalPositionRad = 0.0;
-    public double armRelativeVelocityRadPerSec = 0.0;
-    public double armInternalVelocityRadPerSec = 0.0;
-    public double armAppliedVolts = 0.0;
-    public double[] armCurrentAmps = new double[] {};
-    public double[] armTempCelcius = new double[] {};
+  public static class IntakeIOInputs {
 
     public double rollerAppliedVolts = 0.0;
-    public double[] rollerCurrentAmps = new double[] {};
+    public double rollerCurrentAmps = 0.0;
+    public double rollerTempCelcius = 0.0;
   }
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(CubeIntakeIOInputs inputs) {}
+  public default void updateInputs(IntakeIOInputs inputs) {}
 
   /** Set the arm motor voltage */
   public default void setArmVoltage(double volts) {}
