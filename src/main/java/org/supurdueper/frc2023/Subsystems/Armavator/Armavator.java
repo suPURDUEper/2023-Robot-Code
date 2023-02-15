@@ -11,17 +11,20 @@ public class Armavator extends SubsystemBase {
   /** Creates a new Armavator. */
   ArmavatorMotor armavatorMotor;
 
+  private final ArmavatorMotorIO io;
+  private final ArmavatorMotorIOInputsAutoLogged inputs = new ArmavatorMotorIOInputsAutoLogged();
+
   boolean isBrakeMode = true;
 
-  public Armavator(ArmavatorMotorIO armavatorMotorIo) {
-    armavatorMotor = new ArmavatorMotor(armavatorMotorIo);
+  public Armavator(ArmavatorMotorIO io) {
+    this.io = io;
 
     armavatorMotor.setBrakeMode(isBrakeMode);
   }
 
   public static record ArmavatorPose(Rotation2d armAngle, double elevatorDistance) {
     public static enum armavatorPreset {
-      stowed(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.0)),
+      stowed(null),
       intake(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
       low(new ArmavatorPose(new Rotation2d(Math.PI / 4), 1.0)),
       midCone(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5)),
@@ -32,10 +35,6 @@ public class Armavator extends SubsystemBase {
       private ArmavatorPose pose;
 
       private armavatorPreset(ArmavatorPose pose) {
-        this.pose = pose;
-      }
-
-      private void setPreset(ArmavatorPose pose) {
         this.pose = pose;
       }
 
