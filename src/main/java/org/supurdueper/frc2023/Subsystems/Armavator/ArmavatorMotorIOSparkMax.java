@@ -34,7 +34,10 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
 
   public void updateInputs(ArmavatorMotorIOInputs inputs) {
     inputs.armPosition = armSparkMax.getEncoder().getPosition();
-    inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition(); 
+    inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition();
+
+    inputs.armVelocity = armSparkMax.getEncoder().getVelocity();
+    inputs.elevatorVelocity = elevatorSparkMax.getEncoder().getVelocity() * sprocketPitch;
 
     inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.elevatorAppliedVolts =

@@ -54,8 +54,6 @@ public class Armavator extends SubsystemBase {
   public Armavator(ArmavatorMotorIO io) {
     this.io = io;
 
-    armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
-
     io.setArmBrakeMode(isBrakeMode);
     io.setElevatorBrakeMode(isBrakeMode);
   }
@@ -87,6 +85,9 @@ public class Armavator extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateArmavatorInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
+
+    armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
+    elevatorFeedforward.calculate(inputs.elevatorVelocity);
 
     // Update controllers if tunable numbers have changed
     if (armKp.hasChanged(hashCode()) || armKd.hasChanged(hashCode())) {
