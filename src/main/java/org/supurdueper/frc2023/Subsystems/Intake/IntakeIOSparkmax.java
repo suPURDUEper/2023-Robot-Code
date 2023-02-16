@@ -42,4 +42,9 @@ public class IntakeIOSparkMax implements IntakeIO {
   public void setRollerVoltage(double voltage) {
     roller.setVoltage(voltage);
   }
+
+  @Override
+  public double getRollerAmps() {
+    return roller.getOutputCurrent();
+  }
 }

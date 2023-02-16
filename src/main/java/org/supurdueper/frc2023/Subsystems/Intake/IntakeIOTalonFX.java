@@ -12,7 +12,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
         roller = new WPI_TalonFX(13);
-        intakeCurrentConfig = new SupplyCurrentLimitConfiguration(true, 15, 15, 0);
+        intakeCurrentConfig = new SupplyCurrentLimitConfiguration(true, 40, 40, 0);
         break;
       default:
         throw new RuntimeException("Invalid robot for CubeIntakeIOSparkMax!");
@@ -32,5 +32,10 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void setRollerVoltage(double voltage) {
     roller.setVoltage(voltage);
+  }
+
+  @Override
+  public double getRollerAmps() {
+    return roller.getStatorCurrent();
   }
 }
