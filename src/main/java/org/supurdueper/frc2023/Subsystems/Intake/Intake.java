@@ -15,14 +15,19 @@ public class Intake extends SubsystemBase {
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
       new LoggedTunableNumber("Intake/CubeIntakeVolts");
   private static final LoggedTunableNumber rollerConeIntakeVolts =
-      new LoggedTunableNumber("Intake/ConeIntakeVolts"); 
+      new LoggedTunableNumber("Intake/ConeIntakeVolts");
   private static final LoggedTunableNumber rollerCubeScoreVolts =
       new LoggedTunableNumber("Intake/CubeScoreVolts");
   private static final LoggedTunableNumber rollerConeScoreVolts =
-      new LoggedTunableNumber("Intake/ConeScoreVolts"); 
+      new LoggedTunableNumber("Intake/ConeScoreVolts");
 
-  public enum Mode {INTAKE_CONE, INTAKE_CUBE, SCORE_CUBE, SCORE_CONE, NOT_RUNNING}
-
+  public enum Mode {
+    INTAKE_CONE,
+    INTAKE_CUBE,
+    SCORE_CUBE,
+    SCORE_CONE,
+    NOT_RUNNING
+  }
 
   static {
     switch (Constants.getRobot()) {
