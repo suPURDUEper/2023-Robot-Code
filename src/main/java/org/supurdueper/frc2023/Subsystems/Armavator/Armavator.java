@@ -14,12 +14,9 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Armavator extends SubsystemBase {
-  /** Creates a new Armavator. */
-  ArmavatorMotor armavatorMotor;
 
   private final ArmavatorMotorIO io;
   private final ArmavatorMotorIOInputsAutoLogged inputs = new ArmavatorMotorIOInputsAutoLogged();
-  private final double sprocketPitch = 1.75;
   private static final LoggedTunableNumber armKp = new LoggedTunableNumber("Arm/Motor/Kp");
   private static final LoggedTunableNumber armKd = new LoggedTunableNumber("Arm/Motor/Kd");
   private static final LoggedTunableNumber armKs = new LoggedTunableNumber("Arm/Motor/Ks");
@@ -56,6 +53,8 @@ public class Armavator extends SubsystemBase {
 
   public Armavator(ArmavatorMotorIO io) {
     this.io = io;
+
+    armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
 
     io.setArmBrakeMode(isBrakeMode);
     io.setElevatorBrakeMode(isBrakeMode);
@@ -121,6 +120,6 @@ public class Armavator extends SubsystemBase {
   }
 
   public double getElevatorVelocity() {
-    return inputs.elevatorVelocity * sprocketPitch;
+    return inputs.elevatorVelocity;
   }
 }

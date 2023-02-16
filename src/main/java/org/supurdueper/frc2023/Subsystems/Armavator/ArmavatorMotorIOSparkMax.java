@@ -15,6 +15,8 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final RelativeEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
+  private final double sprocketPitch = 1.75;
+
   public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
     elevatorFollowSparkMax = new CANSparkMax(10, MotorType.kBrushless);
@@ -32,7 +34,7 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
 
   public void updateInputs(ArmavatorMotorIOInputs inputs) {
     inputs.armPosition = armSparkMax.getEncoder().getPosition();
-    inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition();
+    inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition(); 
 
     inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.elevatorAppliedVolts =
