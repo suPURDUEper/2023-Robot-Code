@@ -7,10 +7,8 @@ package org.supurdueper.frc2023;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.util.Alert;
@@ -97,31 +95,34 @@ public class RobotContainer {
     bindControls();
   }
 
-    /** Updates the alerts for disconnected controllers. */
-    public void checkControllers() {
-      driverDisconnected.set(
-          !DriverStation.isJoystickConnected(driver.getHID().getPort())
-              || !DriverStation.getJoystickIsXbox(driver.getHID().getPort()));
-      operatorDisconnected.set(
-          !DriverStation.isJoystickConnected(operator.getHID().getPort())
-              || !DriverStation.getJoystickIsXbox(operator.getHID().getPort()));
-    }
+  /** Updates the alerts for disconnected controllers. */
+  public void checkControllers() {
+    driverDisconnected.set(
+        !DriverStation.isJoystickConnected(driver.getHID().getPort())
+            || !DriverStation.getJoystickIsXbox(driver.getHID().getPort()));
+    operatorDisconnected.set(
+        !DriverStation.isJoystickConnected(operator.getHID().getPort())
+            || !DriverStation.getJoystickIsXbox(operator.getHID().getPort()));
+  }
 
   /**
    * This method scans for any changes to the connected joystick. If anything changed, it creates
    * new OI objects and binds all of the buttons to commands.
    */
   public void bindControls() {
+    // Rely on our custom alerts for disconnected controllers
+    DriverStation.silenceJoystickConnectionWarning(true);
 
     // *** DRIVER CONTROLS ***
     drive.setDefaultCommand(
-      new DriveWithJoysticks(
-          drive,
-          () -> driver.getLeftX(),
-          () -> driver.getLeftY(),
-          () -> driver.getRightY(),
-          () -> {return false;}));
-
+        new DriveWithJoysticks(
+            drive,
+            () -> driver.getLeftX(),
+            () -> driver.getLeftY(),
+            () -> driver.getRightY(),
+            () -> {
+              return false;
+            }));
 
     // *** OPERATOR CONTROLS ***
   }
