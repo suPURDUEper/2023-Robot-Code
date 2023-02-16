@@ -68,7 +68,7 @@ public class ArmavatorMotor {
       elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
     }
   }
-  
+
   public void Stop() {
     io.setArmVoltage(0);
     io.setElevatorVoltage(0);
