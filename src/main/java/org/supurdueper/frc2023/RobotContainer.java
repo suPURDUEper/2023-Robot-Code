@@ -5,14 +5,14 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
-import org.littletonrobotics.frc2023.oi.HandheldOI;
-import org.littletonrobotics.frc2023.oi.OISelector;
-import org.littletonrobotics.frc2023.oi.OverrideOI;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
@@ -31,8 +31,12 @@ public class RobotContainer {
   private Drive drive;
 
   // OI objects
-  private OverrideOI overrideOI = new OverrideOI();
-  private HandheldOI handheldOI = new HandheldOI();
+  private CommandXboxController driver = new CommandXboxController(0);
+  private CommandXboxController operator = new CommandXboxController(1);
+  private Alert driverDisconnected =
+      new Alert("Driver controller is not connected (port 0).", AlertType.WARNING);
+  private Alert operatorDisconnected =
+      new Alert("Operator controller is not connected (port 1).", AlertType.WARNING);
 
   // Choosers
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -78,13 +82,6 @@ public class RobotContainer {
                 new ModuleIO() {});
 
     // Set up subsystems
-    drive.setDefaultCommand(
-        new DriveWithJoysticks(
-            drive,
-            () -> handheldOI.getLeftDriveX(),
-            () -> handheldOI.getLeftDriveY(),
-            () -> handheldOI.getRightDriveY(),
-            () -> overrideOI.getRobotRelative()));
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing", null);
@@ -97,23 +94,34 @@ public class RobotContainer {
     }
 
     // Instantiate OI classes and bind buttons
-    updateOI();
+    bindControls();
   }
+
+    /** Updates the alerts for disconnected controllers. */
+    public void checkControllers() {
+      driverDisconnected.set(
+          !DriverStation.isJoystickConnected(driver.getHID().getPort())
+              || !DriverStation.getJoystickIsXbox(driver.getHID().getPort()));
+      operatorDisconnected.set(
+          !DriverStation.isJoystickConnected(operator.getHID().getPort())
+              || !DriverStation.getJoystickIsXbox(operator.getHID().getPort()));
+    }
 
   /**
    * This method scans for any changes to the connected joystick. If anything changed, it creates
    * new OI objects and binds all of the buttons to commands.
    */
-  public void updateOI() {
-    if (!OISelector.didJoysticksChange()) {
-      return;
-    }
-
-    CommandScheduler.getInstance().getActiveButtonLoop().clear();
-    overrideOI = OISelector.findOverrideOI();
-    handheldOI = OISelector.findHandheldOI();
+  public void bindControls() {
 
     // *** DRIVER CONTROLS ***
+    drive.setDefaultCommand(
+      new DriveWithJoysticks(
+          drive,
+          () -> driver.getLeftX(),
+          () -> driver.getLeftY(),
+          () -> driver.getRightY(),
+          () -> {return false;}));
+
 
     // *** OPERATOR CONTROLS ***
   }
