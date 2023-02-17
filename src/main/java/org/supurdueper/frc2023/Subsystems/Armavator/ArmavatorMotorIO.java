@@ -5,18 +5,18 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ArmavatorMotorIO {
   @AutoLog
   public static class ArmavatorMotorIOInputs {
-    public double armPosition = 0.0;
-    public double armVelocity = 0.0;
+    public double armPositionRad = 0.0;
+    public double armVelocityRadS = 0.0;
     public double armAppliedVolts = 0.0;
-    public double armTargetPosition = 0.0;
+    public double armTargetPositionRad = 0.0;
     public double armFeedforward = 0.0;
     public double[] armCurrentAmps = new double[] {};
     public double[] armTemp = new double[] {};
 
-    public double elevatorPosition = 0.0;
-    public double elevatorVelocity = 0.0;
+    public double elevatorPositionM = 0.0;
+    public double elevatorVelocityMS = 0.0;
     public double elevatorAppliedVolts = 0.0;
-    public double elevatorTargetPosition = 0.0;
+    public double elevatorTargetPositionM = 0.0;
     public double elevatorFeedforward = 0.0;
     public double[] elevatorCurrentAmps = new double[] {};
     public double[] elevatorTemp = new double[] {};

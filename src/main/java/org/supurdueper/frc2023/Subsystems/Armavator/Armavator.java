@@ -77,9 +77,6 @@ public class Armavator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    io.updateArmavatorInputs(inputs);
-    Logger.getInstance().processInputs("Armavator/Motors", inputs);
-
     // Update controllers if tunable numbers have changed
     if (armKp.hasChanged(hashCode()) || armKd.hasChanged(hashCode())) {
       io.setArmPIDGains(armKp.get(), 0.0, armKd.get());
@@ -96,8 +93,10 @@ public class Armavator extends SubsystemBase {
       elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
     }
 
-    inputs.armFeedforward = armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
-    inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorVelocity);
+    inputs.armFeedforward = armFeedforward.calculate(inputs.armPositionRad, inputs.armVelocityRadS);
+    inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorVelocityMS);
+    io.updateArmavatorInputs(inputs);
+    Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
 
   public void Stop() {
@@ -111,15 +110,15 @@ public class Armavator extends SubsystemBase {
   }
 
   public double getArmVelocity() {
-    return inputs.armVelocity;
+    return inputs.armVelocityRadS;
   }
 
   public double getElevatorVelocity() {
-    return inputs.elevatorVelocity;
+    return inputs.elevatorVelocityMS;
   }
 
   public void setPose(ArmavatorPose target) {
-    inputs.armTargetPosition = target.armAngle.getRadians();
-    inputs.elevatorTargetPosition = target.elevatorDistance;
+    inputs.armTargetPositionRad = target.armAngle.getRadians();
+    inputs.elevatorTargetPositionM = target.elevatorDistance;
   }
 }
