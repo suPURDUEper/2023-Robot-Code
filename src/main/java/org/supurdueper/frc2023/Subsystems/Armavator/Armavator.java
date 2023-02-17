@@ -5,11 +5,9 @@
 package org.supurdueper.frc2023.subsystems.armavator;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,10 +31,6 @@ public class Armavator extends SubsystemBase {
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
   private SimpleMotorFeedforward elevatorFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
-  private final PIDController armFeedback =
-      new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
-  private final PIDController elevatorFeedback =
-      new PIDController(0, 0, 0, Constants.loopPeriodSecs);
 
   static {
     armKp.initDefault(0.1);
@@ -86,15 +80,12 @@ public class Armavator extends SubsystemBase {
     io.updateArmavatorInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
 
-    armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
-    elevatorFeedforward.calculate(inputs.elevatorVelocity);
-
     // Update controllers if tunable numbers have changed
     if (armKp.hasChanged(hashCode()) || armKd.hasChanged(hashCode())) {
-      armFeedback.setPID(armKp.get(), 0.0, armKd.get());
+      io.setArmPIDGains(armKp.get(), 0.0, armKd.get());
     }
     if (elevatorKp.hasChanged(hashCode()) || elevatorKd.hasChanged(hashCode())) {
-      elevatorFeedback.setPID(elevatorKp.get(), 0.0, elevatorKd.get());
+      io.setElevatorPIDGains(elevatorKp.get(), 0.0, elevatorKd.get());
     }
     if (armKs.hasChanged(hashCode())
         || armKv.hasChanged(hashCode())
@@ -104,6 +95,9 @@ public class Armavator extends SubsystemBase {
     if (elevatorKs.hasChanged(hashCode()) || elevatorKv.hasChanged(hashCode())) {
       elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
     }
+
+    inputs.armFeedforward = armFeedforward.calculate(inputs.armPosition, inputs.armVelocity);
+    inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorVelocity);
   }
 
   public void Stop() {
@@ -122,5 +116,10 @@ public class Armavator extends SubsystemBase {
 
   public double getElevatorVelocity() {
     return inputs.elevatorVelocity;
+  }
+
+  public void setPose(ArmavatorPose target) {
+    inputs.armTargetPosition = target.armAngle.getRadians();
+    inputs.elevatorTargetPosition = target.elevatorDistance;
   }
 }
