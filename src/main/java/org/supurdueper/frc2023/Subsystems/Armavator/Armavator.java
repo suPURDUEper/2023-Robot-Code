@@ -5,7 +5,7 @@
 package org.supurdueper.frc2023.subsystems.armavator;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Armavator extends SubsystemBase {
 
-  public static final double ELEVATOR_MAX_VELOCITY = .75;
+  public static final double ELEVATOR_MAX_VELOCITY = 1;
   public static final double ELEVATOR_MAX_ACCELERATION = 10.0;
 
   private final ArmavatorMotorIO io;
@@ -31,22 +31,27 @@ public class Armavator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/Motor/Kd");
   private static final LoggedTunableNumber elevatorKs =
       new LoggedTunableNumber("Elevator/Motor/Ks");
+  private static final LoggedTunableNumber elevatorKg =
+      new LoggedTunableNumber("Elevator/Motor/Kg");
   private static final LoggedTunableNumber elevatorKv =
       new LoggedTunableNumber("Elevator/Motor/Kv");
   private static final LoggedTunableNumber elevatorKa =
       new LoggedTunableNumber("Elevator/Motor/Ka");
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
-  private SimpleMotorFeedforward elevatorFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+  private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0, 0.0, 0.0);
+  private boolean runArmPID = false;
+  private boolean runElevatorPID = false;
 
   static {
     armKp.initDefault(0.1);
     armKd.initDefault(0.0);
     armKs.initDefault(0.12349);
     armKv.initDefault(0.13477);
-    elevatorKp.initDefault(19.207);
-    elevatorKd.initDefault(0.95191);
+    elevatorKp.initDefault(10.573);
+    elevatorKd.initDefault(0.021143);
     elevatorKs.initDefault(0.17061);
+    elevatorKg.initDefault(0.17061);
     elevatorKv.initDefault(10.293);
     elevatorKa.initDefault(0.2752);
   }
@@ -109,14 +114,21 @@ public class Armavator extends SubsystemBase {
       armFeedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
     }
     if (elevatorKs.hasChanged(hashCode())
+        || elevatorKg.hasChanged(hashCode())
         || elevatorKv.hasChanged(hashCode())
         || elevatorKa.hasChanged(hashCode())) {
       elevatorFeedforward =
-          new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get(), elevatorKa.get());
+          new ElevatorFeedforward(
+              elevatorKs.get(), elevatorKg.get(), elevatorKv.get(), elevatorKa.get());
     }
 
-    inputs.armFeedforward = armFeedforward.calculate(inputs.armPositionRad, inputs.armVelocityRadS);
-    inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorVelocityMS);
+    inputs.armFeedforward =
+        armFeedforward.calculate(inputs.armTargetPositionRad, inputs.armTargetVelocityRadS);
+
+    inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorTargetVelocityMS);
+
+    inputs.isArmRunningPID = runArmPID;
+    inputs.isElevatorRunningPID = runElevatorPID;
     io.updateArmavatorInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
@@ -143,12 +155,21 @@ public class Armavator extends SubsystemBase {
   }
 
   public void setTargetPose(ArmavatorPose target) {
+    runElevatorPID = true;
+    runArmPID = true;
     inputs.armTargetPositionRad = target.armAngle.getRadians();
+    inputs.armTargetVelocityRadS = target.armVelocity();
     inputs.elevatorTargetPositionM = target.elevatorDistance;
+    inputs.elevatorTargetVelocityMS = target.elevatorVelocity;
   }
 
   public ArmavatorPose getCurrentPose() {
     return new ArmavatorPose(
         getArmPosition(), getElevatorPosition(), getArmVelocity(), getElevatorVelocity());
+  }
+
+  public void setElevatorVoltage(double voltage) {
+    runElevatorPID = false;
+    io.setElevatorVoltage(voltage);
   }
 }

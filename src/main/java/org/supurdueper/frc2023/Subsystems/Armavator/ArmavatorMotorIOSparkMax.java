@@ -23,8 +23,9 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final SparkMaxAbsoluteEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
-  private final double sprocketPitchDiameterIn = 1.751;
+  private final double elevatorSprocketPitchDiameterIn = 1.751;
   private final double armEncoderToArmGearRatio = 22.0 / 34.0;
+  private final double elevatorGearRatio = 12.0 / 1.0;
 
   public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
@@ -71,6 +72,10 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
     armSparkMax.setCANTimeout(0);
     armFollowSparkMax.setCANTimeout(0);
 
+    // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
+    elevatorEncoder.setPositionConversionFactor(1);
+    armEncoder.setPositionConversionFactor(1);
+
     if (SparkMaxBurnManager.shouldBurn()) {
       elevatorSparkMax.burnFlash();
       elevatorFollowSparkMax.burnFlash();
@@ -95,11 +100,15 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
 
     // Elevator state variables for logging
     inputs.elevatorPositionM =
-        Units.rotationsToRadians(elevatorEncoder.getPosition())
-            * Units.inchesToMeters(sprocketPitchDiameterIn);
+        elevatorEncoder.getPosition()
+            / elevatorGearRatio
+            * Math.PI
+            * Units.inchesToMeters(elevatorSprocketPitchDiameterIn);
     inputs.elevatorVelocityMS =
-        Units.rotationsPerMinuteToRadiansPerSecond(elevatorEncoder.getVelocity())
-            * Units.inchesToMeters(sprocketPitchDiameterIn);
+        (elevatorEncoder.getVelocity() / 60)
+            / elevatorGearRatio
+            * Math.PI
+            * Units.inchesToMeters(elevatorSprocketPitchDiameterIn);
     inputs.elevatorAppliedVolts =
         elevatorSparkMax.getAppliedOutput() * elevatorSparkMax.getBusVoltage();
     inputs.elevatorCurrentAmps =
@@ -111,11 +120,20 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
           elevatorSparkMax.getMotorTemperature(), elevatorFollowSparkMax.getMotorTemperature()
         };
 
-    // PID is always running, update the goal position every loop
-    elevatorPIDController.setReference(
-        inputs.elevatorTargetPositionM, ControlType.kPosition, 0, inputs.elevatorFeedforward);
-    armPIDController.setReference(
-        inputs.armTargetPositionRad, ControlType.kPosition, 0, inputs.armFeedforward);
+    if (inputs.isElevatorRunningPID) {
+
+      double targetMotorRotations =
+          Units.metersToInches(inputs.elevatorTargetPositionM)
+              / (Math.PI * elevatorSprocketPitchDiameterIn)
+              * elevatorGearRatio;
+      elevatorPIDController.setReference(
+          targetMotorRotations, ControlType.kPosition, 0, inputs.elevatorFeedforward);
+    }
+
+    if (inputs.isArmRunningPID) {
+      armPIDController.setReference(
+          inputs.armTargetPositionRad, ControlType.kPosition, 0, inputs.armFeedforward);
+    }
   }
 
   @Override

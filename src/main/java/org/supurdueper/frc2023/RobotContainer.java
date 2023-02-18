@@ -132,6 +132,7 @@ public class RobotContainer {
 
     driver.a().whileTrue(new ElevatorGoToPose(armavator, ArmavatorPreset.halfway.getPose()));
     // *** OPERATOR CONTROLS ***
+    // armavator.setDefaultCommand(new MoveElevatorWithJoystick(armavator, operator::getRightY));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */
