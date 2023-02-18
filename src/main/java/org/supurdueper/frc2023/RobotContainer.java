@@ -16,8 +16,10 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
+import org.supurdueper.frc2023.commands.armavator.ElevatorGoToPose;
 import org.supurdueper.frc2023.subsystems.armavator.Armavator;
 import org.supurdueper.frc2023.subsystems.armavator.ArmavatorMotorIOSparkMax;
+import org.supurdueper.frc2023.subsystems.armavator.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;
 import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
@@ -127,7 +129,8 @@ public class RobotContainer {
             () -> {
               return false;
             }));
-
+    
+    driver.a().whileTrue(new ElevatorGoToPose(armavator, ArmavatorPreset.halfway));
     // *** OPERATOR CONTROLS ***
   }
 

@@ -75,7 +75,8 @@ public class Armavator extends SubsystemBase {
       midCone(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5, 0.0, 0.0)),
       midCube(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5, 0.0, 0.0)),
       highCone(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5, 0.0, 0.0)),
-      highCube(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5, 0.0, 0.0));
+      highCube(new ArmavatorPose(new Rotation2d(Math.PI / 4), 0.5, 0.0, 0.0)),
+      halfway(new ArmavatorPose(new Rotation2d(0), 0.3, 0, 0));
 
       private ArmavatorPose pose;
 
