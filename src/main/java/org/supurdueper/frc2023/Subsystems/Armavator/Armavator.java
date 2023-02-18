@@ -21,6 +21,7 @@ public class Armavator extends SubsystemBase {
   private static final LoggedTunableNumber armKs = new LoggedTunableNumber("Arm/Motor/Ks");
   private static final LoggedTunableNumber armKg = new LoggedTunableNumber("Arm/Motor/Kg");
   private static final LoggedTunableNumber armKv = new LoggedTunableNumber("Arm/Motor/Kv");
+
   private static final LoggedTunableNumber elevatorKp =
       new LoggedTunableNumber("Elevator/Motor/Kp");
   private static final LoggedTunableNumber elevatorKd =
@@ -29,6 +30,8 @@ public class Armavator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/Motor/Ks");
   private static final LoggedTunableNumber elevatorKv =
       new LoggedTunableNumber("Elevator/Motor/Kv");
+  private static final LoggedTunableNumber elevatorKa =
+      new LoggedTunableNumber("Elevator/Motor/Ka");
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
   private SimpleMotorFeedforward elevatorFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
@@ -38,10 +41,11 @@ public class Armavator extends SubsystemBase {
     armKd.initDefault(0.0);
     armKs.initDefault(0.12349);
     armKv.initDefault(0.13477);
-    elevatorKp.initDefault(0.1);
-    elevatorKd.initDefault(0.0);
-    elevatorKs.initDefault(0.12349);
-    elevatorKv.initDefault(0.13477);
+    elevatorKp.initDefault(19.207);
+    elevatorKd.initDefault(0.95191);
+    elevatorKs.initDefault(0.17061);
+    elevatorKv.initDefault(10.293);
+    elevatorKa.initDefault(0.2752);
   }
 
   boolean isBrakeMode = true;
@@ -100,8 +104,11 @@ public class Armavator extends SubsystemBase {
         || armKg.hasChanged(hashCode())) {
       armFeedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
     }
-    if (elevatorKs.hasChanged(hashCode()) || elevatorKv.hasChanged(hashCode())) {
-      elevatorFeedforward = new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get());
+    if (elevatorKs.hasChanged(hashCode())
+        || elevatorKv.hasChanged(hashCode())
+        || elevatorKa.hasChanged(hashCode())) {
+      elevatorFeedforward =
+          new SimpleMotorFeedforward(elevatorKs.get(), elevatorKv.get(), elevatorKa.get());
     }
 
     inputs.armFeedforward = armFeedforward.calculate(inputs.armPositionRad, inputs.armVelocityRadS);
