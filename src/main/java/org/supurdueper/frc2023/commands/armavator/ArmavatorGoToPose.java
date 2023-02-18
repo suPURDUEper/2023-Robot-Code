@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import org.supurdueper.frc2023.subsystems.armavator.Armavator;
 import org.supurdueper.frc2023.subsystems.armavator.Armavator.ArmavatorPose;
 import org.supurdueper.frc2023.subsystems.armavator.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -35,12 +34,16 @@ public class ArmavatorGoToPose extends CommandBase {
 
   @Override
   public void initialize() {
-   armProfile = new TrapezoidProfile(constraints,
-    target.getPose().getArmProfileState(),
-    armavator.getCurrentPose().getArmProfileState());
-   elevatorProfile = new TrapezoidProfile(constraints,
-    target.getPose().getElevatorProfileState(),
-    armavator.getCurrentPose().getElevatorProfileState());
+    armProfile =
+        new TrapezoidProfile(
+            constraints,
+            target.getPose().getArmProfileState(),
+            armavator.getCurrentPose().getArmProfileState());
+    elevatorProfile =
+        new TrapezoidProfile(
+            constraints,
+            target.getPose().getElevatorProfileState(),
+            armavator.getCurrentPose().getElevatorProfileState());
 
     startTime = RobotController.getFPGATime();
   }
@@ -52,11 +55,12 @@ public class ArmavatorGoToPose extends CommandBase {
     double elapsedTimeSeconds = elapsedTime / 1000000.0;
     TrapezoidProfile.State armState = armProfile.calculate(elapsedTimeSeconds);
     TrapezoidProfile.State elevatorState = elevatorProfile.calculate(elapsedTimeSeconds);
-    ArmavatorPose armavatorPose = 
-    new ArmavatorPose(Rotation2d.fromRadians(armState.position),
-     elevatorState.position,
-      armState.velocity,
-       elevatorState.velocity);
+    ArmavatorPose armavatorPose =
+        new ArmavatorPose(
+            Rotation2d.fromRadians(armState.position),
+            elevatorState.position,
+            armState.velocity,
+            elevatorState.velocity);
     armavator.setTargetPose(armavatorPose);
   }
 
@@ -69,6 +73,7 @@ public class ArmavatorGoToPose extends CommandBase {
   public boolean isFinished() {
     long elapsedTime = RobotController.getFPGATime() - startTime;
     double elapsedTimeSeconds = elapsedTime / 1000000.0;
-    return armProfile.isFinished(elapsedTimeSeconds) && elevatorProfile.isFinished(elapsedTimeSeconds);
+    return armProfile.isFinished(elapsedTimeSeconds)
+        && elevatorProfile.isFinished(elapsedTimeSeconds);
   }
 }
