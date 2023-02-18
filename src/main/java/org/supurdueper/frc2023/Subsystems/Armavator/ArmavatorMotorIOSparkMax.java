@@ -52,7 +52,6 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
     armEncoder.setInverted(false); // TODO: Need to check this
     armEncoder.setZeroOffset(Units.radiansToRotations(0)); // TODO: Change this
     elevatorEncoder = elevatorSparkMax.getEncoder();
-    elevatorEncoder.setInverted(false); // TODO: Need to check this
     elevatorEncoder.setPosition(0);
 
     // Setup PID controllers

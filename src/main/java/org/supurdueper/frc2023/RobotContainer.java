@@ -130,7 +130,7 @@ public class RobotContainer {
               return false;
             }));
 
-    driver.a().whileTrue(new ElevatorGoToPose(armavator, ArmavatorPreset.halfway));
+    driver.a().whileTrue(new ElevatorGoToPose(armavator, ArmavatorPreset.halfway.getPose()));
     // *** OPERATOR CONTROLS ***
   }
 
