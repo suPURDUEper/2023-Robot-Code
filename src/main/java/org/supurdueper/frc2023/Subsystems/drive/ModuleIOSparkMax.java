@@ -15,7 +15,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final CANSparkMax driveSparkMax;
   private final CANSparkMax turnSparkMax;
 
-  //  private final SparkMaxDerivedVelocityController driveDerivedVelocityController;
+  private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnRelativeEncoder;
   private final AnalogInput turnAbsoluteEncoder;
 
@@ -75,7 +75,10 @@ public class ModuleIOSparkMax implements ModuleIO {
     turnSparkMax.enableVoltageCompensation(12.0);
 
     driveSparkMax.getEncoder().setPosition(0.0);
-    //    driveDerivedVelocityController = new SparkMaxDerivedVelocityController(driveSparkMax);
+    driveEncoder = driveSparkMax.getEncoder();
+    driveEncoder.setMeasurementPeriod(10);
+    driveEncoder.setAverageDepth(2);
+
     turnRelativeEncoder = turnSparkMax.getEncoder();
     turnRelativeEncoder.setPosition(0.0);
 
@@ -90,13 +93,11 @@ public class ModuleIOSparkMax implements ModuleIO {
 
   public void updateInputs(ModuleIOInputs inputs) {
     inputs.drivePositionRad =
-        Units.rotationsToRadians(driveSparkMax.getEncoder().getPosition())
-            / driveAfterEncoderReduction;
+        Units.rotationsToRadians(driveEncoder.getPosition()) / driveAfterEncoderReduction;
     inputs.driveVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(driveSparkMax.getEncoder().getVelocity())
+        Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity())
             / driveAfterEncoderReduction;
-    inputs.driveAppliedVolts =
-        driveSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
+    inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
     inputs.driveTempCelcius = new double[] {driveSparkMax.getMotorTemperature()};
 
@@ -110,7 +111,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.turnVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
             / turnAfterEncoderReduction;
-    inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
+    inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
     inputs.turnTempCelcius = new double[] {turnSparkMax.getMotorTemperature()};
   }

@@ -5,8 +5,11 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
 public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final CANSparkMax armSparkMax;
@@ -17,10 +20,11 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final SparkMaxPIDController armPIDController;
   private final SparkMaxPIDController elevatorPIDController;
 
-  private final RelativeEncoder armEncoder;
+  private final SparkMaxAbsoluteEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
-  private final double sprocketPitch = 1.75;
+  private final double sprocketPitchDiameterIn = 1.751;
+  private final double armEncoderToArmGearRatio = 22.0 / 34.0;
 
   public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
@@ -28,39 +32,91 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
     armSparkMax = new CANSparkMax(11, MotorType.kBrushless);
     armFollowSparkMax = new CANSparkMax(12, MotorType.kBrushless);
 
-    elevatorFollowSparkMax.follow(elevatorSparkMax);
-    armFollowSparkMax.follow(armSparkMax);
+    if (SparkMaxBurnManager.shouldBurn()) {
+      elevatorSparkMax.restoreFactoryDefaults();
+      elevatorFollowSparkMax.restoreFactoryDefaults();
+      armSparkMax.restoreFactoryDefaults();
+      armFollowSparkMax.restoreFactoryDefaults();
+    }
 
+    // Set followers
+    elevatorFollowSparkMax.follow(elevatorSparkMax, true);
+    armFollowSparkMax.follow(armSparkMax, true);
+
+    // Set brake mode
+    setArmBrakeMode(true);
+    setElevatorBrakeMode(true);
+
+    // Get and reset encoder objects
+    armEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    armEncoder.setInverted(false); // TODO: Need to check this
+    armEncoder.setZeroOffset(Units.radiansToRotations(0)); // TODO: Change this
+    elevatorEncoder = elevatorSparkMax.getEncoder();
+    elevatorEncoder.setInverted(false); // TODO: Need to check this
+    elevatorEncoder.setPosition(0);
+
+    // Setup PID controllers
     elevatorPIDController = elevatorSparkMax.getPIDController();
     armPIDController = armSparkMax.getPIDController();
+    armPIDController.setFeedbackDevice(armEncoder);
 
-    armEncoder = armSparkMax.getEncoder();
-    armEncoder.setPosition(0);
-    elevatorEncoder = elevatorSparkMax.getEncoder();
-    elevatorEncoder.setPosition(0);
+    // Setup power parameters
+    elevatorSparkMax.setSmartCurrentLimit(40);
+    elevatorFollowSparkMax.setSmartCurrentLimit(40);
+    armSparkMax.enableVoltageCompensation(12.0);
+    armFollowSparkMax.enableVoltageCompensation(12.0);
+
+    // Setup CAN parameters
+    elevatorSparkMax.setCANTimeout(0);
+    elevatorFollowSparkMax.setCANTimeout(0);
+    armSparkMax.setCANTimeout(0);
+    armFollowSparkMax.setCANTimeout(0);
+
+    if (SparkMaxBurnManager.shouldBurn()) {
+      elevatorSparkMax.burnFlash();
+      elevatorFollowSparkMax.burnFlash();
+      armSparkMax.burnFlash();
+      armFollowSparkMax.burnFlash();
+    }
   }
 
-  public void updateInputs(ArmavatorMotorIOInputs inputs) {
-    inputs.armPosition = armSparkMax.getEncoder().getPosition();
-    inputs.elevatorPosition = elevatorSparkMax.getEncoder().getPosition();
+  @Override
+  public void updateArmavatorInputs(ArmavatorMotorIOInputs inputs) {
+    // Arm state variables for logging
+    inputs.armPositionRad =
+        Units.rotationsToRadians(armEncoder.getPosition() * armEncoderToArmGearRatio);
+    inputs.armVelocityRadS =
+        Units.rotationsPerMinuteToRadiansPerSecond(
+            armEncoder.getVelocity() * armEncoderToArmGearRatio);
+    inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * armSparkMax.getBusVoltage();
+    inputs.armCurrentAmps =
+        new double[] {armSparkMax.getOutputCurrent(), armFollowSparkMax.getOutputCurrent()};
+    inputs.armTemp =
+        new double[] {armSparkMax.getMotorTemperature(), armFollowSparkMax.getMotorTemperature()};
 
-    inputs.armVelocity = armSparkMax.getEncoder().getVelocity();
-    inputs.elevatorVelocity = elevatorSparkMax.getEncoder().getVelocity() * sprocketPitch;
-
-    inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
+    // Elevator state variables for logging
+    inputs.elevatorPositionM =
+        Units.rotationsToRadians(elevatorEncoder.getPosition())
+            * Units.inchesToMeters(sprocketPitchDiameterIn);
+    inputs.elevatorVelocityMS =
+        Units.rotationsPerMinuteToRadiansPerSecond(elevatorEncoder.getVelocity())
+            * Units.inchesToMeters(sprocketPitchDiameterIn);
     inputs.elevatorAppliedVolts =
-        elevatorSparkMax.getAppliedOutput() * RobotController.getBatteryVoltage();
+        elevatorSparkMax.getAppliedOutput() * elevatorSparkMax.getBusVoltage();
+    inputs.elevatorCurrentAmps =
+        new double[] {
+          elevatorSparkMax.getOutputCurrent(), elevatorFollowSparkMax.getOutputCurrent()
+        };
+    inputs.elevatorTemp =
+        new double[] {
+          elevatorSparkMax.getMotorTemperature(), elevatorFollowSparkMax.getMotorTemperature()
+        };
 
-    inputs.armCurrentAmps = new double[] {armSparkMax.getOutputCurrent()};
-    inputs.elevatorCurrentAmps = new double[] {elevatorSparkMax.getOutputCurrent()};
-
-    inputs.armTemp = new double[] {armSparkMax.getMotorTemperature()};
-    inputs.elevatorTemp = new double[] {elevatorSparkMax.getMotorTemperature()};
-
+    // PID is always running, update the goal position every loop
     elevatorPIDController.setReference(
-        inputs.elevatorTargetPosition, ControlType.kPosition, 0, inputs.elevatorFeedforward);
+        inputs.elevatorTargetPositionM, ControlType.kPosition, 0, inputs.elevatorFeedforward);
     armPIDController.setReference(
-        inputs.armTargetPosition, ControlType.kPosition, 0, inputs.armFeedforward);
+        inputs.armTargetPositionRad, ControlType.kPosition, 0, inputs.armFeedforward);
   }
 
   @Override
@@ -76,6 +132,13 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   @Override
   public void setArmBrakeMode(boolean enable) {
     armSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    armFollowSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+  }
+
+  @Override
+  public void setElevatorBrakeMode(boolean enable) {
+    elevatorSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    elevatorFollowSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }
 
   @Override

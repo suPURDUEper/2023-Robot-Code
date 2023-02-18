@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.supurdueper.frc2023.subsystems.objectivetracker;
+package org.littletonrobotics.frc2023.objectivetracker;
 
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;

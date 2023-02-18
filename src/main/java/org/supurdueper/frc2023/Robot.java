@@ -179,7 +179,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    robotContainer.updateOI();
+    robotContainer.bindControls();
   }
 
   @Override
