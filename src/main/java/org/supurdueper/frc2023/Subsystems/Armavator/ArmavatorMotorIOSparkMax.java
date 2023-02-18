@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
@@ -18,10 +20,11 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   private final SparkMaxPIDController armPIDController;
   private final SparkMaxPIDController elevatorPIDController;
 
-  private final RelativeEncoder armEncoder;
+  private final SparkMaxAbsoluteEncoder armEncoder;
   private final RelativeEncoder elevatorEncoder;
 
   private final double sprocketPitchDiameterIn = 1.751;
+  private final double armEncoderToArmGearRatio = 22.0 / 34.0;
 
   public ArmavatorMotorIOSparkMax() {
     elevatorSparkMax = new CANSparkMax(9, MotorType.kBrushless);
@@ -42,8 +45,8 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
     elevatorPIDController = elevatorSparkMax.getPIDController();
     armPIDController = armSparkMax.getPIDController();
 
-    armEncoder = armSparkMax.getEncoder();
-    armEncoder.setPosition(0);
+    armEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    armEncoder.setZeroOffset(Units.radiansToRotations(0)); // TODO: Change this
     elevatorEncoder = elevatorSparkMax.getEncoder();
     elevatorEncoder.setPosition(0);
 
@@ -66,14 +69,17 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   }
 
   public void updateInputs(ArmavatorMotorIOInputs inputs) {
-    inputs.armPositionRad = Units.rotationsToRadians(armSparkMax.getEncoder().getPosition());
+    inputs.armPositionRad =
+        Units.rotationsToRadians(armEncoder.getPosition() * armEncoderToArmGearRatio);
     inputs.elevatorPositionM =
-        Units.rotationsToRadians(elevatorSparkMax.getEncoder().getPosition())
+        Units.rotationsToRadians(elevatorEncoder.getPosition())
             * Units.inchesToMeters(sprocketPitchDiameterIn);
 
-    inputs.armVelocityRadS = armSparkMax.getEncoder().getVelocity();
+    inputs.armVelocityRadS =
+        Units.rotationsPerMinuteToRadiansPerSecond(
+            armEncoder.getVelocity() * armEncoderToArmGearRatio);
     inputs.elevatorVelocityMS =
-        Units.rotationsPerMinuteToRadiansPerSecond(elevatorSparkMax.getEncoder().getVelocity())
+        Units.rotationsPerMinuteToRadiansPerSecond(elevatorEncoder.getVelocity())
             * Units.inchesToMeters(sprocketPitchDiameterIn);
 
     inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * armSparkMax.getBusVoltage();
