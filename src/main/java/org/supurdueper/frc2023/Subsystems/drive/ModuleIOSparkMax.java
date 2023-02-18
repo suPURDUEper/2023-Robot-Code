@@ -15,11 +15,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final CANSparkMax driveSparkMax;
   private final CANSparkMax turnSparkMax;
 
-<<<<<<< HEAD
-  //  private final SparkMaxDerivedVelocityController driveDerivedVelocityController;
-=======
   private final RelativeEncoder driveEncoder;
->>>>>>> main
   private final RelativeEncoder turnRelativeEncoder;
   private final AnalogInput turnAbsoluteEncoder;
 
@@ -79,14 +75,10 @@ public class ModuleIOSparkMax implements ModuleIO {
     turnSparkMax.enableVoltageCompensation(12.0);
 
     driveSparkMax.getEncoder().setPosition(0.0);
-<<<<<<< HEAD
-    //    driveDerivedVelocityController = new SparkMaxDerivedVelocityController(driveSparkMax);
-=======
     driveEncoder = driveSparkMax.getEncoder();
     driveEncoder.setMeasurementPeriod(10);
     driveEncoder.setAverageDepth(2);
 
->>>>>>> main
     turnRelativeEncoder = turnSparkMax.getEncoder();
     turnRelativeEncoder.setPosition(0.0);
 
