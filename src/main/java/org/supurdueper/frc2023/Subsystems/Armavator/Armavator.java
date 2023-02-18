@@ -14,6 +14,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class Armavator extends SubsystemBase {
 
+  public static final double ELEVATOR_MAX_VELOCITY = .75;
+  public static final double ELEVATOR_MAX_ACCELERATION = 10.0;
+
   private final ArmavatorMotorIO io;
   private final ArmavatorMotorIOInputsAutoLogged inputs = new ArmavatorMotorIOInputsAutoLogged();
   private static final LoggedTunableNumber armKp = new LoggedTunableNumber("Arm/Motor/Kp");
