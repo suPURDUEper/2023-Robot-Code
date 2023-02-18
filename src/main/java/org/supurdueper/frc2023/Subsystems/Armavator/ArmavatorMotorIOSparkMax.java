@@ -39,22 +39,34 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
       armFollowSparkMax.restoreFactoryDefaults();
     }
 
-    elevatorFollowSparkMax.follow(elevatorSparkMax);
-    armFollowSparkMax.follow(armSparkMax);
+    // Set followers
+    elevatorFollowSparkMax.follow(elevatorSparkMax, true);
+    armFollowSparkMax.follow(armSparkMax, true);
 
-    elevatorPIDController = elevatorSparkMax.getPIDController();
-    armPIDController = armSparkMax.getPIDController();
+    // Set brake mode
+    setArmBrakeMode(true);
+    setElevatorBrakeMode(true);
 
+    // Get and reset encoder objects
     armEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    armEncoder.setInverted(false); // TODO: Need to check this
     armEncoder.setZeroOffset(Units.radiansToRotations(0)); // TODO: Change this
     elevatorEncoder = elevatorSparkMax.getEncoder();
+    elevatorEncoder.setInverted(false); // TODO: Need to check this
     elevatorEncoder.setPosition(0);
 
+    // Setup PID controllers
+    elevatorPIDController = elevatorSparkMax.getPIDController();
+    armPIDController = armSparkMax.getPIDController();
+    armPIDController.setFeedbackDevice(armEncoder);
+
+    // Setup power parameters
     elevatorSparkMax.setSmartCurrentLimit(40);
     elevatorFollowSparkMax.setSmartCurrentLimit(40);
     armSparkMax.enableVoltageCompensation(12.0);
     armFollowSparkMax.enableVoltageCompensation(12.0);
 
+    // Setup CAN parameters
     elevatorSparkMax.setCANTimeout(0);
     elevatorFollowSparkMax.setCANTimeout(0);
     armSparkMax.setCANTimeout(0);
@@ -68,38 +80,39 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
     }
   }
 
-  public void updateInputs(ArmavatorMotorIOInputs inputs) {
+  @Override
+  public void updateArmavatorInputs(ArmavatorMotorIOInputs inputs) {
+    // Arm state variables for logging
     inputs.armPositionRad =
         Units.rotationsToRadians(armEncoder.getPosition() * armEncoderToArmGearRatio);
-    inputs.elevatorPositionM =
-        Units.rotationsToRadians(elevatorEncoder.getPosition())
-            * Units.inchesToMeters(sprocketPitchDiameterIn);
-
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armEncoder.getVelocity() * armEncoderToArmGearRatio);
+    inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * armSparkMax.getBusVoltage();
+    inputs.armCurrentAmps =
+        new double[] {armSparkMax.getOutputCurrent(), armFollowSparkMax.getOutputCurrent()};
+    inputs.armTemp =
+        new double[] {armSparkMax.getMotorTemperature(), armFollowSparkMax.getMotorTemperature()};
+
+    // Elevator state variables for logging
+    inputs.elevatorPositionM =
+        Units.rotationsToRadians(elevatorEncoder.getPosition())
+            * Units.inchesToMeters(sprocketPitchDiameterIn);
     inputs.elevatorVelocityMS =
         Units.rotationsPerMinuteToRadiansPerSecond(elevatorEncoder.getVelocity())
             * Units.inchesToMeters(sprocketPitchDiameterIn);
-
-    inputs.armAppliedVolts = armSparkMax.getAppliedOutput() * armSparkMax.getBusVoltage();
     inputs.elevatorAppliedVolts =
         elevatorSparkMax.getAppliedOutput() * elevatorSparkMax.getBusVoltage();
-
-    inputs.armCurrentAmps =
-        new double[] {armSparkMax.getOutputCurrent(), armFollowSparkMax.getOutputCurrent()};
     inputs.elevatorCurrentAmps =
         new double[] {
           elevatorSparkMax.getOutputCurrent(), elevatorFollowSparkMax.getOutputCurrent()
         };
-
-    inputs.armTemp =
-        new double[] {armSparkMax.getMotorTemperature(), armFollowSparkMax.getMotorTemperature()};
     inputs.elevatorTemp =
         new double[] {
           elevatorSparkMax.getMotorTemperature(), elevatorFollowSparkMax.getMotorTemperature()
         };
 
+    // PID is always running, update the goal position every loop
     elevatorPIDController.setReference(
         inputs.elevatorTargetPositionM, ControlType.kPosition, 0, inputs.elevatorFeedforward);
     armPIDController.setReference(
@@ -119,6 +132,13 @@ public class ArmavatorMotorIOSparkMax implements ArmavatorMotorIO {
   @Override
   public void setArmBrakeMode(boolean enable) {
     armSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    armFollowSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+  }
+
+  @Override
+  public void setElevatorBrakeMode(boolean enable) {
+    elevatorSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    elevatorFollowSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
   }
 
   @Override
