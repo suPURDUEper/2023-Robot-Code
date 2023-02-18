@@ -123,8 +123,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         new DriveWithJoysticks(
             drive,
-            () -> driver.getLeftX(),
             () -> driver.getLeftY(),
+            () -> driver.getLeftX(),
             () -> driver.getRightY(),
             () -> {
               return false;
