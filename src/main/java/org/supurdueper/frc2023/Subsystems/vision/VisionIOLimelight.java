@@ -5,6 +5,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import org.supurdueper.frc2023.subsystems.vision.LimelightHelpers.Results;
 
 public class VisionIOLimelight implements VisionIO {
+    
+  public VisionIOLimelight() {
+    // Where is the limelight relative to the center of the robot?
+    LimelightHelpers.setCameraPose_RobotSpace("", 0, 0, 0, 0, 0, 0);
+  }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {

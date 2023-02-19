@@ -15,6 +15,7 @@ import java.util.function.BiConsumer;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.VirtualSubsystem;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -127,6 +128,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 99);
+    VirtualSubsystem.periodicAll();
     CommandScheduler.getInstance().run();
 
     // Check logging fault

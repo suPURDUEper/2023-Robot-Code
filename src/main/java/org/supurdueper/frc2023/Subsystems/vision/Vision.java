@@ -1,9 +1,9 @@
 package org.supurdueper.frc2023.subsystems.vision;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.frc2023.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class Vision extends SubsystemBase {
+public class Vision extends VirtualSubsystem {
 
   private VisionIO visionIO;
   private VisionIOInputsAutoLogged visionInputs;
