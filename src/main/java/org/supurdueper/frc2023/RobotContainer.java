@@ -19,6 +19,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.armavator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.armavator.MoveElevatorWithJoystick;
+import org.supurdueper.frc2023.commands.armavator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
@@ -140,6 +141,7 @@ public class RobotContainer {
     operator.b().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.4, 0)));
     operator.x().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.6, 0)));
     operator.y().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.0, 0)));
+    operator.start().onTrue(new ResetElevatorPosition(elevator));
     elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
   }
 

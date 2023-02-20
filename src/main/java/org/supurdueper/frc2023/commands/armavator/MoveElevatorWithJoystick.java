@@ -14,22 +14,22 @@ public class MoveElevatorWithJoystick extends CommandBase {
 
   Supplier<Double> joystickValue;
   Elevator elevator;
+  double elevatorKg;
 
   public MoveElevatorWithJoystick(Elevator elevator, Supplier<Double> joystickValue) {
     this.joystickValue = joystickValue;
     this.elevator = elevator;
     addRequirements(elevator);
+    this.elevatorKg = elevator.elevatorKg.get();
   }
 
   @Override
   public void execute() {
-    double filteredJoystickValue = MathUtil.applyDeadband(joystickValue.get(), 0.05);
+    double filteredJoystickValue = MathUtil.applyDeadband(joystickValue.get(), 0.02);
     // Not calling set votlage will let the PID loop keep running to hold the elevator in place
     // if the joystick isn't touched
     if (filteredJoystickValue != 0) {
-      // Add elevatorKg so it holds position
-      elevator.setVoltage(
-          joystickValue.get() * RobotController.getBatteryVoltage() + Elevator.elevatorKg.get());
+      elevator.setVoltage((filteredJoystickValue * RobotController.getBatteryVoltage()));
     }
   }
 }

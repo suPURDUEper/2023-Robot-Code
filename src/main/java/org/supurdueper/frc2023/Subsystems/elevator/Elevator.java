@@ -11,8 +11,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
 
-  private final ElevatorMotorIO io;
-  private final ElevatorMotorIOInputsAutoLogged inputs = new ElevatorMotorIOInputsAutoLogged();
+  public final ElevatorMotorIO io;
+  public final ElevatorMotorIOInputsAutoLogged inputs = new ElevatorMotorIOInputsAutoLogged();
 
   private static final LoggedTunableNumber elevatorKp =
       new LoggedTunableNumber("Elevator/Feedback/Kp");
@@ -26,21 +26,19 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/Feedforward/Kv");
   private static final LoggedTunableNumber elevatorKa =
       new LoggedTunableNumber("Elevator/Feedforward/Ka");
-  public static final LoggedTunableNumber elevatorMaxVelocity =
-      new LoggedTunableNumber("Elevator/maxVelocity");
-  public static final LoggedTunableNumber elevatorMaxAcceleration =
-      new LoggedTunableNumber("Elevator/maxAcceleration");
+  public static final double elevatorMaxVelocity = 1;
+  public static final double elevatorMaxAcceleration = 8;
   public static final double elevatorMaxTravelM = 0.6;
 
   private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0, 0.0, 0.0);
   private boolean runElevatorPID = false;
 
   static {
-    elevatorKp.initDefault(10.573);
-    elevatorKd.initDefault(0.021143);
+    elevatorKp.initDefault(0.1);
+    elevatorKd.initDefault(0);
     elevatorKs.initDefault(0.17061);
     elevatorKg.initDefault(0.17061);
-    elevatorKv.initDefault(10.293);
+    elevatorKv.initDefault(11);
     elevatorKa.initDefault(0.2752);
   }
 
@@ -67,7 +65,6 @@ public class Elevator extends SubsystemBase {
 
     inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorTargetVelocityMS);
     inputs.isElevatorRunningPID = runElevatorPID;
-
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
@@ -93,5 +90,9 @@ public class Elevator extends SubsystemBase {
   public void setVoltage(double voltage) {
     runElevatorPID = false;
     io.setVoltage(voltage);
+  }
+
+  public void resetEncoder() {
+    io.resetEncoder();
   }
 }

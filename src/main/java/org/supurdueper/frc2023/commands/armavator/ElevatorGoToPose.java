@@ -17,7 +17,7 @@ public class ElevatorGoToPose extends CommandBase {
   private long startTime;
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(
-          Elevator.elevatorMaxVelocity.get(), Elevator.elevatorMaxAcceleration.get());
+          Elevator.elevatorMaxVelocity, Elevator.elevatorMaxAcceleration);
   ;
 
   public ElevatorGoToPose(Elevator elevator, TrapezoidProfile.State target) {

@@ -24,4 +24,7 @@ public interface ElevatorMotorIO {
   public default void setBrakeMode(boolean enable) {}
   /* Set PID Gains for the elevator */
   public default void setPIDGains(double kP, double kI, double kD) {}
+  /*  */
+  public default void resetEncoder() {}
+  ;
 }

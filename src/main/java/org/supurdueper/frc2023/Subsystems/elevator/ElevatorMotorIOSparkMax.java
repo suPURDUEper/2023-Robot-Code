@@ -108,6 +108,11 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
     elevatorPIDController.setD(kD, 0);
   }
 
+  @Override
+  public void resetEncoder() {
+    elevatorEncoder.setPosition(0);
+  }
+
   private double elevatorRotationsToMeters(double elevatorRotations) {
     return elevatorRotations
         / elevatorGearRatio
