@@ -17,21 +17,24 @@ import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.armavator.ElevatorGoToPose;
-import org.supurdueper.frc2023.subsystems.armavator.Armavator;
-import org.supurdueper.frc2023.subsystems.armavator.Armavator.ArmavatorPose.ArmavatorPreset;
-import org.supurdueper.frc2023.subsystems.armavator.ArmavatorMotorIOSparkMax;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
+import org.supurdueper.frc2023.subsystems.arm.Arm;
+import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;
 import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIO;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIOSim;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
+import org.supurdueper.frc2023.subsystems.elevator.Elevator;
+import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 
 public class RobotContainer {
 
   // Subsystems
   private Drive drive;
-  private Armavator armavator;
+  private Elevator elevator;
+  private Arm arm;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -60,7 +63,8 @@ public class RobotContainer {
                   new ModuleIOSparkMax(1),
                   new ModuleIOSparkMax(2),
                   new ModuleIOSparkMax(3));
-          armavator = new Armavator(new ArmavatorMotorIOSparkMax());
+          elevator = new Elevator(new ElevatorMotorIOSparkMax());
+          arm = new Arm(new ArmMotorIOSparkMax());
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -130,7 +134,7 @@ public class RobotContainer {
               return false;
             }));
 
-    driver.a().whileTrue(new ElevatorGoToPose(armavator, ArmavatorPreset.halfway.getPose()));
+    driver.a().whileTrue(new ElevatorGoToPose(elevator, ArmavatorPreset.halfway.getPose()));
     // *** OPERATOR CONTROLS ***
     // armavator.setDefaultCommand(new MoveElevatorWithJoystick(armavator, operator::getRightY));
   }

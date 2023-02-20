@@ -4,15 +4,16 @@
 
 package org.supurdueper.frc2023.commands.armavator;
 
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
+import org.supurdueper.frc2023.subsystems.elevator.Elevator;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.supurdueper.frc2023.subsystems.armavator.Armavator;
-import org.supurdueper.frc2023.subsystems.armavator.Armavator.ArmavatorPose;
 
 public class ElevatorGoToPose extends CommandBase {
 
-  private final Armavator armavator;
+  private final Elevator elevator;
 
   private final ArmavatorPose target;
 
@@ -22,12 +23,12 @@ public class ElevatorGoToPose extends CommandBase {
 
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(
-          Armavator.ELEVATOR_MAX_VELOCITY, Armavator.ELEVATOR_MAX_ACCELERATION);
+          Elevator.ELEVATOR_MAX_VELOCITY, Elevator.ELEVATOR_MAX_ACCELERATION);
 
-  public ElevatorGoToPose(Armavator armavator, ArmavatorPose target) {
-    this.armavator = armavator;
+  public ElevatorGoToPose(Elevator elevator, ArmavatorPose target) {
+    this.elevator = elevator;
     this.target = target;
-    addRequirements(armavator);
+    addRequirements(elevator);
   }
 
   @Override
@@ -36,7 +37,7 @@ public class ElevatorGoToPose extends CommandBase {
         new TrapezoidProfile(
             constraints,
             target.getElevatorProfileState(),
-            armavator.getCurrentPose().getElevatorProfileState());
+            new TrapezoidProfile.State(elevator.getElevatorPosition(), elevator.getElevatorVelocity()));
 
     startTime = RobotController.getFPGATime();
   }
@@ -47,10 +48,7 @@ public class ElevatorGoToPose extends CommandBase {
     long elapsedTime = RobotController.getFPGATime() - startTime;
     double elapsedTimeSeconds = elapsedTime / 1000000.0;
     TrapezoidProfile.State elevatorState = elevatorProfile.calculate(elapsedTimeSeconds);
-    ArmavatorPose armavatorPose =
-        new ArmavatorPose(
-            armavator.getArmPosition(), elevatorState.position, 0, elevatorState.velocity);
-    armavator.setTargetPose(armavatorPose);
+    elevator.setTargetPose(elevatorState.position, elevatorState.velocity);
   }
 
   // Called once the command ends or is interrupted.

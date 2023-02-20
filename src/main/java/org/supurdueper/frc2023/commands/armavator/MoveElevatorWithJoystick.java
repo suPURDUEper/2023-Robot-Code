@@ -7,21 +7,22 @@ package org.supurdueper.frc2023.commands.armavator;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
-import org.supurdueper.frc2023.subsystems.armavator.Armavator;
+
+import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
 public class MoveElevatorWithJoystick extends CommandBase {
 
   Supplier<Double> joystickValue;
-  Armavator armavator;
+  Elevator elevator;
 
-  public MoveElevatorWithJoystick(Armavator armavator, Supplier<Double> joystickValue) {
+  public MoveElevatorWithJoystick(Elevator elevator, Supplier<Double> joystickValue) {
     this.joystickValue = joystickValue;
-    this.armavator = armavator;
-    addRequirements(armavator);
+    this.elevator = elevator;
+    addRequirements(elevator);
   }
 
   @Override
   public void execute() {
-    armavator.setElevatorVoltage(joystickValue.get() * RobotController.getBatteryVoltage());
+    elevator.setVoltage(joystickValue.get() * RobotController.getBatteryVoltage());
   }
 }
