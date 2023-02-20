@@ -3,6 +3,7 @@ package org.supurdueper.frc2023.subsystems.elevator;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -48,6 +49,15 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
     elevatorSparkMax.setCANTimeout(0);
     elevatorFollowSparkMax.setCANTimeout(0);
 
+    // Set soft limits
+    elevatorSparkMax.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    elevatorSparkMax.setSoftLimit(
+        SoftLimitDirection.kForward,
+        (float) elevatorMetersToRotations(Elevator.elevatorMaxTravelM));
+    elevatorSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    elevatorSparkMax.enableSoftLimit(
+        SoftLimitDirection.kReverse, false); // Need to finish homing routine first
+
     // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
     elevatorEncoder.setPositionConversionFactor(1);
 
@@ -60,16 +70,8 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
   @Override
   public void updateInputs(ElevatorMotorIOInputs inputs) {
     // Elevator state variables for logging
-    inputs.elevatorPositionM =
-        elevatorEncoder.getPosition()
-            / elevatorGearRatio
-            * Math.PI
-            * Units.inchesToMeters(elevatorSprocketPitchDiameterIn);
-    inputs.elevatorVelocityMS =
-        (elevatorEncoder.getVelocity() / 60)
-            / elevatorGearRatio
-            * Math.PI
-            * Units.inchesToMeters(elevatorSprocketPitchDiameterIn);
+    inputs.elevatorPositionM = elevatorRotationsToMeters(elevatorEncoder.getPosition());
+    inputs.elevatorVelocityMS = elevatorRotationsToMeters(elevatorEncoder.getVelocity() / 60);
     inputs.elevatorAppliedVolts =
         elevatorSparkMax.getAppliedOutput() * elevatorSparkMax.getBusVoltage();
     inputs.elevatorCurrentAmps =
@@ -82,11 +84,7 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
         };
 
     if (inputs.isElevatorRunningPID) {
-
-      double targetMotorRotations =
-          Units.metersToInches(inputs.elevatorTargetPositionM)
-              / (Math.PI * elevatorSprocketPitchDiameterIn)
-              * elevatorGearRatio;
+      double targetMotorRotations = elevatorMetersToRotations(inputs.elevatorTargetPositionM);
       elevatorPIDController.setReference(
           targetMotorRotations, ControlType.kPosition, 0, inputs.elevatorFeedforward);
     }
@@ -108,5 +106,18 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
     elevatorPIDController.setP(kP, 0);
     elevatorPIDController.setI(kI, 0);
     elevatorPIDController.setD(kD, 0);
+  }
+
+  private double elevatorRotationsToMeters(double elevatorRotations) {
+    return elevatorRotations
+        / elevatorGearRatio
+        * Math.PI
+        * Units.inchesToMeters(elevatorSprocketPitchDiameterIn);
+  }
+
+  private double elevatorMetersToRotations(double elevatorMeters) {
+    return Units.metersToInches(elevatorMeters)
+        / (Math.PI * elevatorSprocketPitchDiameterIn)
+        * elevatorGearRatio;
   }
 }

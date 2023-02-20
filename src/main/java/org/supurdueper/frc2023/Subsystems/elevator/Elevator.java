@@ -30,6 +30,7 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/maxVelocity");
   public static final LoggedTunableNumber elevatorMaxAcceleration =
       new LoggedTunableNumber("Elevator/maxAcceleration");
+  public static final double elevatorMaxTravelM = 0.6;
 
   private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0, 0.0, 0.0);
   private boolean runElevatorPID = false;
