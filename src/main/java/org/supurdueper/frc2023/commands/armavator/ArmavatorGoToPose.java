@@ -25,7 +25,7 @@ public class ArmavatorGoToPose extends CommandBase {
 
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(
-          Elevator.ELEVATOR_MAX_VELOCITY, Elevator.ELEVATOR_MAX_ACCELERATION);
+          Elevator.elevatorMaxVelocity.get(), Elevator.elevatorMaxAcceleration.get());
 
   public ArmavatorGoToPose(Elevator elevator, Arm arm, ArmavatorPose target) {
     this.elevator = elevator;

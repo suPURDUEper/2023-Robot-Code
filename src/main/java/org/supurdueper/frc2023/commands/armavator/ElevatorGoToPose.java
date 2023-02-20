@@ -12,16 +12,13 @@ import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 public class ElevatorGoToPose extends CommandBase {
 
   private final Elevator elevator;
-
   private final TrapezoidProfile.State target;
-
   private TrapezoidProfile elevatorProfile;
-
   private long startTime;
-
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(
-          Elevator.ELEVATOR_MAX_VELOCITY, Elevator.ELEVATOR_MAX_ACCELERATION);
+          Elevator.elevatorMaxVelocity.get(), Elevator.elevatorMaxAcceleration.get());
+  ;
 
   public ElevatorGoToPose(Elevator elevator, TrapezoidProfile.State target) {
     this.elevator = elevator;

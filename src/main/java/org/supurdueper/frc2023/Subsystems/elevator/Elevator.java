@@ -11,24 +11,25 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
 
-  public static final double ELEVATOR_MAX_VELOCITY = 1;
-  public static final double ELEVATOR_MAX_ACCELERATION = 10.0;
-
   private final ElevatorMotorIO io;
   private final ElevatorMotorIOInputsAutoLogged inputs = new ElevatorMotorIOInputsAutoLogged();
 
   private static final LoggedTunableNumber elevatorKp =
-      new LoggedTunableNumber("Elevator/Motor/Kp");
+      new LoggedTunableNumber("Elevator/Feedback/Kp");
   private static final LoggedTunableNumber elevatorKd =
-      new LoggedTunableNumber("Elevator/Motor/Kd");
+      new LoggedTunableNumber("Elevator/Feedback/Kd");
   private static final LoggedTunableNumber elevatorKs =
-      new LoggedTunableNumber("Elevator/Motor/Ks");
+      new LoggedTunableNumber("Elevator/Feedforward/Ks");
   private static final LoggedTunableNumber elevatorKg =
-      new LoggedTunableNumber("Elevator/Motor/Kg");
+      new LoggedTunableNumber("Elevator/Feedforward/Kg");
   private static final LoggedTunableNumber elevatorKv =
-      new LoggedTunableNumber("Elevator/Motor/Kv");
+      new LoggedTunableNumber("Elevator/Feedforward/Kv");
   private static final LoggedTunableNumber elevatorKa =
-      new LoggedTunableNumber("Elevator/Motor/Ka");
+      new LoggedTunableNumber("Elevator/Feedforward/Ka");
+  public static final LoggedTunableNumber elevatorMaxVelocity =
+      new LoggedTunableNumber("Elevator/maxVelocity");
+  public static final LoggedTunableNumber elevatorMaxAcceleration =
+      new LoggedTunableNumber("Elevator/maxAcceleration");
 
   private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0, 0.0, 0.0);
   private boolean runElevatorPID = false;
