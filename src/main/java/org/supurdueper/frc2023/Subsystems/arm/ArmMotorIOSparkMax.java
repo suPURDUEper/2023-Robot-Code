@@ -34,9 +34,8 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
 
     // Get and reset encoder objects
     armEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-    armEncoder.setInverted(false); // TODO: Need to check this
-    armEncoder.setZeroOffset(Units.radiansToRotations(0)); // TODO: Change this
-
+    armEncoder.setInverted(true);
+    armEncoder.setZeroOffset(Units.radiansToRotations(0.809101) / armEncoderToArmGearRatio);
     // Setup PID controllers
     armPIDController = armSparkMax.getPIDController();
     armPIDController.setFeedbackDevice(armEncoder);
@@ -61,8 +60,13 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   @Override
   public void updateInputs(ArmMotorIOInputs inputs) {
     // Arm state variables for logging
-    inputs.armPositionRad =
-        Units.rotationsToRadians(armEncoder.getPosition() * armEncoderToArmGearRatio);
+    double armPositionRot = armEncoder.getPosition();
+    // Get arm position as -pi to pi
+    if (armPositionRot > 0.5) {
+      armPositionRot--;
+    }
+    inputs.armPositionRad =  
+        Units.rotationsToRadians(armPositionRot * armEncoderToArmGearRatio);
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armEncoder.getVelocity() * armEncoderToArmGearRatio);
@@ -74,7 +78,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
 
     if (inputs.isArmRunningPID) {
       armPIDController.setReference(
-          inputs.armTargetPositionRad, ControlType.kPosition, 0, inputs.armFeedforward);
+          inputs.armTargetPositionRad, CANSparkMax.ControlType.kPosition, 0, inputs.armFeedforward);
     }
   }
 

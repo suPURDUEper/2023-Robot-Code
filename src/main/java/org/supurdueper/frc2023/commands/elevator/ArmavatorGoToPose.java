@@ -2,36 +2,49 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.supurdueper.frc2023.commands.armavator;
+package org.supurdueper.frc2023.commands.elevator;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
+import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
-public class ElevatorGoToPose extends CommandBase {
+public class ArmavatorGoToPose extends CommandBase {
 
   private final Elevator elevator;
-  private final TrapezoidProfile.State target;
+  private final Arm arm;
+  private final ArmavatorPose target;
+
+  private TrapezoidProfile armProfile;
   private TrapezoidProfile elevatorProfile;
+
   private long startTime;
+
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(
           Elevator.elevatorMaxVelocity, Elevator.elevatorMaxAcceleration);
-  ;
 
-  public ElevatorGoToPose(Elevator elevator, TrapezoidProfile.State target) {
+  public ArmavatorGoToPose(Elevator elevator, Arm arm, ArmavatorPose target) {
     this.elevator = elevator;
+    this.arm = arm;
     this.target = target;
-    addRequirements(elevator);
+    addRequirements(elevator, arm);
   }
 
   @Override
   public void initialize() {
+    armProfile =
+        new TrapezoidProfile(
+            constraints,
+            target.getArmProfileState(),
+            new TrapezoidProfile.State(arm.getArmPosition().getRadians(), arm.getArmVelocity()));
     elevatorProfile =
         new TrapezoidProfile(
             constraints,
-            target,
+            target.getElevatorProfileState(),
             new TrapezoidProfile.State(
                 elevator.getElevatorPosition(), elevator.getElevatorVelocity()));
 
@@ -43,7 +56,9 @@ public class ElevatorGoToPose extends CommandBase {
   public void execute() {
     long elapsedTime = RobotController.getFPGATime() - startTime;
     double elapsedTimeSeconds = elapsedTime / 1000000.0;
+    TrapezoidProfile.State armState = armProfile.calculate(elapsedTimeSeconds);
     TrapezoidProfile.State elevatorState = elevatorProfile.calculate(elapsedTimeSeconds);
+    arm.setTargetPose(Rotation2d.fromRadians(armState.position), armState.velocity);
     elevator.setTargetPose(elevatorState.position, elevatorState.velocity);
   }
 
@@ -56,6 +71,7 @@ public class ElevatorGoToPose extends CommandBase {
   public boolean isFinished() {
     long elapsedTime = RobotController.getFPGATime() - startTime;
     double elapsedTimeSeconds = elapsedTime / 1000000.0;
-    return elevatorProfile.isFinished(elapsedTimeSeconds);
+    return armProfile.isFinished(elapsedTimeSeconds)
+        && elevatorProfile.isFinished(elapsedTimeSeconds);
   }
 }
