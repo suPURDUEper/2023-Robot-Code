@@ -5,6 +5,7 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,6 +18,7 @@ import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.armavator.ElevatorGoToPose;
+import org.supurdueper.frc2023.commands.armavator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
@@ -133,10 +135,13 @@ public class RobotContainer {
             () -> {
               return false;
             }));
-
-    driver.a().whileTrue(new ElevatorGoToPose(elevator, ArmavatorPreset.halfway.getPose()));
-    // *** OPERATOR CONTROLS ***
-    // armavator.setDefaultCommand(new MoveElevatorWithJoystick(armavator, operator::getRightY));
+    
+    // For tuning
+    operator.a().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.2, 0)));
+    operator.b().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.4, 0)));
+    operator.x().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.6, 0)));
+    operator.y().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.0, 0)));
+    elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */

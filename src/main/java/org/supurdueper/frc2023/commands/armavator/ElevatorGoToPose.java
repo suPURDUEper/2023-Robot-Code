@@ -15,7 +15,7 @@ public class ElevatorGoToPose extends CommandBase {
 
   private final Elevator elevator;
 
-  private final ArmavatorPose target;
+  private final TrapezoidProfile.State target;
 
   private TrapezoidProfile elevatorProfile;
 
@@ -25,7 +25,7 @@ public class ElevatorGoToPose extends CommandBase {
       new TrapezoidProfile.Constraints(
           Elevator.ELEVATOR_MAX_VELOCITY, Elevator.ELEVATOR_MAX_ACCELERATION);
 
-  public ElevatorGoToPose(Elevator elevator, ArmavatorPose target) {
+  public ElevatorGoToPose(Elevator elevator, TrapezoidProfile.State target) {
     this.elevator = elevator;
     this.target = target;
     addRequirements(elevator);
@@ -36,7 +36,7 @@ public class ElevatorGoToPose extends CommandBase {
     elevatorProfile =
         new TrapezoidProfile(
             constraints,
-            target.getElevatorProfileState(),
+            target,
             new TrapezoidProfile.State(elevator.getElevatorPosition(), elevator.getElevatorVelocity()));
 
     startTime = RobotController.getFPGATime();
