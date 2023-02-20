@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
       new LoggedTunableNumber("Elevator/Feedback/Kd");
   private static final LoggedTunableNumber elevatorKs =
       new LoggedTunableNumber("Elevator/Feedforward/Ks");
-  private static final LoggedTunableNumber elevatorKg =
+  public static final LoggedTunableNumber elevatorKg =
       new LoggedTunableNumber("Elevator/Feedforward/Kg");
   private static final LoggedTunableNumber elevatorKv =
       new LoggedTunableNumber("Elevator/Feedforward/Kv");
