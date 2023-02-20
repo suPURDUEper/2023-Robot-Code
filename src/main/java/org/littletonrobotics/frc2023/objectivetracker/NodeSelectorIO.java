@@ -7,8 +7,6 @@
 
 package org.littletonrobotics.frc2023.objectivetracker;
 
-import org.littletonrobotics.junction.AutoLog;
-
 public interface NodeSelectorIO {
   // @AutoLog
   public static class NodeSelectorIOInputs {

@@ -8,7 +8,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
-
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 
 public class MoveArmWithJoystick extends CommandBase {

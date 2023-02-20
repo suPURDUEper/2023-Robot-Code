@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import org.littletonrobotics.frc2023.objectivetracker.NodeSelectorIO.NodeSelectorIOInputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -23,8 +22,7 @@ public class ObjectiveTracker extends SubsystemBase {
   private final NodeSelectorIO selectorIO;
   // private final NodeSelectorIOInputsAutoLogged selectorInputs =
   //     new NodeSelectorIOInputsAutoLogged();
-  private final NodeSelectorIOInputs selectorInputs =
-      new NodeSelectorIOInputs();
+  private final NodeSelectorIOInputs selectorInputs = new NodeSelectorIOInputs();
 
   public GamePiece gamePiece = GamePiece.CUBE; // The selected game piece for intaking and scoring
   public boolean lastIntakeFront =

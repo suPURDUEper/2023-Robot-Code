@@ -1,7 +1,5 @@
 package org.supurdueper.frc2023.subsystems.drive;
 
-import org.littletonrobotics.junction.AutoLog;
-
 public interface ModuleIO {
   // @AutoLog
   public static class ModuleIOInputs {

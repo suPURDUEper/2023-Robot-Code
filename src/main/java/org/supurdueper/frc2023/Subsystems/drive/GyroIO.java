@@ -1,7 +1,5 @@
 package org.supurdueper.frc2023.subsystems.drive;
 
-import org.littletonrobotics.junction.AutoLog;
-
 public interface GyroIO {
   // @AutoLog
   public static class GyroIOInputs {

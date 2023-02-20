@@ -5,7 +5,6 @@
 package org.supurdueper.frc2023.commands.elevator;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
@@ -26,8 +25,7 @@ public class MoveElevatorWithJoystick extends CommandBase {
 
   @Override
   public void execute() {
-    double filteredJoystickValue = MathUtil.applyDeadband(joystickValue.get(), 0.2
-    );
+    double filteredJoystickValue = MathUtil.applyDeadband(joystickValue.get(), 0.2);
     // Not calling set votlage will let the PID loop keep running to hold the elevator in place
     // if the joystick isn't touched
     if (filteredJoystickValue != 0) {

@@ -16,9 +16,8 @@ public class ArmGoToPose extends CommandBase {
   private final TrapezoidProfile.State target;
   private TrapezoidProfile armProfile;
   private final TrapezoidProfile.Constraints constraints =
-      new TrapezoidProfile.Constraints(
-          Arm.armMaxVelocity, Arm.armMaxAcceleration);
-    private final Timer timer = new Timer();
+      new TrapezoidProfile.Constraints(Arm.armMaxVelocity, Arm.armMaxAcceleration);
+  private final Timer timer = new Timer();
   ;
 
   public ArmGoToPose(Arm arm, TrapezoidProfile.State target) {
@@ -33,8 +32,7 @@ public class ArmGoToPose extends CommandBase {
         new TrapezoidProfile(
             constraints,
             target,
-            new TrapezoidProfile.State(
-                arm.getArmPosition().getRadians(), arm.getArmVelocity()));
+            new TrapezoidProfile.State(arm.getArmPosition().getRadians(), arm.getArmVelocity()));
     timer.restart();
   }
 

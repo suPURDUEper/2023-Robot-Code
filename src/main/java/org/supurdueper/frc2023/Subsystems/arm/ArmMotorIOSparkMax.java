@@ -1,7 +1,6 @@
 package org.supurdueper.frc2023.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -65,8 +64,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     if (armPositionRot > 0.5) {
       armPositionRot--;
     }
-    inputs.armPositionRad =  
-        Units.rotationsToRadians(armPositionRot * armEncoderToArmGearRatio);
+    inputs.armPositionRad = Units.rotationsToRadians(armPositionRot * armEncoderToArmGearRatio);
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armEncoder.getVelocity() * armEncoderToArmGearRatio);

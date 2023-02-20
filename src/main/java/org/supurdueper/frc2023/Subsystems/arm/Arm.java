@@ -11,8 +11,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
 
-  public static final double armMaxVelocity = 7;
-  public static final double armMaxAcceleration = 5;
+  public static final double armMaxVelocity = 10;
+  public static final double armMaxAcceleration = 10;
 
   private final ArmMotorIO io;
   public final ArmMotorIOInputsAutoLogged inputs = new ArmMotorIOInputsAutoLogged();
@@ -39,7 +39,8 @@ public class Arm extends SubsystemBase {
     // Update controllers if tunable numbers have changed
 
     inputs.armFeedforward =
-        armFeedforward.calculate(inputs.armTargetPositionRad - (Math.PI/2), inputs.armTargetVelocityRadS);
+        armFeedforward.calculate(
+            inputs.armTargetPositionRad - (Math.PI / 2), inputs.armTargetVelocityRadS);
     inputs.isArmRunningPID = runArmPID;
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
