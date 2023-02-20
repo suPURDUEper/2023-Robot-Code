@@ -7,7 +7,6 @@ package org.supurdueper.frc2023.commands.armavator;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
-
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
 public class MoveElevatorWithJoystick extends CommandBase {

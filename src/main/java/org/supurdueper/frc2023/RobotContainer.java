@@ -19,7 +19,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.armavator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.armavator.MoveElevatorWithJoystick;
-import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
@@ -135,7 +134,7 @@ public class RobotContainer {
             () -> {
               return false;
             }));
-    
+
     // For tuning
     operator.a().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.2, 0)));
     operator.b().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.4, 0)));

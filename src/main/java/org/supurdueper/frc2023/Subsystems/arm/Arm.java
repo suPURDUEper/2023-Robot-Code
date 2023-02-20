@@ -44,13 +44,12 @@ public class Arm extends SubsystemBase {
     if (armKp.hasChanged(hashCode()) || armKd.hasChanged(hashCode())) {
       io.setPIDGains(armKp.get(), 0.0, armKd.get());
     }
-    
+
     if (armKs.hasChanged(hashCode())
         || armKv.hasChanged(hashCode())
         || armKg.hasChanged(hashCode())) {
       armFeedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
     }
-
 
     inputs.armFeedforward =
         armFeedforward.calculate(inputs.armTargetPositionRad, inputs.armTargetVelocityRadS);
@@ -70,7 +69,6 @@ public class Arm extends SubsystemBase {
   public Rotation2d getArmPosition() {
     return Rotation2d.fromRadians(inputs.armPositionRad);
   }
-
 
   public void setTargetPose(Rotation2d armAngle, double armVelocity) {
     runArmPID = true;

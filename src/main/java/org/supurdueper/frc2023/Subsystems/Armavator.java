@@ -2,6 +2,7 @@ package org.supurdueper.frc2023.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 public interface Armavator {
   public static record ArmavatorPose(
       Rotation2d armAngle, double elevatorDistance, double armVelocity, double elevatorVelocity) {

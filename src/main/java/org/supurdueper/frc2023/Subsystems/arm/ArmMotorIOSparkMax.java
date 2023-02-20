@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
@@ -84,7 +83,6 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armSparkMax.setVoltage(volts);
   }
 
-
   @Override
   public void setBrakeMode(boolean enable) {
     armSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
@@ -97,5 +95,4 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armPIDController.setI(kI, 0);
     armPIDController.setD(kD, 0);
   }
-
 }

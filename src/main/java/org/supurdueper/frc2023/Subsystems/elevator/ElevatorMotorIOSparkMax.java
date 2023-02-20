@@ -90,15 +90,12 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
       elevatorPIDController.setReference(
           targetMotorRotations, ControlType.kPosition, 0, inputs.elevatorFeedforward);
     }
-
   }
-
 
   @Override
   public void setVoltage(double volts) {
     elevatorSparkMax.setVoltage(volts);
   }
-
 
   @Override
   public void setBrakeMode(boolean enable) {

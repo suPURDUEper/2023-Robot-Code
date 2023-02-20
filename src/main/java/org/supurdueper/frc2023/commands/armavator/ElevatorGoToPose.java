@@ -4,12 +4,10 @@
 
 package org.supurdueper.frc2023.commands.armavator;
 
-import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
-import org.supurdueper.frc2023.subsystems.elevator.Elevator;
-
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
 public class ElevatorGoToPose extends CommandBase {
 
@@ -37,7 +35,8 @@ public class ElevatorGoToPose extends CommandBase {
         new TrapezoidProfile(
             constraints,
             target,
-            new TrapezoidProfile.State(elevator.getElevatorPosition(), elevator.getElevatorVelocity()));
+            new TrapezoidProfile.State(
+                elevator.getElevatorPosition(), elevator.getElevatorVelocity()));
 
     startTime = RobotController.getFPGATime();
   }
