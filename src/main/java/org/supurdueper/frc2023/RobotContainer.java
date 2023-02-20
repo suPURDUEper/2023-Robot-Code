@@ -144,12 +144,12 @@ public class RobotContainer {
     // operator.x().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.6, 0)));
     // operator.y().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.0, 0)));
     operator.a().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(1.7, 0)));
-    operator.b().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(1.5, 0)));
-    operator.x().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(-0.2, 0)));
+    operator.b().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(1, 0)));
+    operator.x().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(-0.4, 0)));
     operator.y().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(0.0, 0)));
     operator.start().onTrue(new ResetElevatorPosition(elevator));
-    elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
-    arm.setDefaultCommand(new MoveArmWithJoystick(arm, operator::getLeftY));
+    // elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
+    // arm.setDefaultCommand(new MoveArmWithJoystick(arm, operator::getLeftY));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */

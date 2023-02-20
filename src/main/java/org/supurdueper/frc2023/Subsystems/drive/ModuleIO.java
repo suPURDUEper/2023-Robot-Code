@@ -3,7 +3,7 @@ package org.supurdueper.frc2023.subsystems.drive;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
-  @AutoLog
+  // @AutoLog
   public static class ModuleIOInputs {
     public double drivePositionRad = 0.0;
     public double driveVelocityRadPerSec = 0.0;

@@ -11,13 +11,13 @@
         "Drive": {
           "Module2": {
             "open": true
-          }
+          },
+          "open": true
         },
         "RealOutputs": {
           "CommandsAll": {
             "open": true
-          },
-          "open": true
+          }
         },
         "open": true
       },

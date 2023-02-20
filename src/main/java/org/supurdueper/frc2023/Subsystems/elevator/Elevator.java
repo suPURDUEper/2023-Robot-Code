@@ -7,12 +7,13 @@ package org.supurdueper.frc2023.subsystems.elevator;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
-import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIO.ElevatorMotorIOInputs;
 
 public class Elevator extends SubsystemBase {
 
   public final ElevatorMotorIO io;
-  public final ElevatorMotorIOInputsAutoLogged inputs = new ElevatorMotorIOInputsAutoLogged();
+  // public final ElevatorMotorIOInputsAutoLogged inputs = new ElevatorMotorIOInputsAutoLogged();
+  public final ElevatorMotorIOInputs inputs = new ElevatorMotorIOInputs();
 
   private static final LoggedTunableNumber elevatorKp =
       new LoggedTunableNumber("Elevator/Feedback/Kp");
@@ -66,7 +67,7 @@ public class Elevator extends SubsystemBase {
     inputs.elevatorFeedforward = elevatorFeedforward.calculate(inputs.elevatorTargetVelocityMS);
     inputs.isElevatorRunningPID = runElevatorPID;
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Armavator/Motors", inputs);
+    // Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
 
   public void setBrakeMode(boolean enabled) {

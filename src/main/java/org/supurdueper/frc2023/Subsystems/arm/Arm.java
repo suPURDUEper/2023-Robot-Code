@@ -11,16 +11,18 @@ import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
 
-  public static final double armMaxVelocity = 2;
+  public static final double armMaxVelocity = 7;
   public static final double armMaxAcceleration = 5;
 
   private final ArmMotorIO io;
   public final ArmMotorIOInputsAutoLogged inputs = new ArmMotorIOInputsAutoLogged();
-  private static final double armKp = 0.0;
+  // public final ArmMotorIOInputs inputs = new ArmMotorIOInputs();
+
+  private static final double armKp = 0.1;
   private static final double armKd = 0.0;
   private static final double armKs = 0.15;
   private static final double armKg = 0.25;
-  private static final double armKv = 1;
+  private static final double armKv = 2.7;
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
   private boolean runArmPID = false;

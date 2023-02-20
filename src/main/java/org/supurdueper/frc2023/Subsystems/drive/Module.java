@@ -10,10 +10,11 @@ import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.drive.ModuleIO.ModuleIOInputs;
 
 public class Module {
   private final ModuleIO io;
-  private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
+  private final ModuleIOInputs inputs = new ModuleIOInputs();
   private final int index;
 
   private static final LoggedTunableNumber wheelRadius =
@@ -70,7 +71,7 @@ public class Module {
   /** Updates inputs and checks tunable numbers. */
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Drive/Module" + Integer.toString(index), inputs);
+    // Logger.getInstance().processInputs("Drive/Module" + Integer.toString(index), inputs);
 
     // Update controllers if tunable numbers have changed
     if (driveKp.hasChanged(hashCode()) || driveKd.hasChanged(hashCode())) {

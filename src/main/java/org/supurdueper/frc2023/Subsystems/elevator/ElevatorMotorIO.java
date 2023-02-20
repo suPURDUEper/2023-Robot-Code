@@ -3,7 +3,7 @@ package org.supurdueper.frc2023.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorMotorIO {
-  @AutoLog
+  // @AutoLog
   public static class ElevatorMotorIOInputs {
 
     public double elevatorPositionM = 0.0;
