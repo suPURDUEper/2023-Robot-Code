@@ -2,17 +2,18 @@ package org.supurdueper.frc2023.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
 public class ArmMotorIOSparkMax implements ArmMotorIO {
   private final CANSparkMax armSparkMax;
   private final CANSparkMax armFollowSparkMax;
-  private final SparkMaxPIDController armPIDController;
+  // private final SparkMaxPIDController armPIDController;
   private final SparkMaxAbsoluteEncoder armEncoder;
   private final double armEncoderToArmGearRatio = 22.0 / 34.0;
 
@@ -36,12 +37,19 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armEncoder.setInverted(true);
     armEncoder.setZeroOffset(Units.radiansToRotations(0.809101) / armEncoderToArmGearRatio);
     // Setup PID controllers
-    armPIDController = armSparkMax.getPIDController();
-    armPIDController.setFeedbackDevice(armEncoder);
+    // armPIDController = armSparkMax.getPIDController();
+    // armPIDController.setFeedbackDevice(armEncoder);
 
     // Setup power parameters
     armSparkMax.enableVoltageCompensation(12.0);
     armFollowSparkMax.enableVoltageCompensation(12.0);
+    armSparkMax.setSmartCurrentLimit(30);
+    armFollowSparkMax.setSmartCurrentLimit(30);
+
+    armSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) -13);
+    armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    armSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) 40);
+    armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     // Setup CAN parameters
     armSparkMax.setCANTimeout(0);
@@ -74,10 +82,13 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     inputs.armTemp =
         new double[] {armSparkMax.getMotorTemperature(), armFollowSparkMax.getMotorTemperature()};
 
-    if (inputs.isArmRunningPID) {
-      armPIDController.setReference(
-          inputs.armTargetPositionRad, CANSparkMax.ControlType.kPosition, 0, inputs.armFeedforward);
-    }
+    SmartDashboard.putNumber("Arm Raw Encoder value", armSparkMax.getEncoder().getPosition());
+
+    // if (inputs.isArmRunningPID) {
+    //   armPIDController.setReference(
+    //       inputs.armTargetPositionRad, CANSparkMax.ControlType.kPosition, 0,
+    // inputs.armFeedforward);
+    // }
   }
 
   @Override
@@ -93,8 +104,8 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
 
   @Override
   public void setPIDGains(double kP, double kI, double kD) {
-    armPIDController.setP(kP, 0);
-    armPIDController.setI(kI, 0);
-    armPIDController.setD(kD, 0);
+    // armPIDController.setP(kP, 0);
+    // armPIDController.setI(kI, 0);
+    // armPIDController.setD(kD, 0);
   }
 }

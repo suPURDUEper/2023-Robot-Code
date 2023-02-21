@@ -42,6 +42,8 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
     elevatorPIDController = elevatorSparkMax.getPIDController();
 
     // Setup power parameters
+    elevatorSparkMax.enableVoltageCompensation(12.0);
+    elevatorFollowSparkMax.enableVoltageCompensation(12.0);
     elevatorSparkMax.setSmartCurrentLimit(40);
     elevatorFollowSparkMax.setSmartCurrentLimit(40);
 

@@ -18,6 +18,7 @@ import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
+import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
@@ -146,7 +147,7 @@ public class RobotContainer {
     operator.y().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(0.0, 0)));
     operator.start().onTrue(new ResetElevatorPosition(elevator));
     // elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
-    // arm.setDefaultCommand(new MoveArmWithJoystick(arm, operator::getLeftY));
+    arm.setDefaultCommand(new MoveArmWithJoystick(arm, operator::getLeftY));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */

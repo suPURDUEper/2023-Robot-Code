@@ -14,6 +14,7 @@ public interface ArmMotorIO {
     public double[] armCurrentAmps = new double[] {};
     public double[] armTemp = new double[] {};
     public boolean isArmRunningPID = false;
+    public double outputPID = 0.0;
   }
   /* Updates the sets of loggable inputs */
   public default void updateInputs(ArmMotorIOInputs Inputs) {}

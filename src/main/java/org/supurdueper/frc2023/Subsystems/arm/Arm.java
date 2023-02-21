@@ -5,6 +5,7 @@
 package org.supurdueper.frc2023.subsystems.arm;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -18,19 +19,19 @@ public class Arm extends SubsystemBase {
   public final ArmMotorIOInputsAutoLogged inputs = new ArmMotorIOInputsAutoLogged();
   // public final ArmMotorIOInputs inputs = new ArmMotorIOInputs();
 
-  private static final double armKp = 0.1;
+  private static final double armKp = 3;
   private static final double armKd = 0.0;
-  private static final double armKs = 0.15;
-  private static final double armKg = 0.25;
+  private static final double armKg = 0.15;
+  private static final double armKs = 0.25;
   private static final double armKv = 2.7;
 
-  private ArmFeedforward armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
+  private ArmFeedforward armFeedforward = new ArmFeedforward(armKs, armKg, armKv);
+  private PIDController armPIDcontroller = new PIDController(armKp, 0, armKd);
   private boolean runArmPID = false;
 
   public Arm(ArmMotorIO io) {
     this.io = io;
-    io.setPIDGains(armKp, 0.0, armKd);
-    armFeedforward = new ArmFeedforward(armKs, armKg, armKv);
+    // io.setPIDGains(armKp, 0.0, armKd);
   }
 
   @Override
@@ -42,6 +43,11 @@ public class Arm extends SubsystemBase {
         armFeedforward.calculate(
             inputs.armTargetPositionRad - (Math.PI / 2), inputs.armTargetVelocityRadS);
     inputs.isArmRunningPID = runArmPID;
+    if (runArmPID) {
+      inputs.outputPID =
+          armPIDcontroller.calculate(inputs.armPositionRad, inputs.armTargetPositionRad);
+      io.setVoltage(inputs.outputPID + inputs.armFeedforward);
+    }
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
