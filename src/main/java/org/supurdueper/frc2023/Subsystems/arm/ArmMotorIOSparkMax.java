@@ -67,12 +67,12 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   @Override
   public void updateInputs(ArmMotorIOInputs inputs) {
     // Arm state variables for logging
-    double armPositionRot = armEncoder.getPosition();
+    double armPositionRot = armEncoder.getPosition() * armEncoderToArmGearRatio;
     // Get arm position as -pi to pi
-    if (armPositionRot > 0.5) {
+    if (armPositionRot > 0.75) {
       armPositionRot--;
     }
-    inputs.armPositionRad = Units.rotationsToRadians(armPositionRot * armEncoderToArmGearRatio);
+    inputs.armPositionRad = Units.rotationsToRadians(armPositionRot);
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armEncoder.getVelocity() * armEncoderToArmGearRatio);
