@@ -28,7 +28,9 @@ public class MoveElevatorWithJoystick extends CommandBase {
     double filteredJoystickValue = MathUtil.applyDeadband(joystickValue.get(), 0.2);
     // Not calling set votlage will let the PID loop keep running to hold the elevator in place
     // if the joystick isn't touched
-    if (filteredJoystickValue != 0) {
+    if (elevator.inputs.isElevatorRunningPID && filteredJoystickValue == 0) {
+      // Do nothing
+    } else {
       elevator.setVoltage((filteredJoystickValue * RobotController.getBatteryVoltage()));
     }
   }

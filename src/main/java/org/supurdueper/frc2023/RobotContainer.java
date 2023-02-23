@@ -19,7 +19,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
+import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
+import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
+import org.supurdueper.frc2023.subsystems.Armavator;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
@@ -137,21 +142,22 @@ public class RobotContainer {
             }));
 
     // For tuning
-    // operator.a().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.2, 0)));
-    // operator.b().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.4, 0)));
-    // operator.x().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.6, 0)));
-    // operator.y().onTrue(new ElevatorGoToPose(elevator, new TrapezoidProfile.State(0.0, 0)));
-    operator.a().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(1.7, 0)));
-    operator.b().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(1, 0)));
-    operator.x().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(-0.4, 0)));
-    operator.y().onTrue(new ArmGoToPose(arm, new TrapezoidProfile.State(0.0, 0)));
+    operator.a().onTrue(armavatorGoToPose(ArmavatorPreset.midCube.getPose()));
+    operator.b().onTrue(armavatorGoToPose(ArmavatorPreset.midCone.getPose()));
+    operator.x().onTrue(armavatorGoToPose(ArmavatorPreset.highCube.getPose()));
+    operator.y().onTrue(armavatorGoToPose(ArmavatorPreset.highCone.getPose()));
     operator.start().onTrue(new ResetElevatorPosition(elevator));
-    // elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
+    elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, operator::getRightY));
     arm.setDefaultCommand(new MoveArmWithJoystick(arm, operator::getLeftY));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Command armavatorGoToPose(ArmavatorPose pose) {
+    return new ElevatorGoToPose(elevator, pose.getElevatorProfileState())
+      .alongWith(new ArmGoToPose(arm, pose.getArmProfileState()));
   }
 }

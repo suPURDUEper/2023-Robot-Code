@@ -46,10 +46,10 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armSparkMax.setSmartCurrentLimit(30);
     armFollowSparkMax.setSmartCurrentLimit(30);
 
-    armSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) -13);
-    armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    armSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) 40);
-    armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    // armSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) -13);
+    // armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    // armSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) 40);
+    // armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     // Setup CAN parameters
     armSparkMax.setCANTimeout(0);
@@ -68,11 +68,14 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   public void updateInputs(ArmMotorIOInputs inputs) {
     // Arm state variables for logging
     double armPositionRot = armEncoder.getPosition() * armEncoderToArmGearRatio;
-    // Get arm position as -pi to pi
-    if (armPositionRot > 0.75) {
-      armPositionRot--;
-    }
     inputs.armPositionRad = Units.rotationsToRadians(armPositionRot);
+    if (inputs.armPositionRad > Math.PI) {
+      armPositionRot = armEncoder.getPosition();
+      if (armPositionRot > 0.5) {
+        armPositionRot--;
+      }
+      inputs.armPositionRad = Units.rotationsToRadians(armPositionRot);
+    }
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armEncoder.getVelocity() * armEncoderToArmGearRatio);

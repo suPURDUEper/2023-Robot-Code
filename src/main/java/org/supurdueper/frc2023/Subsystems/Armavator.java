@@ -6,7 +6,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 public interface Armavator {
   public static record ArmavatorPose(
       Rotation2d armAngle, double elevatorDistance, double armVelocity, double elevatorVelocity) {
-        private static final double ELEVATOR_MIN = 0.0;
+        private static final double ELEVATOR_MIN = 0.2;
         private static final double ELEVATOR_NEUTRAL = 0.2;
         private static final double ELEVATOR_MAX = 0.6;
 

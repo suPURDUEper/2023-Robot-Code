@@ -43,10 +43,18 @@ public class Arm extends SubsystemBase {
         armFeedforward.calculate(
             inputs.armTargetPositionRad - (Math.PI / 2), inputs.armTargetVelocityRadS);
     inputs.isArmRunningPID = runArmPID;
+
     if (runArmPID) {
       inputs.outputPID =
           armPIDcontroller.calculate(inputs.armPositionRad, inputs.armTargetPositionRad);
-      io.setVoltage(inputs.outputPID + inputs.armFeedforward);
+      double voltage = inputs.outputPID;
+      if (isArmTooFarForward()) {
+        voltage = Math.min(0, voltage);
+      }
+      if (isArmTooFarBack()) {
+        voltage = Math.max(0, voltage);
+      }
+      io.setVoltage(voltage + inputs.armFeedforward);
     }
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Armavator/Motors", inputs);
@@ -72,6 +80,20 @@ public class Arm extends SubsystemBase {
 
   public void setVoltage(double voltage) {
     runArmPID = false;
+    if (isArmTooFarForward()) {
+      voltage = Math.min(0, voltage);
+    }
+    if (isArmTooFarBack()) {
+      voltage = Math.max(0, voltage);
+    }
     io.setVoltage(voltage);
+  }
+
+  public boolean isArmTooFarForward() {
+    return inputs.armPositionRad > 2.2;
+  }
+
+  public boolean isArmTooFarBack() {
+    return inputs.armPositionRad < -0.7;
   }
 }
