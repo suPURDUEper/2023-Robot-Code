@@ -16,19 +16,16 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
-import org.supurdueper.frc2023.commands.IntakeCube;
-import org.supurdueper.frc2023.subsystems.Intake.Intake;
-import org.supurdueper.frc2023.subsystems.Intake.IntakeIOTalonFX;
 import org.supurdueper.frc2023.commands.IntakeCone;
-import org.supurdueper.frc2023.subsystems.Intake.Intake;
-import org.supurdueper.frc2023.subsystems.Intake.IntakeIO;
-import org.supurdueper.frc2023.subsystems.Intake.IntakeIOTalonFX;
+import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;
 import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIO;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIOSim;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
+import org.supurdueper.frc2023.subsystems.intake.Intake;
+import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
 
 public class RobotContainer {
 
@@ -63,7 +60,7 @@ public class RobotContainer {
                   new ModuleIOSparkMax(1),
                   new ModuleIOSparkMax(2),
                   new ModuleIOSparkMax(3));
-         intake = new Intake(new IntakeIOTalonFX());
+          intake = new Intake(new IntakeIOTalonFX());
           break;
         case ROBOT_SIMBOT:
           drive =

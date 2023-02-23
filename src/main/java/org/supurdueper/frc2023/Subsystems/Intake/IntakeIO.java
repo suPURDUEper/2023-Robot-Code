@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.subsystems.Intake;
+package org.supurdueper.frc2023.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
