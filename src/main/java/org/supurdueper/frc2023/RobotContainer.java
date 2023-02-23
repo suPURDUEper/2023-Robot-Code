@@ -5,7 +5,6 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,7 +21,6 @@ import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
-import org.supurdueper.frc2023.subsystems.Armavator;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
@@ -35,6 +33,8 @@ import org.supurdueper.frc2023.subsystems.drive.ModuleIOSim;
 import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
+import org.supurdueper.frc2023.subsystems.intake.Intake;
+import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
 
 public class RobotContainer {
 
@@ -42,6 +42,7 @@ public class RobotContainer {
   private Drive drive;
   private Elevator elevator;
   private Arm arm;
+  private Intake intake;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -72,6 +73,7 @@ public class RobotContainer {
                   new ModuleIOSparkMax(3));
           elevator = new Elevator(new ElevatorMotorIOSparkMax());
           arm = new Arm(new ArmMotorIOSparkMax());
+          intake = new Intake(new IntakeIOTalonFX());
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -158,6 +160,6 @@ public class RobotContainer {
 
   public Command armavatorGoToPose(ArmavatorPose pose) {
     return new ElevatorGoToPose(elevator, pose.getElevatorProfileState())
-      .alongWith(new ArmGoToPose(arm, pose.getArmProfileState()));
+        .alongWith(new ArmGoToPose(arm, pose.getArmProfileState()));
   }
 }
