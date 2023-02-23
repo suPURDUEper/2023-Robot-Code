@@ -16,10 +16,13 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
-/*import org.supurdueper.frc2023.commands.IntakeCone;
+import org.supurdueper.frc2023.commands.IntakeCube;
+import org.supurdueper.frc2023.subsystems.Intake.Intake;
+import org.supurdueper.frc2023.subsystems.Intake.IntakeIOTalonFX;
+import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.subsystems.Intake.Intake;
 import org.supurdueper.frc2023.subsystems.Intake.IntakeIO;
-import org.supurdueper.frc2023.subsystems.Intake.IntakeIOTalonFX; */
+import org.supurdueper.frc2023.subsystems.Intake.IntakeIOTalonFX;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO;
 import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
@@ -31,7 +34,7 @@ public class RobotContainer {
 
   // Subsystems
   private Drive drive;
- // private Intake intake;
+  private Intake intake;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -60,7 +63,7 @@ public class RobotContainer {
                   new ModuleIOSparkMax(1),
                   new ModuleIOSparkMax(2),
                   new ModuleIOSparkMax(3));
-       //       new Intake(new IntakeIOTalonFX());
+         intake = new Intake(new IntakeIOTalonFX());
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -129,7 +132,8 @@ public class RobotContainer {
             () -> {
               return false;
             }));
-
+    driver.a().whileTrue(new IntakeCube(intake));
+    driver.y().whileTrue(new IntakeCone(intake));
     // *** OPERATOR CONTROLS ***
   }
 

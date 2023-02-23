@@ -27,6 +27,7 @@ public class IntakeCube extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return intake.getRollerAmps() > rollerAmpsLimit.get();
+    // return intake.getRollerAmps() > rollerAmpsLimit.get();
+    return false;
   }
 }

@@ -1,5 +1,6 @@
 package org.supurdueper.frc2023.subsystems.Intake;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.littletonrobotics.frc2023.Constants;
@@ -18,8 +19,8 @@ public class IntakeIOTalonFX implements IntakeIO {
         throw new RuntimeException("Invalid robot for CubeIntakeIOSparkMax!");
     }
     roller.configSupplyCurrentLimit(intakeCurrentConfig);
-    roller.configVoltageCompSaturation(10.0);
-    roller.enableVoltageCompensation(true);
+    roller.enableVoltageCompensation(false);
+    roller.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override

@@ -31,9 +31,9 @@ public class Intake extends SubsystemBase {
 
   static {
     switch (Constants.getRobot()) {
-      case ROBOT_SIMBOT:
-        rollerCubeIntakeVolts.initDefault(8.0);
-        rollerConeIntakeVolts.initDefault(8.0);
+      case ROBOT_2023C:
+        rollerCubeIntakeVolts.initDefault(4.0);
+        rollerConeIntakeVolts.initDefault(-4.0);
         rollerCubeScoreVolts.initDefault(8.0);
         rollerConeScoreVolts.initDefault(8.0);
         break;
