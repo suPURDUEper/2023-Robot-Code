@@ -24,6 +24,8 @@ public class Intake extends SubsystemBase {
   public enum Mode {
     INTAKE_CONE,
     INTAKE_CUBE,
+    HOLD_CONE,
+    HOLD_CUBE,
     SCORE_CUBE,
     SCORE_CONE,
     NOT_RUNNING
@@ -33,7 +35,7 @@ public class Intake extends SubsystemBase {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
         rollerCubeIntakeVolts.initDefault(4.0);
-        rollerConeIntakeVolts.initDefault(-4.0);
+        rollerConeIntakeVolts.initDefault(-12.0);
         rollerCubeScoreVolts.initDefault(8.0);
         rollerConeScoreVolts.initDefault(8.0);
         break;
@@ -75,6 +77,13 @@ public class Intake extends SubsystemBase {
         case SCORE_CUBE:
           voltage = rollerCubeScoreVolts.get();
           break;
+        case HOLD_CONE:
+          voltage = -1;
+          break;
+        case HOLD_CUBE:
+          voltage = 1;
+          break;
+
       }
       io.setRollerVoltage(voltage);
     }
