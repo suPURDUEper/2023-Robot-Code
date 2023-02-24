@@ -1,6 +1,7 @@
 package org.supurdueper.frc2023.subsystems.intake;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.littletonrobotics.frc2023.Constants;
@@ -38,5 +39,11 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public double getRollerAmps() {
     return roller.getStatorCurrent();
+  }
+
+  @Override
+  public void setCurrentLimit(double currentLimit, double triggerAmps, double triggerTimeSeconds) {
+    roller.configStatorCurrentLimit(
+        new StatorCurrentLimitConfiguration(true, currentLimit, triggerAmps, triggerTimeSeconds));
   }
 }

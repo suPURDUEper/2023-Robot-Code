@@ -83,7 +83,6 @@ public class Intake extends SubsystemBase {
         case HOLD_CUBE:
           voltage = 1;
           break;
-
       }
       io.setRollerVoltage(voltage);
     }
