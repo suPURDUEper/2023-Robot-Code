@@ -1,3 +1,10 @@
+// Copyright (c) 2023 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package org.littletonrobotics.frc2023.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -6,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 
 /** Geometry utilities for working with translations, rotations, transforms, and poses. */
@@ -112,5 +120,25 @@ public class GeomUtil {
    */
   public static Pose3d transform3dToPose3d(Transform3d transform) {
     return new Pose3d(transform.getTranslation(), transform.getRotation());
+  }
+
+  /**
+   * Converts a Translation3d to a Translation2d by extracting two dimensions (X and Y). chain
+   *
+   * @param transform The original translation
+   * @return The resulting translation
+   */
+  public static Translation2d translation3dTo2dXY(Translation3d translation) {
+    return new Translation2d(translation.getX(), translation.getY());
+  }
+
+  /**
+   * Converts a Translation3d to a Translation2d by extracting two dimensions (X and Z). chain
+   *
+   * @param transform The original translation
+   * @return The resulting translation
+   */
+  public static Translation2d translation3dTo2dXZ(Translation3d translation) {
+    return new Translation2d(translation.getX(), translation.getZ());
   }
 }
