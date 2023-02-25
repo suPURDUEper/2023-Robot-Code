@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.frc2023.Constants;
-import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.supurdueper.frc2023.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class Intake extends SubsystemBase {
@@ -12,15 +11,6 @@ public class Intake extends SubsystemBase {
   private Mode mode;
   // private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private final IntakeIOInputs inputs = new IntakeIOInputs();
-
-  private static final LoggedTunableNumber rollerCubeIntakeVolts =
-      new LoggedTunableNumber("Intake/CubeIntakeVolts");
-  private static final LoggedTunableNumber rollerConeIntakeVolts =
-      new LoggedTunableNumber("Intake/ConeIntakeVolts");
-  private static final LoggedTunableNumber rollerCubeScoreVolts =
-      new LoggedTunableNumber("Intake/CubeScoreVolts");
-  private static final LoggedTunableNumber rollerConeScoreVolts =
-      new LoggedTunableNumber("Intake/ConeScoreVolts");
 
   public enum Mode {
     INTAKE_CONE,
@@ -30,19 +20,6 @@ public class Intake extends SubsystemBase {
     SCORE_CUBE,
     SCORE_CONE,
     NOT_RUNNING
-  }
-
-  static {
-    switch (Constants.getRobot()) {
-      case ROBOT_2023C:
-        rollerCubeIntakeVolts.initDefault(12.0);
-        rollerConeIntakeVolts.initDefault(-12.0);
-        rollerCubeScoreVolts.initDefault(-8.0);
-        rollerConeScoreVolts.initDefault(8.0);
-        break;
-      default:
-        break;
-    }
   }
 
   /** Creates a new CubeIntake. */
@@ -67,16 +44,16 @@ public class Intake extends SubsystemBase {
           voltage = 0.0;
           break;
         case INTAKE_CONE:
-          voltage = rollerConeIntakeVolts.get();
+          voltage = -12;
           break;
         case INTAKE_CUBE:
-          voltage = rollerCubeIntakeVolts.get();
+          voltage = 12;
           break;
         case SCORE_CONE:
-          voltage = rollerConeScoreVolts.get();
+          voltage = 8;
           break;
         case SCORE_CUBE:
-          voltage = rollerCubeScoreVolts.get();
+          voltage = -8;
           break;
         case HOLD_CONE:
           voltage = -1;

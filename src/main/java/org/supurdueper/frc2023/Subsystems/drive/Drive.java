@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Arrays;
 import java.util.List;
 import org.littletonrobotics.frc2023.Constants;
-import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO.GyroIOInputs;
@@ -33,14 +32,15 @@ public class Drive extends SubsystemBase {
 
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
-  private static final LoggedTunableNumber maxLinearSpeed =
-      new LoggedTunableNumber("Drive/MaxLinearSpeed");
-  private static final LoggedTunableNumber trackWidthX =
-      new LoggedTunableNumber("Drive/TrackWidthX");
-  private static final LoggedTunableNumber trackWidthY =
-      new LoggedTunableNumber("Drive/TrackWidthY");
+  private static final double maxLinearSpeed = Units.feetToMeters(14.5);
+  private static final double trackWidthX = Units.inchesToMeters(24 - 5.25);
+  private static final double trackWidthY = Units.inchesToMeters(26 - 5.25);
 
-  private double maxAngularSpeed;
+  private double maxAngularSpeed = maxLinearSpeed
+  / Arrays.stream(getModuleTranslations())
+      .map(translation -> translation.getNorm())
+      .max(Double::compare)
+      .get();;
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
   private boolean isCharacterizing = false;
@@ -52,19 +52,6 @@ public class Drive extends SubsystemBase {
   private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.1, 0.1, 0.1));
   private double[] lastModulePositionsMeters = new double[] {0.0, 0.0, 0.0, 0.0};
   private Rotation2d lastGyroYaw = new Rotation2d();
-
-  static {
-    switch (Constants.getRobot()) {
-      case ROBOT_2023C:
-      case ROBOT_SIMBOT:
-        maxLinearSpeed.initDefault(Units.feetToMeters(14.5));
-        trackWidthX.initDefault(Units.inchesToMeters(24 - 5.25));
-        trackWidthY.initDefault(Units.inchesToMeters(26 - 5.25));
-        break;
-      default:
-        break;
-    }
-  }
 
   public Drive(
       GyroIO gyroIO,
@@ -90,19 +77,6 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
 
-    // Update if tunable numbers have changed
-    if (maxLinearSpeed.hasChanged(hashCode())
-        || trackWidthX.hasChanged(hashCode())
-        || trackWidthY.hasChanged(hashCode())) {
-      kinematics = new SwerveDriveKinematics(getModuleTranslations());
-      maxAngularSpeed =
-          maxLinearSpeed.get()
-              / Arrays.stream(getModuleTranslations())
-                  .map(translation -> translation.getNorm())
-                  .max(Double::compare)
-                  .get();
-    }
-
     // Run modules
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
@@ -125,7 +99,7 @@ public class Drive extends SubsystemBase {
               setpointTwist.dy / Constants.loopPeriodSecs,
               setpointTwist.dtheta / Constants.loopPeriodSecs);
       SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(adjustedSpeeds);
-      SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxLinearSpeed.get());
+      SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxLinearSpeed);
 
       // Send setpoints to modules
       SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
@@ -194,7 +168,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return maxLinearSpeed.get();
+    return maxLinearSpeed;
   }
 
   /** Returns the maximum angular speed in radians per sec. */
@@ -225,10 +199,10 @@ public class Drive extends SubsystemBase {
   /** Returns an array of module translations. */
   public Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(trackWidthX.get() / 2.0, trackWidthY.get() / 2.0),
-      new Translation2d(trackWidthX.get() / 2.0, -trackWidthY.get() / 2.0),
-      new Translation2d(-trackWidthX.get() / 2.0, trackWidthY.get() / 2.0),
-      new Translation2d(-trackWidthX.get() / 2.0, -trackWidthY.get() / 2.0)
+      new Translation2d(trackWidthX / 2.0, trackWidthY / 2.0),
+      new Translation2d(trackWidthX / 2.0, -trackWidthY / 2.0),
+      new Translation2d(-trackWidthX / 2.0, trackWidthY / 2.0),
+      new Translation2d(-trackWidthX / 2.0, -trackWidthY / 2.0)
     };
   }
 

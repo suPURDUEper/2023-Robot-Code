@@ -20,7 +20,7 @@ public class MoveElevatorWithJoystick extends CommandBase {
     this.joystickValue = joystickValue;
     this.elevator = elevator;
     addRequirements(elevator);
-    this.elevatorKg = Elevator.elevatorKg.get();
+    this.elevatorKg = Elevator.elevatorKg;
   }
 
   @Override
