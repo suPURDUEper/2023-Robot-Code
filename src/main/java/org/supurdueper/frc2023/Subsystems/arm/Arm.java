@@ -59,6 +59,7 @@ public class Arm extends SubsystemBase {
       io.setVoltage(voltage + inputs.armFeedforward);
     }
     io.updateInputs(inputs);
+
     // Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
 

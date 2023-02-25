@@ -84,7 +84,9 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     inputs.armTemp =
         new double[] {armSparkMax.getMotorTemperature(), armFollowSparkMax.getMotorTemperature()};
 
-    SmartDashboard.putNumber("Arm Raw Encoder value", armSparkMax.getEncoder().getPosition());
+    SmartDashboard.putNumber("Arm Position (rad)", inputs.armPositionRad);
+    SmartDashboard.putNumber("Arm Target Position (rad)", inputs.armTargetPositionRad);
+
 
     // if (inputs.isArmRunningPID) {
     //   armPIDController.setReference(

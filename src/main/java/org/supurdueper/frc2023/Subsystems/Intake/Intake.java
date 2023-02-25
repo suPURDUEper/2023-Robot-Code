@@ -32,38 +32,32 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     // Logger.getInstance().processInputs("Intake", inputs);
-
-    // Reset when disabled
-    if (DriverStation.isDisabled()) {
-      io.setRollerVoltage(0.0);
-    } else {
-      // Run roller
-      double voltage = 0;
-      switch (mode) {
-        case NOT_RUNNING:
-          voltage = 0.0;
-          break;
-        case INTAKE_CONE:
-          voltage = -12;
-          break;
-        case INTAKE_CUBE:
-          voltage = 12;
-          break;
-        case SCORE_CONE:
-          voltage = 8;
-          break;
-        case SCORE_CUBE:
-          voltage = -8;
-          break;
-        case HOLD_CONE:
-          voltage = -1;
-          break;
-        case HOLD_CUBE:
-          voltage = 0;
-          break;
-      }
-      io.setRollerVoltage(voltage);
+    // Run roller
+    double voltage = 0;
+    switch (mode) {
+      case NOT_RUNNING:
+        voltage = 0.0;
+        break;
+      case INTAKE_CONE:
+        voltage = -12;
+        break;
+      case INTAKE_CUBE:
+        voltage = 12;
+        break;
+      case SCORE_CONE:
+        voltage = 8;
+        break;
+      case SCORE_CUBE:
+        voltage = -8;
+        break;
+      case HOLD_CONE:
+        voltage = -1;
+        break;
+      case HOLD_CUBE:
+        voltage = 0;
+        break;
     }
+    io.setRollerVoltage(voltage);
   }
 
   public void setIntakeMode(Mode mode) {
