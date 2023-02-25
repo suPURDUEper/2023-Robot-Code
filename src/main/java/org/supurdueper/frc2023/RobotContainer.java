@@ -147,13 +147,14 @@ public class RobotContainer {
     Trigger rotateTo270 = driver.y();
     Supplier<Double> driveTranslationX = driver::getLeftX;
     Supplier<Double> driveTranslationY = driver::getLeftY;
-    Supplier<Double> driveRotate = driver::getRightX;
+    Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
+    Trigger swerveXMode = driver.povDown();
 
     // Operator
-    Supplier<Double> manualArmControl = operator::getLeftY;
-    Supplier<Double> manualElevatorControl = operator::getRightY;
+    Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
+    Supplier<Double> manualElevatorControl = invertJoystick(operator::getRightY);
     Trigger armavatorLow = operator.a();
     Trigger armavatorMid = operator.b();
     Trigger armavatorHigh = operator.y();
@@ -219,5 +220,9 @@ public class RobotContainer {
     return new InstantCommand(() -> intake.setIntakeMode(mode), intake)
         .andThen(new WaitCommand(1))
         .andThen(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING), intake));
+  }
+
+  public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
+    return () -> joystick.get() * -1;
   }
 }
