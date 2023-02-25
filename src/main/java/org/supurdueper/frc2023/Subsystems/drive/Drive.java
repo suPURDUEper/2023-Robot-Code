@@ -20,6 +20,7 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.drive.GyroIO.GyroIOInputs;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
@@ -28,7 +29,9 @@ public class Drive extends SubsystemBase {
       6.0; // Need to be under the above speed for this length of time to switch to coast
 
   private final GyroIO gyroIO;
-  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+  // private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+  private final GyroIOInputs gyroInputs = new GyroIOInputs();
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private static final LoggedTunableNumber maxLinearSpeed =
@@ -44,7 +47,7 @@ public class Drive extends SubsystemBase {
   private boolean isCharacterizing = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
   private double characterizationVolts = 0.0;
-  private boolean isBrakeMode = false;
+  private boolean isBrakeMode = true;
   private Timer lastMovementTimer = new Timer();
 
   private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.1, 0.1, 0.1));
@@ -56,8 +59,8 @@ public class Drive extends SubsystemBase {
       case ROBOT_2023C:
       case ROBOT_SIMBOT:
         maxLinearSpeed.initDefault(Units.feetToMeters(14.5));
-        trackWidthX.initDefault(Units.inchesToMeters(30 - 5.25));
-        trackWidthY.initDefault(Units.inchesToMeters(30 - 5.25));
+        trackWidthX.initDefault(Units.inchesToMeters(24 - 5.25));
+        trackWidthY.initDefault(Units.inchesToMeters(26 - 5.25));
         break;
       default:
         break;
@@ -83,7 +86,7 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
-    Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    // Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
     }

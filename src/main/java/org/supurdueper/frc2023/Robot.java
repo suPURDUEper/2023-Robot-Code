@@ -68,12 +68,12 @@ public class Robot extends LoggedRobot {
     // Set up data receivers & replay source
     switch (Constants.getMode()) {
       case REAL:
-        String folder = Constants.logFolders.get(Constants.getRobot());
-        if (folder != null) {
-          logger.addDataReceiver(new WPILOGWriter(folder));
-        } else {
-          logNoFileAlert.set(true);
-        }
+        // String folder = Constants.logFolders.get(Constants.getRobot());
+        // if (folder != null) {
+        //   logger.addDataReceiver(new WPILOGWriter(folder));
+        // } else {
+        //   logNoFileAlert.set(true);
+        // }
         logger.addDataReceiver(new NT4Publisher());
         LoggedPowerDistribution.getInstance();
         break;
