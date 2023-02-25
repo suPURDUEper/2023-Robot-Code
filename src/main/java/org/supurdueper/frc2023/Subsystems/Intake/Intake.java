@@ -8,7 +8,7 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  private IntakeIO io;
+  public IntakeIO io;
   private Mode mode;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 

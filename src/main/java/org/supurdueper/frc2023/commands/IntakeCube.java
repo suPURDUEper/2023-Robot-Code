@@ -8,8 +8,7 @@ import org.supurdueper.frc2023.subsystems.intake.Intake.Mode;
 
 public class IntakeCube extends CommandBase {
   public final Intake intake;
-  private static final LoggedTunableNumber rollerAmpsLimit =
-      new LoggedTunableNumber("Intake/rollerAmpsCube");
+  private static final double rollerAmpsLimit = 30;
 
   public IntakeCube(Intake intake) {
     this.intake = intake;

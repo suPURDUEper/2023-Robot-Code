@@ -193,9 +193,11 @@ public class RobotContainer {
         armavatorGoToPose(ArmavatorPreset.intakeCube.getPose()).andThen(new IntakeCube(intake)));
 
     intakeCone.onTrue(
-        armavatorGoToPose(ArmavatorPreset.intakeCone.getPose()).andThen(new IntakeCone(intake)));
+        armavatorGoToPose(ArmavatorPreset.intakeCone.getPose())
+          .andThen(new IntakeCone(intake))
+          .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
-    intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.HOLD_CONE)));
+    intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING)));
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
 

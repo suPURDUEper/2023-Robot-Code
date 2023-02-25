@@ -7,7 +7,7 @@ public interface Armavator {
   public static record ArmavatorPose(
       Rotation2d armAngle, double elevatorDistance, double armVelocity, double elevatorVelocity) {
     public static final double ELEVATOR_MIN = 0.05;
-    public static final double ELEVATOR_SAFE = 0.2;
+    public static final double ELEVATOR_SAFE = 0.12;
     public static final double ELEVATOR_INTAKE = 0.2;
     public static final double ELEVATOR_MAX = 0.6;
     public static final TrapezoidProfile.State ELEVATOR_SAFE_TARGET =
@@ -22,7 +22,7 @@ public interface Armavator {
     }
 
     public static enum ArmavatorPreset {
-      stowed(new ArmavatorPose(new Rotation2d(-0.55), ELEVATOR_MIN, 0.0, 0.0)),
+      stowed(new ArmavatorPose(new Rotation2d(-0.55), ELEVATOR_SAFE, 0.0, 0.0)),
       intakeCube(new ArmavatorPose(new Rotation2d(.185), .128, 0.0, 0.0)),
       intakeCone(new ArmavatorPose(new Rotation2d(-.39), .16, 0.0, 0.0)),
       low(new ArmavatorPose(new Rotation2d(.2), ELEVATOR_INTAKE, 0.0, 0.0)),
