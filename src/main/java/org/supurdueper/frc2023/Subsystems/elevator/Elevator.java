@@ -5,7 +5,6 @@
 package org.supurdueper.frc2023.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -83,18 +82,10 @@ public class Elevator extends SubsystemBase {
     return inputs.elevatorPositionM;
   }
 
-  public TrapezoidProfile.State getElevatorPose() {
-    return new TrapezoidProfile.State(getElevatorPosition(), getElevatorVelocity());
-  }
-
   public void setTargetPose(double elevatorDistance, double elevatorVelocity) {
     runElevatorPID = true;
     inputs.elevatorTargetPositionM = elevatorDistance;
     inputs.elevatorTargetVelocityMS = elevatorVelocity;
-  }
-
-  public void setTargetPose(TrapezoidProfile.State pose) {
-    setTargetPose(pose.position, pose.velocity);
   }
 
   public void setVoltage(double voltage) {

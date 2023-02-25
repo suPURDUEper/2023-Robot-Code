@@ -7,7 +7,6 @@ package org.supurdueper.frc2023.subsystems.arm;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -77,14 +76,6 @@ public class Arm extends SubsystemBase {
     runArmPID = true;
     inputs.armTargetPositionRad = armAngle.getRadians();
     inputs.armTargetVelocityRadS = armVelocity;
-  }
-
-  public void setTargetPose(TrapezoidProfile.State pose) {
-    setTargetPose(Rotation2d.fromRadians(pose.position), pose.velocity);
-  }
-
-  public TrapezoidProfile.State getPose() {
-    return new TrapezoidProfile.State(getArmPosition().getRadians(), getArmVelocity());
   }
 
   public void setVoltage(double voltage) {
