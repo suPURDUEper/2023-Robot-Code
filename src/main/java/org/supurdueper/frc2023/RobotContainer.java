@@ -174,7 +174,7 @@ public class RobotContainer {
               return false;
             }));
 
-    score.onTrue(new Score(intake, hasCube));
+    score.whileTrue(new Score(intake, hasCube));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(
