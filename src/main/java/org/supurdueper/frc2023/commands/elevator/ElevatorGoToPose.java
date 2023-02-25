@@ -16,9 +16,11 @@ public class ElevatorGoToPose extends TrapezoidProfileCommand {
             new TrapezoidProfile.Constraints(
                 Elevator.elevatorMaxVelocity, Elevator.elevatorMaxAcceleration),
             // End at desired position in meters; implicitly starts at 0
-            target),
+            target,
+            // Start at current position
+            elevator.getElevatorPose()),
         // Pipe the profile state to the elevator
-        setpointState -> elevator.setTargetPose(setpointState.position, setpointState.velocity),
+        elevator::setTargetPose,
         // Require the elevaotr
         elevator);
   }
