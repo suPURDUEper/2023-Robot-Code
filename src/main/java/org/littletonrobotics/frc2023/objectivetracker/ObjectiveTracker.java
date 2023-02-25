@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.littletonrobotics.frc2023.objectivetracker.NodeSelectorIO.NodeSelectorIOInputs;
-import org.littletonrobotics.junction.Logger;
 
 public class ObjectiveTracker extends SubsystemBase {
   private final NodeSelectorIO selectorIO;
@@ -106,10 +105,11 @@ public class ObjectiveTracker extends SubsystemBase {
     }
 
     // Log state
-    Logger.getInstance().recordOutput("ObjectiveTracker/GamePiece", gamePiece.toString());
-    Logger.getInstance().recordOutput("ObjectiveTracker/LastIntakeFront", lastIntakeFront);
-    Logger.getInstance().recordOutput("ObjectiveTracker/SelectedRow", selectedRow);
-    Logger.getInstance().recordOutput("ObjectiveTracker/SelectedLevel", selectedLevel.toString());
+    // Logger.getInstance().recordOutput("ObjectiveTracker/GamePiece", gamePiece.toString());
+    // Logger.getInstance().recordOutput("ObjectiveTracker/LastIntakeFront", lastIntakeFront);
+    // Logger.getInstance().recordOutput("ObjectiveTracker/SelectedRow", selectedRow);
+    // Logger.getInstance().recordOutput("ObjectiveTracker/SelectedLevel",
+    // selectedLevel.toString());
   }
 
   /** Shifts the selected node in the selector by one position. */

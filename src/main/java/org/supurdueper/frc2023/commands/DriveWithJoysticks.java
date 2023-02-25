@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.util.GeomUtil;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 
 public class DriveWithJoysticks extends CommandBase {
@@ -21,22 +20,6 @@ public class DriveWithJoysticks extends CommandBase {
   private final Supplier<Double> leftYSupplier;
   private final Supplier<Double> rightYSupplier;
   private final Supplier<Boolean> robotRelativeOverride;
-
-  private static final LoggedDashboardChooser<Double> linearSpeedLimitChooser =
-      new LoggedDashboardChooser<>("Linear Speed Limit");
-  private static final LoggedDashboardChooser<Double> angularSpeedLimitChooser =
-      new LoggedDashboardChooser<>("Angular Speed Limit");
-
-  static {
-    linearSpeedLimitChooser.addDefaultOption("--Competition Mode--", 1.0);
-    linearSpeedLimitChooser.addOption("Fast Speed (70%)", 0.7);
-    linearSpeedLimitChooser.addOption("Medium Speed (30%)", 0.3);
-    linearSpeedLimitChooser.addOption("Slow Speed (15%)", 0.15);
-    angularSpeedLimitChooser.addDefaultOption("--Competition Mode--", 1.0);
-    angularSpeedLimitChooser.addOption("Fast Speed (70%)", 0.7);
-    angularSpeedLimitChooser.addOption("Medium Speed (30%)", 0.3);
-    angularSpeedLimitChooser.addOption("Slow Speed (15%)", 0.15);
-  }
 
   /** Creates a new DriveWithJoysticks. */
   public DriveWithJoysticks(
@@ -71,10 +54,6 @@ public class DriveWithJoysticks extends CommandBase {
     // Apply squaring
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
     rightY = Math.copySign(rightY * rightY, rightY);
-
-    // Apply speed limits
-    linearMagnitude *= linearSpeedLimitChooser.get();
-    rightY *= angularSpeedLimitChooser.get();
 
     // Calcaulate new linear components
     Translation2d linearVelocity =

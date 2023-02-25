@@ -30,7 +30,6 @@ import org.littletonrobotics.frc2023.util.trajectory.CustomHolonomicDriveControl
 import org.littletonrobotics.frc2023.util.trajectory.CustomTrajectoryGenerator;
 import org.littletonrobotics.frc2023.util.trajectory.RotationSequence;
 import org.littletonrobotics.frc2023.util.trajectory.Waypoint;
-import org.littletonrobotics.junction.Logger;
 import org.supurdueper.frc2023.subsystems.drive.Drive;
 
 public class DriveTrajectory extends CommandBase {
@@ -155,7 +154,8 @@ public class DriveTrajectory extends CommandBase {
     }
 
     // Log trajectory
-    Logger.getInstance().recordOutput("Odometry/Trajectory", customGenerator.getDriveTrajectory());
+    // Logger.getInstance().recordOutput("Odometry/Trajectory",
+    // customGenerator.getDriveTrajectory());
 
     // Reset all controllers
     timer.reset();
@@ -198,14 +198,14 @@ public class DriveTrajectory extends CommandBase {
         AllianceFlipUtil.apply(customGenerator.getDriveTrajectory().sample(timer.get()));
     RotationSequence.State holonomicRotationState =
         AllianceFlipUtil.apply(customGenerator.getHolonomicRotationSequence().sample(timer.get()));
-    Logger.getInstance()
-        .recordOutput(
-            "Odometry/TrajectorySetpoint",
-            new double[] {
-              driveState.poseMeters.getX(),
-              driveState.poseMeters.getY(),
-              holonomicRotationState.position.getRadians()
-            });
+    // Logger.getInstance()
+    //     .recordOutput(
+    //         "Odometry/TrajectorySetpoint",
+    //         new double[] {
+    //           driveState.poseMeters.getX(),
+    //           driveState.poseMeters.getY(),
+    //           holonomicRotationState.position.getRadians()
+    //         });
 
     // Calculate velocity
     ChassisSpeeds nextDriveState =

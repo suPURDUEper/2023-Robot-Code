@@ -4,11 +4,9 @@
 
 package org.supurdueper.frc2023;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
@@ -17,7 +15,6 @@ import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
@@ -62,8 +59,8 @@ public class RobotContainer {
       new Alert("Operator controller is not connected (port 1).", AlertType.WARNING);
 
   // Choosers
-  private final LoggedDashboardChooser<Command> autoChooser =
-      new LoggedDashboardChooser<>("Auto Routine");
+  // private final LoggedDashboardChooser<Command> autoChooser =
+  //     new LoggedDashboardChooser<>("Auto Routine");
 
   public RobotContainer() {
     // Check if flash should be burned
@@ -110,9 +107,9 @@ public class RobotContainer {
     // Set up subsystems
 
     // Set up auto routines
-    autoChooser.addDefaultOption("Do Nothing", null);
-    autoChooser.addDefaultOption(
-        "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
+    // autoChooser.addDefaultOption("Do Nothing", null);
+    // autoChooser.addDefaultOption(
+    //     "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
 
     // Alert if in tuning mode
     if (Constants.tuningMode) {
@@ -192,21 +189,21 @@ public class RobotContainer {
 
     intakeCube.onTrue(
         armavatorGoToPose(ArmavatorPreset.intakeCube.getPose())
-        .andThen(new IntakeCube(intake))
-        .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
+            .andThen(new IntakeCube(intake))
+            .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
     intakeCone.onTrue(
         armavatorGoToPose(ArmavatorPreset.intakeCone.getPose())
-          .andThen(new IntakeCone(intake))
-          .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
+            .andThen(new IntakeCone(intake))
+            .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
     intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING)));
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
 
     singleStationConeIntake.onTrue(
-      armavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose())
-        .andThen(new IntakeCone(intake)));
+        armavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose())
+            .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
     elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
@@ -215,7 +212,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return new InstantCommand();
   }
 
   public Command armavatorGoToPose(ArmavatorPose pose) {

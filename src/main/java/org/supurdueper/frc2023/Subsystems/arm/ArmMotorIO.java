@@ -1,9 +1,7 @@
 package org.supurdueper.frc2023.subsystems.arm;
 
-import org.littletonrobotics.junction.AutoLog;
-
 public interface ArmMotorIO {
-  @AutoLog
+  // @AutoLog
   public static class ArmMotorIOInputs {
     public double armPositionRad = 0.0;
     public double armVelocityRadS = 0.0;

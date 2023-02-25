@@ -5,12 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
-import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class Intake extends SubsystemBase {
   public IntakeIO io;
   private Mode mode;
-  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  // private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  private final IntakeIOInputs inputs = new IntakeIOInputs();
 
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
       new LoggedTunableNumber("Intake/CubeIntakeVolts");
@@ -53,7 +54,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Intake", inputs);
+    // Logger.getInstance().processInputs("Intake", inputs);
 
     // Reset when disabled
     if (DriverStation.isDisabled()) {

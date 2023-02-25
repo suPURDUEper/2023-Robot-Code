@@ -19,7 +19,6 @@ import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
-import org.littletonrobotics.junction.Logger;
 import org.supurdueper.frc2023.subsystems.drive.GyroIO.GyroIOInputs;
 
 public class Drive extends SubsystemBase {
@@ -111,20 +110,6 @@ public class Drive extends SubsystemBase {
         module.stop();
       }
 
-      // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
-
-    } else if (isCharacterizing) {
-      // Run in characterization mode
-      for (var module : modules) {
-        module.runCharacterization(characterizationVolts);
-      }
-
-      // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
-
     } else {
       // Calculate module setpoints
       var setpointTwist =
@@ -147,18 +132,7 @@ public class Drive extends SubsystemBase {
       for (int i = 0; i < 4; i++) {
         optimizedStates[i] = modules[i].runSetpoint(setpointStates[i]);
       }
-
-      // Log setpoint states
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", setpointStates);
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", optimizedStates);
     }
-
-    // Log measured states
-    SwerveModuleState[] measuredStates = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      measuredStates[i] = modules[i].getState();
-    }
-    Logger.getInstance().recordOutput("SwerveStates/Measured", measuredStates);
 
     // Update odometry
     SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
@@ -176,7 +150,7 @@ public class Drive extends SubsystemBase {
     }
     lastGyroYaw = gyroYaw;
     poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
-    Logger.getInstance().recordOutput("Odometry/Robot", getPose());
+    // Logger.getInstance().recordOutput("Odometry/Robot", getPose());
 
     // Update brake mode
     boolean stillMoving = false;

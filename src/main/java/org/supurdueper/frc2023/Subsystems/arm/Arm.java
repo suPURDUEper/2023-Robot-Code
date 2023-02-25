@@ -8,7 +8,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.arm.ArmMotorIO.ArmMotorIOInputs;
 
 public class Arm extends SubsystemBase {
 
@@ -16,7 +16,9 @@ public class Arm extends SubsystemBase {
   public static final double armMaxAcceleration = 10;
 
   private final ArmMotorIO io;
-  public final ArmMotorIOInputsAutoLogged inputs = new ArmMotorIOInputsAutoLogged();
+  // public final ArmMotorIOInputsAutoLogged inputs = new ArmMotorIOInputsAutoLogged();
+  public final ArmMotorIOInputs inputs = new ArmMotorIOInputs();
+
   // public final ArmMotorIOInputs inputs = new ArmMotorIOInputs();
 
   private static final double armKp = 3;
@@ -57,7 +59,7 @@ public class Arm extends SubsystemBase {
       io.setVoltage(voltage + inputs.armFeedforward);
     }
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Armavator/Motors", inputs);
+    // Logger.getInstance().processInputs("Armavator/Motors", inputs);
   }
 
   public void setBrakeMode(boolean enabled) {

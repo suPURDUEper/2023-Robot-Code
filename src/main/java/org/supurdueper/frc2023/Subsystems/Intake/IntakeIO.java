@@ -1,9 +1,7 @@
 package org.supurdueper.frc2023.subsystems.intake;
 
-import org.littletonrobotics.junction.AutoLog;
-
 public interface IntakeIO {
-  @AutoLog
+  // @AutoLog
   public static class IntakeIOInputs {
 
     public double rollerAppliedVolts = 0.0;
