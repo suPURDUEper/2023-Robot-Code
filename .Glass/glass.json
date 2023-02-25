@@ -39,7 +39,7 @@
     }
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT4)",
+    "mode": "Disabled",
     "serverTeam": "10.74.57.2"
   },
   "Plots": {
@@ -104,6 +104,24 @@
                 1.0
               ],
               "id": "NT:/AdvantageKit/Intake/RollerCurrentAmps"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmTargetPositionRad"
+            },
+            {
+              "color": [
+                0.5058823823928833,
+                0.44705885648727417,
+                0.7019608020782471,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmPositionRad"
             }
           ]
         }

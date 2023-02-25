@@ -21,6 +21,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
+import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
@@ -176,7 +177,7 @@ public class RobotContainer {
               return false;
             }));
 
-    score.onTrue(getScoreCommand());
+    score.onTrue(new Score(intake, hasCube));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(
@@ -190,7 +191,9 @@ public class RobotContainer {
     armavatorStow.onTrue(armavatorGoToPose(ArmavatorPreset.stowed.getPose()));
 
     intakeCube.onTrue(
-        armavatorGoToPose(ArmavatorPreset.intakeCube.getPose()).andThen(new IntakeCube(intake)));
+        armavatorGoToPose(ArmavatorPreset.intakeCube.getPose())
+        .andThen(new IntakeCube(intake))
+        .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
     intakeCone.onTrue(
         armavatorGoToPose(ArmavatorPreset.intakeCone.getPose())
@@ -200,6 +203,10 @@ public class RobotContainer {
     intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING)));
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
+
+    singleStationConeIntake.onTrue(
+      armavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose())
+        .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
     elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
@@ -215,13 +222,6 @@ public class RobotContainer {
     return new ElevatorGoToPose(elevator, ArmavatorPose.ELEVATOR_SAFE_TARGET)
         .andThen(new ArmGoToPose(arm, pose.getArmProfileState()))
         .andThen(new ElevatorGoToPose(elevator, pose.getElevatorProfileState()));
-  }
-
-  public Command getScoreCommand() {
-    Intake.Mode mode = hasCube ? Intake.Mode.SCORE_CUBE : Intake.Mode.SCORE_CONE;
-    return new InstantCommand(() -> intake.setIntakeMode(mode), intake)
-        .andThen(new WaitCommand(1))
-        .andThen(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING), intake));
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {

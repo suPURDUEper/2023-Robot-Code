@@ -26,7 +26,7 @@ public class IntakeCone extends CommandBase {
     if (!interrupted) {
       RobotContainer.hasCube = false;
       intake.setIntakeMode(Mode.HOLD_CONE);
-      intake.io.setCurrentLimit(5, rollerAmpsLimit, 1);
+      intake.io.setCurrentLimit(8, rollerAmpsLimit, 1);
     } else {
       intake.setIntakeMode(Mode.NOT_RUNNING);
     }
