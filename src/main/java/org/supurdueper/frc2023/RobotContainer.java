@@ -173,9 +173,9 @@ public class RobotContainer {
             driveTranslationY,
             driveTranslationX,
             driveRotate,
-            () -> {
-              return false;
-            }));
+            () -> false,
+            () -> false,
+            () -> 0.0));
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
