@@ -10,6 +10,7 @@ public interface Armavator {
     public static final double ELEVATOR_SAFE = 0.17;
     public static final double ELEVATOR_INTAKE = 0.2;
     public static final double ELEVATOR_MAX = 0.6;
+    public static final double ARM_SAFE_ANGLE = 0.2;
     public static final TrapezoidProfile.State ELEVATOR_SAFE_TARGET =
         new TrapezoidProfile.State(ArmavatorPose.ELEVATOR_SAFE, 0);
 

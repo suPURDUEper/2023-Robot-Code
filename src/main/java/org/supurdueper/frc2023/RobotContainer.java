@@ -233,7 +233,12 @@ public class RobotContainer {
   }
 
   public Command armavatorGoToPose(ArmavatorPose pose) {
-    return new ElevatorGoToPose(elevator, ArmavatorPose.ELEVATOR_SAFE_TARGET)
+    Command command = new InstantCommand();
+    if (arm.getArmPosition().getRadians() < ArmavatorPose.ARM_SAFE_ANGLE
+        || pose.armAngle().getRadians() < ArmavatorPose.ARM_SAFE_ANGLE) {
+      command.andThen(new ElevatorGoToPose(elevator, ArmavatorPose.ELEVATOR_SAFE_TARGET));
+    }
+    return command
         .andThen(new ArmGoToPose(arm, pose.getArmProfileState()))
         .andThen(new ElevatorGoToPose(elevator, pose.getElevatorProfileState()));
   }
