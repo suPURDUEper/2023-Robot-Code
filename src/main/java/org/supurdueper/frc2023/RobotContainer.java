@@ -173,9 +173,9 @@ public class RobotContainer {
             driveTranslationY,
             driveTranslationX,
             driveRotate,
-            () -> false,
-            () -> false,
-            () -> 0.0));
+            () -> false, // Slow mode
+            () -> false, // Switch to robot relative driving
+            () -> 0.0)); // Limit acceleration based on arm extension percentage
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
