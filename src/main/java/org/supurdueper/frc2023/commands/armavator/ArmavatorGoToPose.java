@@ -1,0 +1,27 @@
+package org.supurdueper.frc2023.commands.armavator;
+
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import java.util.function.BooleanSupplier;
+import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
+import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
+import org.supurdueper.frc2023.subsystems.arm.Arm;
+import org.supurdueper.frc2023.subsystems.elevator.Elevator;
+
+public class ArmavatorGoToPose extends SequentialCommandGroup {
+
+  public ArmavatorGoToPose(ArmavatorPose pose, Arm arm, Elevator elevator) {
+    addCommands(
+        new ElevatorGoToPose(elevator, ArmavatorPose.ELEVATOR_SAFE_TARGET)
+            .unless(skipElevatorSafeHeight(pose, arm, elevator)),
+        new ArmGoToPose(arm, pose.getArmProfileState()),
+        new ElevatorGoToPose(elevator, pose.getElevatorProfileState()));
+  }
+
+  private BooleanSupplier skipElevatorSafeHeight(
+      ArmavatorPose targetPose, Arm arm, Elevator elevator) {
+    return () ->
+        arm.getArmPosition().getRadians() > ArmavatorPose.ARM_SAFE_ANGLE
+            && targetPose.armAngle().getRadians() > ArmavatorPose.ARM_SAFE_ANGLE;
+  }
+}

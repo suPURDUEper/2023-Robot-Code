@@ -11,6 +11,7 @@ public class Intake extends SubsystemBase {
   public IntakeIO io;
   private Mode mode;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  public boolean hasCube;
 
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
       new LoggedTunableNumber("Intake/CubeIntakeVolts");
@@ -54,7 +55,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-
+    Logger.getInstance().recordOutput("Intake/hasCube", hasCube);
     // Reset when disabled
     if (DriverStation.isDisabled()) {
       io.setRollerVoltage(0.0);
@@ -102,5 +103,9 @@ public class Intake extends SubsystemBase {
 
   public Command scoreCubeCommand() {
     return startEnd(() -> mode = Mode.SCORE_CUBE, () -> mode = Mode.NOT_RUNNING);
+  }
+
+  public boolean hasCube() {
+    return hasCube;
   }
 }

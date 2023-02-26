@@ -7,12 +7,10 @@ import org.supurdueper.frc2023.subsystems.intake.Intake;
 public class Score extends CommandBase {
 
   private Intake intake;
-  private boolean isCube;
   private Timer timer;
 
-  public Score(Intake intake, boolean isCube) {
+  public Score(Intake intake) {
     this.intake = intake;
-    this.isCube = isCube;
     addRequirements(intake);
     timer = new Timer();
   }
@@ -20,7 +18,7 @@ public class Score extends CommandBase {
   @Override
   public void initialize() {
     intake.io.setCurrentLimit(40, 100, 1);
-    intake.setIntakeMode(isCube ? Intake.Mode.SCORE_CUBE : Intake.Mode.SCORE_CONE);
+    intake.setIntakeMode(intake.hasCube ? Intake.Mode.SCORE_CUBE : Intake.Mode.SCORE_CONE);
     timer.reset();
     timer.start();
   }

@@ -1,7 +1,6 @@
 package org.supurdueper.frc2023.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.supurdueper.frc2023.RobotContainer;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 import org.supurdueper.frc2023.subsystems.intake.Intake.Mode;
 
@@ -23,7 +22,7 @@ public class IntakeCone extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      RobotContainer.hasCube = false;
+      intake.hasCube = false;
       intake.setIntakeMode(Mode.HOLD_CONE);
       intake.io.setCurrentLimit(8, rollerAmpsLimit, 1);
     } else {
