@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
-import org.supurdueper.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 
 public class DriveSnapToPose extends DriveToPose {
 

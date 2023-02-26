@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.List;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -31,7 +32,6 @@ import org.littletonrobotics.frc2023.util.trajectory.CustomTrajectoryGenerator;
 import org.littletonrobotics.frc2023.util.trajectory.RotationSequence;
 import org.littletonrobotics.frc2023.util.trajectory.Waypoint;
 import org.littletonrobotics.junction.Logger;
-import org.supurdueper.frc2023.subsystems.drive.Drive;
 
 public class DriveTrajectory extends CommandBase {
   private static final Alert generatorAlert =
