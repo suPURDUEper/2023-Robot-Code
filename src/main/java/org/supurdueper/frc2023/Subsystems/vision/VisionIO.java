@@ -1,13 +1,13 @@
 package org.supurdueper.frc2023.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import org.littletonrobotics.frc2023.util.PoseEstimator.TimestampedVisionUpdate;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
 
   @AutoLog
   public static class VisionIOInputs {
-    public Pose2d visionPose = new Pose2d();
+    public TimestampedVisionUpdate visionUpdate;
     public int targetsInView = 0;
     public double lastCaptureLatencyMs = 0.0;
   }

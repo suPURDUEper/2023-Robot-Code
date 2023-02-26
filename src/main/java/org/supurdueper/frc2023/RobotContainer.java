@@ -20,7 +20,6 @@ import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.subsystems.drive.GyroIO;
 import org.littletonrobotics.frc2023.subsystems.drive.GyroIOPigeon2;
-import org.littletonrobotics.frc2023.subsystems.drive.ModuleIO;
 import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSim;
 import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.littletonrobotics.frc2023.util.Alert;
@@ -42,6 +41,8 @@ import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
+import org.supurdueper.frc2023.subsystems.vision.Vision;
+import org.supurdueper.frc2023.subsystems.vision.VisionIOLimelight;
 
 public class RobotContainer {
 
@@ -50,6 +51,7 @@ public class RobotContainer {
   private Elevator elevator;
   private Arm arm;
   private Intake intake;
+  private Vision vision;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -81,6 +83,7 @@ public class RobotContainer {
           elevator = new Elevator(new ElevatorMotorIOSparkMax());
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
+          vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -93,19 +96,6 @@ public class RobotContainer {
           break;
       }
     }
-
-    // Instantiate missing subsystems
-    drive =
-        drive != null
-            ? drive
-            : new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-
-    // Set up subsystems
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing", null);
