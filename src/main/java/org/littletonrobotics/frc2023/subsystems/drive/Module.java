@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
-import org.supurdueper.frc2023.subsystems.drive.ModuleIOInputsAutoLogged;
 
 public class Module {
   private final ModuleIO io;

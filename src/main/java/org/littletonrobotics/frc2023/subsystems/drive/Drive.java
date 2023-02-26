@@ -20,7 +20,6 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
 import org.littletonrobotics.junction.Logger;
-import org.supurdueper.frc2023.subsystems.drive.GyroIOInputsAutoLogged;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
