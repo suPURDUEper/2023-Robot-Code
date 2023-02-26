@@ -37,19 +37,19 @@ public class DriveToPose extends CommandBase {
 
   private static final LoggedTunableNumber driveKp = new LoggedTunableNumber("DriveToPose/DriveKp");
   private static final LoggedTunableNumber driveKd = new LoggedTunableNumber("DriveToPose/DriveKd");
-  private static final LoggedTunableNumber thetaKp = new LoggedTunableNumber("DriveToPose/ThetaKp");
-  private static final LoggedTunableNumber thetaKd = new LoggedTunableNumber("DriveToPose/ThetaKd");
+  public static final LoggedTunableNumber thetaKp = new LoggedTunableNumber("DriveToPose/ThetaKp");
+  public static final LoggedTunableNumber thetaKd = new LoggedTunableNumber("DriveToPose/ThetaKd");
   private static final LoggedTunableNumber driveMaxVelocity =
       new LoggedTunableNumber("DriveToPose/DriveMaxVelocity");
   private static final LoggedTunableNumber driveMaxAcceleration =
       new LoggedTunableNumber("DriveToPose/DriveMaxAcceleration");
-  private static final LoggedTunableNumber thetaMaxVelocity =
+  public static final LoggedTunableNumber thetaMaxVelocity =
       new LoggedTunableNumber("DriveToPose/ThetaMaxVelocity");
-  private static final LoggedTunableNumber thetaMaxAcceleration =
+  public static final LoggedTunableNumber thetaMaxAcceleration =
       new LoggedTunableNumber("DriveToPose/ThetaMaxAcceleration");
   private static final LoggedTunableNumber driveTolerance =
       new LoggedTunableNumber("HoldPose/DriveTolerance");
-  private static final LoggedTunableNumber thetaTolerance =
+  public static final LoggedTunableNumber thetaTolerance =
       new LoggedTunableNumber("HoldPose/ThetaTolerance");
 
   static {

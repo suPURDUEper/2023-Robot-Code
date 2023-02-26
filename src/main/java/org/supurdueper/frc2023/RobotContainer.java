@@ -5,10 +5,10 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
@@ -24,6 +24,7 @@ import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
+import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -176,6 +177,11 @@ public class RobotContainer {
             () -> {
               return false;
             }));
+
+    rotateTo0.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
+    rotateTo90.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
+    rotateTo180.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
+    rotateTo270.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
 
     score.onTrue(new Score(intake, hasCube));
 
