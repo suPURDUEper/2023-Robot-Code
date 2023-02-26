@@ -20,7 +20,6 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
 import org.littletonrobotics.junction.Logger;
-import org.supurdueper.frc2023.subsystems.drive.GyroIO.GyroIOInputs;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
@@ -29,8 +28,7 @@ public class Drive extends SubsystemBase {
       6.0; // Need to be under the above speed for this length of time to switch to coast
 
   private final GyroIO gyroIO;
-  // private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-  private final GyroIOInputs gyroInputs = new GyroIOInputs();
+  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
@@ -86,7 +84,7 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
-    // Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
     }

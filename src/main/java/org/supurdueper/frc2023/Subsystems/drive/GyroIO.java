@@ -1,7 +1,9 @@
 package org.supurdueper.frc2023.subsystems.drive;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface GyroIO {
-  // @AutoLog
+  @AutoLog
   public static class GyroIOInputs {
     public boolean connected = false;
     public double rollPositionRad = 0.0;
