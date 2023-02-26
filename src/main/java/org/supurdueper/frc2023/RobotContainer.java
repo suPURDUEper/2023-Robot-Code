@@ -178,10 +178,18 @@ public class RobotContainer {
               return false;
             }));
 
-    rotateTo0.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
-    rotateTo90.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
-    rotateTo180.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
-    rotateTo270.whileTrue(new DriveWithLockedRotation(drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
+    rotateTo0.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
+    rotateTo90.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
+    rotateTo180.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
+    rotateTo270.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
 
     score.onTrue(new Score(intake, hasCube));
 
@@ -198,21 +206,21 @@ public class RobotContainer {
 
     intakeCube.onTrue(
         armavatorGoToPose(ArmavatorPreset.intakeCube.getPose())
-        .andThen(new IntakeCube(intake))
-        .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
+            .andThen(new IntakeCube(intake))
+            .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
     intakeCone.onTrue(
         armavatorGoToPose(ArmavatorPreset.intakeCone.getPose())
-          .andThen(new IntakeCone(intake))
-          .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
+            .andThen(new IntakeCone(intake))
+            .andThen(armavatorGoToPose(ArmavatorPreset.stowed.getPose())));
 
     intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING)));
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
 
     singleStationConeIntake.onTrue(
-      armavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose())
-        .andThen(new IntakeCone(intake)));
+        armavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose())
+            .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
     elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));

@@ -18,7 +18,6 @@ public class IntakeCube extends CommandBase {
   public void initialize() {
     intake.setIntakeMode(Mode.INTAKE_CUBE);
     intake.io.setCurrentLimit(40, rollerAmpsLimit, 1);
-
   }
 
   @Override

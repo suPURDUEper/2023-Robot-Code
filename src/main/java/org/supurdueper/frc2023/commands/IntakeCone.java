@@ -18,7 +18,6 @@ public class IntakeCone extends CommandBase {
   public void initialize() {
     intake.setIntakeMode(Mode.INTAKE_CONE);
     intake.io.setCurrentLimit(40, rollerAmpsLimit, 1);
-
   }
 
   @Override
