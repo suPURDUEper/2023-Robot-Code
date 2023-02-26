@@ -8,9 +8,10 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  private IntakeIO io;
+  public IntakeIO io;
   private Mode mode;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  public boolean hasCube;
 
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
       new LoggedTunableNumber("Intake/CubeIntakeVolts");
@@ -34,9 +35,9 @@ public class Intake extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
-        rollerCubeIntakeVolts.initDefault(4.0);
+        rollerCubeIntakeVolts.initDefault(12.0);
         rollerConeIntakeVolts.initDefault(-12.0);
-        rollerCubeScoreVolts.initDefault(8.0);
+        rollerCubeScoreVolts.initDefault(-8.0);
         rollerConeScoreVolts.initDefault(8.0);
         break;
       default:
@@ -54,7 +55,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-
+    Logger.getInstance().recordOutput("Intake/hasCube", hasCube);
     // Reset when disabled
     if (DriverStation.isDisabled()) {
       io.setRollerVoltage(0.0);
@@ -81,7 +82,7 @@ public class Intake extends SubsystemBase {
           voltage = -1;
           break;
         case HOLD_CUBE:
-          voltage = 1;
+          voltage = 0;
           break;
       }
       io.setRollerVoltage(voltage);
@@ -102,5 +103,9 @@ public class Intake extends SubsystemBase {
 
   public Command scoreCubeCommand() {
     return startEnd(() -> mode = Mode.SCORE_CUBE, () -> mode = Mode.NOT_RUNNING);
+  }
+
+  public boolean hasCube() {
+    return hasCube;
   }
 }

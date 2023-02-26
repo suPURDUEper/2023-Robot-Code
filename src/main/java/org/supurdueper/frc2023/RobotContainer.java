@@ -5,37 +5,39 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.Robot;
+import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
+import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.subsystems.drive.GyroIO;
+import org.littletonrobotics.frc2023.subsystems.drive.GyroIOPigeon2;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIO;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSim;
+import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.supurdueper.frc2023.commands.DriveWithJoysticks;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
-import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
+import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
-import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
+import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
+import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
-import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
-import org.supurdueper.frc2023.subsystems.drive.Drive;
-import org.supurdueper.frc2023.subsystems.drive.GyroIO;
-import org.supurdueper.frc2023.subsystems.drive.GyroIOPigeon2;
-import org.supurdueper.frc2023.subsystems.drive.ModuleIO;
-import org.supurdueper.frc2023.subsystems.drive.ModuleIOSim;
-import org.supurdueper.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
@@ -48,9 +50,6 @@ public class RobotContainer {
   private Elevator elevator;
   private Arm arm;
   private Intake intake;
-
-  //
-  public static boolean hasCube = false;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -159,6 +158,8 @@ public class RobotContainer {
     Trigger armavatorMid = operator.b();
     Trigger armavatorHigh = operator.y();
     Trigger armavatorStow = operator.x();
+    Trigger manualIntakeCube = operator.leftTrigger(0.2);
+    Trigger manualIntakeCone = operator.rightTrigger(0.2);
     Trigger intakeCube = operator.leftBumper();
     Trigger intakeCone = operator.rightBumper();
     Trigger intakeOff = operator.back();
@@ -176,28 +177,53 @@ public class RobotContainer {
               return false;
             }));
 
-    score.onTrue(getScoreCommand());
+    rotateTo0.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
+    rotateTo90.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
+    rotateTo180.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
+    rotateTo270.whileTrue(
+        new DriveWithLockedRotation(
+            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
+
+    score.onTrue(new Score(intake));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(
-        armavatorGoToPose(
-            hasCube ? ArmavatorPreset.highCube.getPose() : ArmavatorPreset.highCone.getPose()));
+        Commands.either(
+            new ArmavatorGoToPose(ArmavatorPreset.highCube.getPose(), arm, elevator),
+            new ArmavatorGoToPose(ArmavatorPreset.highCone.getPose(), arm, elevator),
+            intake::hasCube));
 
     armavatorMid.onTrue(
-        armavatorGoToPose(
-            hasCube ? ArmavatorPreset.midCube.getPose() : ArmavatorPreset.midCone.getPose()));
+        Commands.either(
+            new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
+            new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
+            intake::hasCube));
 
-    armavatorStow.onTrue(armavatorGoToPose(ArmavatorPreset.stowed.getPose()));
+    armavatorStow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
 
     intakeCube.onTrue(
-        armavatorGoToPose(ArmavatorPreset.intakeCube.getPose()).andThen(new IntakeCube(intake)));
+        new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator)
+            .andThen(new IntakeCube(intake))
+            .andThen(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator)));
 
     intakeCone.onTrue(
-        armavatorGoToPose(ArmavatorPreset.intakeCone.getPose()).andThen(new IntakeCone(intake)));
+        new ArmavatorGoToPose(ArmavatorPreset.intakeCone.getPose(), arm, elevator)
+            .andThen(new IntakeCone(intake))
+            .andThen(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator)));
 
-    intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.HOLD_CONE)));
+    intakeOff.onTrue(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING)));
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
+
+    singleStationConeIntake.onTrue(
+        new ArmavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose(), arm, elevator)
+            .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
     elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
@@ -207,19 +233,6 @@ public class RobotContainer {
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
     return autoChooser.get();
-  }
-
-  public Command armavatorGoToPose(ArmavatorPose pose) {
-    return new ElevatorGoToPose(elevator, ArmavatorPose.ELEVATOR_SAFE_TARGET)
-        .andThen(new ArmGoToPose(arm, pose.getArmProfileState()))
-        .andThen(new ElevatorGoToPose(elevator, pose.getElevatorProfileState()));
-  }
-
-  public Command getScoreCommand() {
-    Intake.Mode mode = hasCube ? Intake.Mode.SCORE_CUBE : Intake.Mode.SCORE_CONE;
-    return new InstantCommand(() -> intake.setIntakeMode(mode), intake)
-        .andThen(new WaitCommand(1))
-        .andThen(new InstantCommand(() -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING), intake));
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {

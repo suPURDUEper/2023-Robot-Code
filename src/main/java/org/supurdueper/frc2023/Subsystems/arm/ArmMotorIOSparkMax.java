@@ -3,11 +3,13 @@ package org.supurdueper.frc2023.subsystems.arm;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
+import org.littletonrobotics.frc2023.util.SparkMaxPeriodicFrameConfig;
 
 public class ArmMotorIOSparkMax implements ArmMotorIO {
   private final CANSparkMax armSparkMax;
@@ -28,6 +30,10 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // Set followers
     armFollowSparkMax.follow(armSparkMax, true);
 
+    // Set CAN status frame frequency
+    SparkMaxPeriodicFrameConfig.configLeaderFollower(armSparkMax);
+    SparkMaxPeriodicFrameConfig.configLeaderFollower(armFollowSparkMax);
+
     // Set brake mode
     setBrakeMode(true);
 
@@ -35,6 +41,9 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     armEncoder.setInverted(true);
     armEncoder.setZeroOffset(Units.radiansToRotations(0.809101) / armEncoderToArmGearRatio);
+    // Speed up status message that has encoder position
+    armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+
     // Setup PID controllers
     // armPIDController = armSparkMax.getPIDController();
     // armPIDController.setFeedbackDevice(armEncoder);
@@ -51,8 +60,8 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     // Setup CAN parameters
-    armSparkMax.setCANTimeout(0);
-    armFollowSparkMax.setCANTimeout(0);
+    armSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
+    armFollowSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
 
     // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
     armEncoder.setPositionConversionFactor(1);

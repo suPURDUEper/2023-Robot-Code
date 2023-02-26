@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.supurdueper.frc2023;
+package org.littletonrobotics.frc2023;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.VirtualSubsystem;
@@ -24,6 +23,8 @@ import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.supurdueper.frc2023.BuildConstants;
+import org.supurdueper.frc2023.RobotContainer;
 
 public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
@@ -68,12 +69,12 @@ public class Robot extends LoggedRobot {
     // Set up data receivers & replay source
     switch (Constants.getMode()) {
       case REAL:
-        // String folder = Constants.logFolders.get(Constants.getRobot());
-        // if (folder != null) {
-        //   logger.addDataReceiver(new WPILOGWriter(folder));
-        // } else {
-        //   logNoFileAlert.set(true);
-        // }
+        String folder = Constants.logFolders.get(Constants.getRobot());
+        if (folder != null) {
+          logger.addDataReceiver(new WPILOGWriter(folder));
+        } else {
+          logNoFileAlert.set(true);
+        }
         logger.addDataReceiver(new NT4Publisher());
         LoggedPowerDistribution.getInstance();
         break;
@@ -180,9 +181,7 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-    robotContainer.bindControls();
-  }
+  public void disabledPeriodic() {}
 
   @Override
   public void testInit() {}
