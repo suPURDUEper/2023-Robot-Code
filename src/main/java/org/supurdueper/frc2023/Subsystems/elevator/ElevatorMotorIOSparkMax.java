@@ -5,10 +5,12 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
+import org.littletonrobotics.frc2023.util.SparkMaxPeriodicFrameConfig;
 
 public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
   private final CANSparkMax elevatorSparkMax;
@@ -27,6 +29,10 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
       elevatorSparkMax.restoreFactoryDefaults();
       elevatorFollowSparkMax.restoreFactoryDefaults();
     }
+
+    // Configure status frames
+    SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorSparkMax);
+    SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorFollowSparkMax);
 
     // Set followers
     elevatorFollowSparkMax.follow(elevatorSparkMax, true);
@@ -48,8 +54,8 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
     elevatorFollowSparkMax.setSmartCurrentLimit(40);
 
     // Setup CAN parameters
-    elevatorSparkMax.setCANTimeout(0);
-    elevatorFollowSparkMax.setCANTimeout(0);
+    elevatorSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
+    elevatorFollowSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
 
     // Set soft limits
     elevatorSparkMax.setSoftLimit(SoftLimitDirection.kReverse, 0);
