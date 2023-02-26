@@ -158,6 +158,8 @@ public class RobotContainer {
     Trigger armavatorMid = operator.b();
     Trigger armavatorHigh = operator.y();
     Trigger armavatorStow = operator.x();
+    Trigger manualIntakeCube = operator.leftTrigger(0.2);
+    Trigger manualIntakeCone = operator.rightTrigger(0.2);
     Trigger intakeCube = operator.leftBumper();
     Trigger intakeCone = operator.rightBumper();
     Trigger intakeOff = operator.back();
@@ -197,7 +199,7 @@ public class RobotContainer {
             new ArmavatorGoToPose(ArmavatorPreset.highCone.getPose(), arm, elevator),
             intake::hasCube));
 
-    armavatorHigh.onTrue(
+    armavatorMid.onTrue(
         Commands.either(
             new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
             new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
