@@ -150,6 +150,7 @@ public class RobotContainer {
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
     Trigger swerveXMode = driver.povDown();
+    Trigger slowMode = driver.leftTrigger(0.2).or(driver.rightTrigger(0.2));
 
     // Operator
     Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
@@ -173,7 +174,7 @@ public class RobotContainer {
             driveTranslationY,
             driveTranslationX,
             driveRotate,
-            () -> false, // Slow mode
+            slowMode::getAsBoolean, // Slow mode
             () -> false, // Switch to robot relative driving
             () -> 0.0)); // Limit acceleration based on arm extension percentage
 
