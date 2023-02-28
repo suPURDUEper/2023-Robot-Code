@@ -2,16 +2,22 @@ package org.supurdueper.frc2023.subsystems.intake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax roller;
+  private final Spark lights;
 
   public IntakeIOSparkMax() {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
         roller = new CANSparkMax(13, MotorType.kBrushless);
+        lights = new Spark(5);
+
         break;
       default:
         throw new RuntimeException("Invalid robot for CubeIntakeIOSparkMax!");
@@ -46,5 +52,9 @@ public class IntakeIOSparkMax implements IntakeIO {
   @Override
   public double getRollerAmps() {
     return roller.getOutputCurrent();
+  }
+  @Override
+  public void setLightsValue(double outputValue){
+    lights.set(outputValue);
   }
 }

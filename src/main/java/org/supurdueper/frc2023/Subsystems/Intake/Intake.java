@@ -65,6 +65,7 @@ public class Intake extends SubsystemBase {
           break;
         case INTAKE_CONE:
           voltage = rollerConeIntakeVolts.get();
+          lights.setLightsValue(.5);
           break;
         case INTAKE_CUBE:
           voltage = rollerCubeIntakeVolts.get();
