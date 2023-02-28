@@ -192,6 +192,9 @@ public class RobotContainer {
         new DriveWithLockedRotation(
             drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
 
+    swerveXMode.whileTrue(
+        new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
+
     score.onTrue(new Score(intake));
 
     // *** OPERATOR CONTROLS ***
