@@ -93,7 +93,6 @@ public class DriveWithLockedRotation extends CommandBase {
     // Calculate theta speed
     double thetaVelocity =
         thetaController.calculate(currentPose.getRotation().getRadians(), targetAngle);
-    Math.abs(currentPose.getRotation().minus(Rotation2d.fromRadians(targetAngle)).getRadians());
     if (thetaController.atGoal()) thetaVelocity = 0.0;
 
     // Convert to meters per second

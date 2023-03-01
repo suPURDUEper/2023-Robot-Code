@@ -45,11 +45,7 @@ public class DriveToSubstation extends DriveToPose {
                           AllianceFlipUtil.apply(singleSubstationPose),
                           AllianceFlipUtil.apply(doubleSubstationLeftPose),
                           AllianceFlipUtil.apply(doubleSubstationRightPose)));
-          if (drive.getRotation().minus(nearestTarget.getRotation()).getCos() < 0.0) {
-            nearestTarget =
-                nearestTarget.transformBy(
-                    new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180.0)));
-          }
+        
           return nearestTarget;
         });
   }

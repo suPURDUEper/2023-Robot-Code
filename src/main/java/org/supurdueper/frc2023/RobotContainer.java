@@ -141,10 +141,10 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // Driver
-    Trigger rotateTo0 = driver.a();
+    Trigger rotateTo0 = driver.y();
     Trigger rotateTo90 = driver.x();
-    Trigger rotateTo180 = driver.b();
-    Trigger rotateTo270 = driver.y();
+    Trigger rotateTo180 = driver.a();
+    Trigger rotateTo270 = driver.b();
     Supplier<Double> driveTranslationX = driver::getLeftX;
     Supplier<Double> driveTranslationY = driver::getLeftY;
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
@@ -181,16 +181,16 @@ public class RobotContainer {
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(0)));
     rotateTo90.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(90)));
     rotateTo180.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(180)));
     rotateTo270.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90)));
 
     swerveXMode.whileTrue(
         new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
