@@ -8,9 +8,10 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  private IntakeIO io;
+  public IntakeIO io;
   private Mode mode;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  public boolean hasCube;
 
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
       new LoggedTunableNumber("Intake/CubeIntakeVolts");
@@ -24,6 +25,8 @@ public class Intake extends SubsystemBase {
   public enum Mode {
     INTAKE_CONE,
     INTAKE_CUBE,
+    HOLD_CONE,
+    HOLD_CUBE,
     SCORE_CUBE,
     SCORE_CONE,
     NOT_RUNNING
@@ -32,9 +35,9 @@ public class Intake extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
-        rollerCubeIntakeVolts.initDefault(4.0);
-        rollerConeIntakeVolts.initDefault(-4.0);
-        rollerCubeScoreVolts.initDefault(8.0);
+        rollerCubeIntakeVolts.initDefault(12.0);
+        rollerConeIntakeVolts.initDefault(-12.0);
+        rollerCubeScoreVolts.initDefault(-8.0);
         rollerConeScoreVolts.initDefault(8.0);
         break;
       default:
@@ -52,7 +55,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-
+    Logger.getInstance().recordOutput("Intake/hasCube", hasCube);
     // Reset when disabled
     if (DriverStation.isDisabled()) {
       io.setRollerVoltage(0.0);
@@ -76,6 +79,12 @@ public class Intake extends SubsystemBase {
         case SCORE_CUBE:
           voltage = rollerCubeScoreVolts.get();
           break;
+        case HOLD_CONE:
+          voltage = -1;
+          break;
+        case HOLD_CUBE:
+          voltage = 0;
+          break;
       }
       io.setRollerVoltage(voltage);
     }
@@ -95,5 +104,9 @@ public class Intake extends SubsystemBase {
 
   public Command scoreCubeCommand() {
     return startEnd(() -> mode = Mode.SCORE_CUBE, () -> mode = Mode.NOT_RUNNING);
+  }
+
+  public boolean hasCube() {
+    return hasCube;
   }
 }

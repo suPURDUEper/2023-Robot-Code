@@ -1,3 +1,10 @@
+// Copyright (c) 2023 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package org.littletonrobotics.frc2023.util;
 
 import edu.wpi.first.wpilibj.RobotBase;
@@ -11,6 +18,8 @@ import org.supurdueper.frc2023.BuildConstants;
 
 /** Determines whether to burn SparkMax configs to flash. */
 public class SparkMaxBurnManager {
+  public static final int configCANTimeout = 2000;
+  public static final int configCount = 10; // How many times to set the config on init
   private static final String buildDateFile = "/home/lvuser/build-date.txt";
   private static boolean shouldBurn = false;
 

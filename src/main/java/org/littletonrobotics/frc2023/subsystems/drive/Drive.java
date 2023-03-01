@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.subsystems.drive;
+package org.littletonrobotics.frc2023.subsystems.drive;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,6 +29,7 @@ public class Drive extends SubsystemBase {
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private static final LoggedTunableNumber maxLinearSpeed =
@@ -42,9 +43,10 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
   private boolean isCharacterizing = false;
+  private boolean isXMode = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
   private double characterizationVolts = 0.0;
-  private boolean isBrakeMode = false;
+  private boolean isBrakeMode = true;
   private Timer lastMovementTimer = new Timer();
 
   private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.1, 0.1, 0.1));
@@ -56,8 +58,8 @@ public class Drive extends SubsystemBase {
       case ROBOT_2023C:
       case ROBOT_SIMBOT:
         maxLinearSpeed.initDefault(Units.feetToMeters(14.5));
-        trackWidthX.initDefault(Units.inchesToMeters(30 - 5.25));
-        trackWidthY.initDefault(Units.inchesToMeters(30 - 5.25));
+        trackWidthX.initDefault(Units.inchesToMeters(24 - 5.25));
+        trackWidthY.initDefault(Units.inchesToMeters(26 - 5.25));
         break;
       default:
         break;
@@ -122,6 +124,18 @@ public class Drive extends SubsystemBase {
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
 
+    } else if (isXMode) {
+      SwerveModuleState xStateFlBr = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
+      SwerveModuleState xStateFrBl = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+
+      modules[0].runSetpoint(xStateFlBr); // FL
+      modules[1].runSetpoint(xStateFrBl); // FR
+      modules[2].runSetpoint(xStateFlBr); // BL
+      modules[3].runSetpoint(xStateFrBl); // BR
+
+      // Clear setpoint logs
+      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
+      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
     } else {
       // Calculate module setpoints
       var setpointTwist =
@@ -243,6 +257,11 @@ public class Drive extends SubsystemBase {
   /** Adds vision data to the pose esimation. */
   public void addVisionData(double timestamp, List<VisionUpdate> visionUpdates) {
     poseEstimator.addVisionData(timestamp, visionUpdates);
+  }
+
+  /** Move modules into an X to maximize holding traction */
+  public void setXMode(boolean xMode) {
+    isXMode = xMode;
   }
 
   /** Returns an array of module translations. */

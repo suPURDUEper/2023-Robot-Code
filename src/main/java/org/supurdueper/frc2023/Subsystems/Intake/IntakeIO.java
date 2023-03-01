@@ -16,6 +16,11 @@ public interface IntakeIO {
   /** Set the intake roller voltage */
   public default void setRollerVoltage(double volts) {}
 
-  public double getRollerAmps();
   public default void setLightsValue(double outputValue) {}
+  public default double getRollerAmps() {
+    return 0;
+  }
+
+  public default void setCurrentLimit(
+      double currentLimit, double triggerAmps, double triggerTimeSeconds) {}
 }

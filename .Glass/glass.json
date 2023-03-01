@@ -2,15 +2,32 @@
   "NetworkTables": {
     "transitory": {
       "AdvantageKit": {
-        "Drive": {
-          "Module0": {
-            "open": true
-          },
-          "Module2": {
+        "Armavator": {
+          "Motors": {
             "open": true
           },
           "open": true
         },
+        "Intake": {
+          "open": true
+        },
+        "RealOutputs": {
+          "CommandsAll": {
+            "open": true
+          }
+        },
+        "open": true
+      },
+      "LiveWindow": {
+        "open": true
+      },
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
         "open": true
       }
     },
@@ -22,6 +39,93 @@
     }
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT3)"
+    "mode": "Disabled",
+    "serverTeam": "10.74.57.2"
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 530,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmPositionRad"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmTargetPositionRad"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 257,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmFeedforward"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/OutputPID"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Intake/RollerCurrentAmps"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmTargetPositionRad"
+            },
+            {
+              "color": [
+                0.5058823823928833,
+                0.44705885648727417,
+                0.7019608020782471,
+                1.0
+              ],
+              "id": "NT:/AdvantageKit/Armavator/Motors/ArmPositionRad"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

@@ -57,4 +57,9 @@ public class IntakeIOSparkMax implements IntakeIO {
   public void setLightsValue(double outputValue){
     lights.set(outputValue);
   }
+
+  @Override
+  public void setCurrentLimit(double currentLimit, double triggerAmps, double triggerTimeSeconds) {
+    roller.setSmartCurrentLimit((int) currentLimit);
+  }
 }

@@ -1,4 +1,4 @@
-package org.supurdueper.frc2023.subsystems.drive;
+package org.littletonrobotics.frc2023.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,13 +9,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
-import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-  private final int index;
-
   private static final LoggedTunableNumber wheelRadius =
       new LoggedTunableNumber("Drive/Module/WheelRadius");
   private static final LoggedTunableNumber driveKp =
@@ -62,15 +59,13 @@ public class Module {
 
   public Module(ModuleIO io, int index) {
     this.io = io;
-    this.index = index;
-
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /** Updates inputs and checks tunable numbers. */
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Drive/Module" + Integer.toString(index), inputs);
+    // Logger.getInstance().processInputs("Drive/Module" + Integer.toString(index), inputs);
 
     // Update controllers if tunable numbers have changed
     if (driveKp.hasChanged(hashCode()) || driveKd.hasChanged(hashCode())) {

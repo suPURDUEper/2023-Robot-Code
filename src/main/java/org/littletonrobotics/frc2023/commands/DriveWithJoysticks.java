@@ -1,26 +1,43 @@
-package org.supurdueper.frc2023.commands;
+// Copyright (c) 2023 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
+package org.littletonrobotics.frc2023.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
+import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.supurdueper.frc2023.subsystems.drive.Drive;
 
 public class DriveWithJoysticks extends CommandBase {
-  private static final double deadband = 0.1;
+  public static final double deadband = 0.1;
+  public static final double minExtensionMaxLinearAcceleration = Units.inchesToMeters(900.0);
+  public static final double fullExtensionMaxLinearAcceleration = Units.inchesToMeters(200.0);
+  public static final double fullExtensionMaxAngularVelocity = Units.degreesToRadians(90.0);
+  public static final double sniperModeLinearPercent = 0.5;
+  public static final double sniperModeAngularPercent = 0.5;
 
   private final Drive drive;
   private final Supplier<Double> leftXSupplier;
   private final Supplier<Double> leftYSupplier;
   private final Supplier<Double> rightYSupplier;
+  private final Supplier<Boolean> sniperModeSupplier;
   private final Supplier<Boolean> robotRelativeOverride;
+  private final Supplier<Double> armExtensionPercentSupplier;
+  private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
 
   private static final LoggedDashboardChooser<Double> linearSpeedLimitChooser =
       new LoggedDashboardChooser<>("Linear Speed Limit");
@@ -44,13 +61,22 @@ public class DriveWithJoysticks extends CommandBase {
       Supplier<Double> leftXSupplier,
       Supplier<Double> leftYSupplier,
       Supplier<Double> rightYSupplier,
-      Supplier<Boolean> robotRelativeOverride) {
+      Supplier<Boolean> sniperModeSupplier,
+      Supplier<Boolean> robotRelativeOverride,
+      Supplier<Double> armExtensionPercentSupplier) {
     addRequirements(drive);
     this.drive = drive;
     this.leftXSupplier = leftXSupplier;
     this.leftYSupplier = leftYSupplier;
     this.rightYSupplier = rightYSupplier;
+    this.sniperModeSupplier = sniperModeSupplier;
     this.robotRelativeOverride = robotRelativeOverride;
+    this.armExtensionPercentSupplier = armExtensionPercentSupplier;
+  }
+
+  @Override
+  public void initialize() {
+    lastSpeeds = new ChassisSpeeds();
   }
 
   @Override
@@ -75,6 +101,10 @@ public class DriveWithJoysticks extends CommandBase {
     // Apply speed limits
     linearMagnitude *= linearSpeedLimitChooser.get();
     rightY *= angularSpeedLimitChooser.get();
+    if (sniperModeSupplier.get()) {
+      linearMagnitude *= sniperModeLinearPercent;
+      rightY *= sniperModeAngularPercent;
+    }
 
     // Calcaulate new linear components
     Translation2d linearVelocity =
@@ -102,6 +132,30 @@ public class DriveWithJoysticks extends CommandBase {
               speeds.omegaRadiansPerSecond,
               driveRotation);
     }
+
+    // Apply acceleration and velocity limits based on arm extension
+    double maxLinearAcceleration =
+        MathUtil.interpolate(
+            minExtensionMaxLinearAcceleration,
+            fullExtensionMaxLinearAcceleration,
+            armExtensionPercentSupplier.get());
+    double maxAngularVelocity =
+        MathUtil.interpolate(
+            drive.getMaxAngularSpeedRadPerSec(),
+            fullExtensionMaxAngularVelocity,
+            armExtensionPercentSupplier.get());
+    speeds =
+        new ChassisSpeeds(
+            MathUtil.clamp(
+                speeds.vxMetersPerSecond,
+                lastSpeeds.vxMetersPerSecond - maxLinearAcceleration * Constants.loopPeriodSecs,
+                lastSpeeds.vxMetersPerSecond + maxLinearAcceleration * Constants.loopPeriodSecs),
+            MathUtil.clamp(
+                speeds.vyMetersPerSecond,
+                lastSpeeds.vyMetersPerSecond - maxLinearAcceleration * Constants.loopPeriodSecs,
+                lastSpeeds.vyMetersPerSecond + maxLinearAcceleration * Constants.loopPeriodSecs),
+            MathUtil.clamp(speeds.omegaRadiansPerSecond, -maxAngularVelocity, maxAngularVelocity));
+    lastSpeeds = speeds;
 
     // Send to drive
     drive.runVelocity(speeds);

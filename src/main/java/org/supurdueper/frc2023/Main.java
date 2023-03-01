@@ -5,6 +5,7 @@
 package org.supurdueper.frc2023;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import org.littletonrobotics.frc2023.Robot;
 
 public final class Main {
   private Main() {}
