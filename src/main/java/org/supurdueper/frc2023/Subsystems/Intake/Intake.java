@@ -70,14 +70,15 @@ public class Intake extends SubsystemBase {
       switch (mode) {
         case NOT_RUNNING:
           voltage = 0.0;
+          io.setLightsValue(black);
           break;
         case INTAKE_CONE:
           voltage = rollerConeIntakeVolts.get();
-          lights.setLightsValue(yellow);
+          io.setLightsValue(yellow);
           break;
         case INTAKE_CUBE:
           voltage = rollerCubeIntakeVolts.get();
-          lights.setLightsValue(purple);
+          io.setLightsValue(purple);
           break;
         case SCORE_CONE:
           voltage = rollerConeScoreVolts.get();

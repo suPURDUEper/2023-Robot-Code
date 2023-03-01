@@ -17,6 +17,7 @@ public interface IntakeIO {
   public default void setRollerVoltage(double volts) {}
 
   public default void setLightsValue(double outputValue) {}
+
   public default double getRollerAmps() {
     return 0;
   }
