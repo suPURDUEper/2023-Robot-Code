@@ -10,6 +10,10 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
   private IntakeIO io;
   private Mode mode;
+  private double purple = .91;
+  private double yellow = .69;
+  private double gold = .67;
+  private double black = .99;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   private static final LoggedTunableNumber rollerCubeIntakeVolts =
@@ -56,6 +60,7 @@ public class Intake extends SubsystemBase {
     // Reset when disabled
     if (DriverStation.isDisabled()) {
       io.setRollerVoltage(0.0);
+      io.setLightsValue(0);
     } else {
       // Run roller
       double voltage = 0;
@@ -65,10 +70,11 @@ public class Intake extends SubsystemBase {
           break;
         case INTAKE_CONE:
           voltage = rollerConeIntakeVolts.get();
-          lights.setLightsValue(.5);
+          lights.setLightsValue(yellow);
           break;
         case INTAKE_CUBE:
           voltage = rollerCubeIntakeVolts.get();
+          lights.setLightsValue(purple);
           break;
         case SCORE_CONE:
           voltage = rollerConeScoreVolts.get();
