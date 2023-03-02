@@ -13,8 +13,6 @@ import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 public class Module {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-  private final int index;
-
   private static final LoggedTunableNumber wheelRadius =
       new LoggedTunableNumber("Drive/Module/WheelRadius");
   private static final LoggedTunableNumber driveKp =
@@ -61,8 +59,6 @@ public class Module {
 
   public Module(ModuleIO io, int index) {
     this.io = io;
-    this.index = index;
-
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
   }
 

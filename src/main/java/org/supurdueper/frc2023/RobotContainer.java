@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
@@ -140,6 +141,7 @@ public class RobotContainer {
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
     Trigger swerveXMode = driver.povDown();
+    Trigger slowMode = driver.leftTrigger(0.2).or(driver.rightTrigger(0.2));
 
     // Operator
     Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
@@ -163,9 +165,9 @@ public class RobotContainer {
             driveTranslationY,
             driveTranslationX,
             driveRotate,
-            () -> {
-              return false;
-            }));
+            slowMode::getAsBoolean, // Slow mode
+            () -> false, // Switch to robot relative driving
+            () -> 0.0)); // Limit acceleration based on arm extension percentage
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
@@ -179,6 +181,9 @@ public class RobotContainer {
     rotateTo270.whileTrue(
         new DriveWithLockedRotation(
             drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
+
+    swerveXMode.whileTrue(
+        new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
 
     score.onTrue(new Score(intake));
 
@@ -201,6 +206,18 @@ public class RobotContainer {
         new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator)
             .andThen(new IntakeCube(intake))
             .andThen(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator)));
+
+    manualIntakeCone.whileTrue(
+        new StartEndCommand(
+            () -> intake.setIntakeMode(Intake.Mode.INTAKE_CONE),
+            () -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING),
+            intake));
+
+    manualIntakeCube.whileTrue(
+        new StartEndCommand(
+            () -> intake.setIntakeMode(Intake.Mode.INTAKE_CUBE),
+            () -> intake.setIntakeMode(Intake.Mode.NOT_RUNNING),
+            intake));
 
     intakeCone.onTrue(
         new ArmavatorGoToPose(ArmavatorPreset.intakeCone.getPose(), arm, elevator)

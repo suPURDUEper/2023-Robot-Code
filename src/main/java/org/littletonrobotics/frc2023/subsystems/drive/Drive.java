@@ -52,6 +52,7 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
   private boolean isCharacterizing = false;
+  private boolean isXMode = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
   private double characterizationVolts = 0.0;
   private boolean isBrakeMode = false;
@@ -140,6 +141,18 @@ public class Drive extends SubsystemBase {
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
 
+    } else if (isXMode) {
+      SwerveModuleState xStateFlBr = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
+      SwerveModuleState xStateFrBl = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
+
+      modules[0].runSetpoint(xStateFlBr); // FL
+      modules[1].runSetpoint(xStateFrBl); // FR
+      modules[2].runSetpoint(xStateFlBr); // BL
+      modules[3].runSetpoint(xStateFrBl); // BR
+
+      // Clear setpoint logs
+      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
+      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
     } else {
       // Calculate module setpoints
       var setpointTwist =
@@ -297,6 +310,11 @@ public class Drive extends SubsystemBase {
       }
       poseEstimator.addVisionData(newVisionData);
     }
+  }
+
+  /** Move modules into an X to maximize holding traction */
+  public void setXMode(boolean xMode) {
+    isXMode = xMode;
   }
 
   /** Returns an array of module translations. */
