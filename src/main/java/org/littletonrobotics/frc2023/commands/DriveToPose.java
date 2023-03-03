@@ -145,6 +145,13 @@ public class DriveToPose extends CommandBase {
             driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, currentPose.getRotation()));
   }
 
+  
+
+  @Override
+  public boolean isFinished() {
+    return atGoal();
+  }
+
   @Override
   public void end(boolean interrupted) {
     running = false;
