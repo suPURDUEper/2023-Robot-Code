@@ -146,8 +146,8 @@ public class RobotContainer {
     Trigger rotateTo90 = driver.x();
     Trigger rotateTo180 = driver.a();
     Trigger rotateTo270 = driver.b();
-    Supplier<Double> driveTranslationX = driver::getLeftX;
-    Supplier<Double> driveTranslationY = driver::getLeftY;
+    Supplier<Double> driveTranslationX = invertJoystick(driver::getLeftX);
+    Supplier<Double> driveTranslationY = invertJoystick(driver::getLeftY);
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
