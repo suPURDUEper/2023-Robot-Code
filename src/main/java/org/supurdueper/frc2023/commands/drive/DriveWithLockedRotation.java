@@ -10,7 +10,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
@@ -101,8 +100,6 @@ public class DriveWithLockedRotation extends CommandBase {
         new Pose2d(new Translation2d(), linearDirection)
             .transformBy(GeomUtil.translationToTransform(linearMagnitude, 0.0))
             .getTranslation();
-
-    
 
     // Calculate theta speed
     double thetaVelocity =

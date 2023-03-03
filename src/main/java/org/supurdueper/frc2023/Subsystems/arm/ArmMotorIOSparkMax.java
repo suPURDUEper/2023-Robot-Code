@@ -45,11 +45,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
     armAbsoluteEncoder.setZeroOffset(Units.rotationsToRadians(0.1893));
     armSparkMax.getEncoder().setPositionConversionFactor(1 / 14.127);
-    double wrappedArmPos = armAbsoluteEncoder.getPosition();
-    if (wrappedArmPos > Math.PI * 1.5) {
-      wrappedArmPos -= Math.PI * 2;
-    }
-    armSparkMax.getEncoder().setPosition(wrappedArmPos);
+    syncEncoders();
     // Speed up status message that has encoder position
     armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
 
@@ -83,10 +79,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   @Override
   public void updateInputs(ArmMotorIOInputs inputs) {
     // Arm state variables for logging
-    double armPositionRad = armAbsoluteEncoder.getPosition();
-    if (armPositionRad > Math.PI * 1.5) {
-      armPositionRad -= Math.PI * 2;
-    }
+    double armPositionRad = wrapAbsoluteArmAngle(armAbsoluteEncoder.getPosition());
     inputs.armPositionRad = armPositionRad * armEncoderToArmGearRatio;
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
@@ -122,5 +115,17 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // armPIDController.setP(kP, 0);
     // armPIDController.setI(kI, 0);
     // armPIDController.setD(kD, 0);
+  }
+
+  private double wrapAbsoluteArmAngle(double armAbsoluteEncoderPos) {
+    if (armAbsoluteEncoderPos > Math.PI * 1.5) {
+      armAbsoluteEncoderPos -= Math.PI * 2;
+    }
+    return armAbsoluteEncoderPos;
+  }
+
+  @Override
+  public void syncEncoders() {
+    armSparkMax.getEncoder().setPosition(wrapAbsoluteArmAngle(armAbsoluteEncoder.getPosition()));
   }
 }

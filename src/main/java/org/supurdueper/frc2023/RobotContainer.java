@@ -33,7 +33,6 @@ import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
-import org.supurdueper.frc2023.commands.drive.DriveSnapToPose;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -197,14 +196,17 @@ public class RobotContainer {
         new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
 
     score.onTrue(
-        new Score(intake).withTimeout(0.5)
-        .andThen(Commands.either(
-            new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
-            new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
-            intake::hasCube)
-            .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
+        new Score(intake)
+            .withTimeout(0.5)
+            .andThen(
+                Commands.either(
+                        new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
+                        new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
+                        intake::hasCube)
+                    .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
 
-    driveAutoAim.whileTrue(new DriveSnapToPose(drive, new Pose2d(), driveTranslationX, driveTranslationY));
+    // driveAutoAim.whileTrue(new DriveSnapToPose(drive, new Pose2d(), driveTranslationX,
+    // driveTranslationY));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(

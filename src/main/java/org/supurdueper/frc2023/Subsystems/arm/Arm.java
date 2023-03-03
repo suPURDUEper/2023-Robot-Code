@@ -99,4 +99,8 @@ public class Arm extends SubsystemBase {
   public boolean isArmTooFarBack() {
     return inputs.armPositionRad < armMinAngleRad;
   }
+
+  public void syncEncoders() {
+    io.syncEncoders();
+  }
 }
