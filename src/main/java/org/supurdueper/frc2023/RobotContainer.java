@@ -31,6 +31,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
+import org.supurdueper.frc2023.commands.ConeAndBalanceAuto;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
@@ -261,7 +262,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return new ConeAndBalanceAuto(drive, intake, arm, elevator);
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
