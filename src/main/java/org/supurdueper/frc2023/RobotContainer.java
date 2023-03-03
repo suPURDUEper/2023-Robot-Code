@@ -31,6 +31,7 @@ import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
+import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -131,12 +132,12 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // Driver
-    Trigger rotateTo0 = driver.a();
+    Trigger rotateTo0 = driver.y();
     Trigger rotateTo90 = driver.x();
-    Trigger rotateTo180 = driver.b();
-    Trigger rotateTo270 = driver.y();
-    Supplier<Double> driveTranslationX = driver::getLeftX;
-    Supplier<Double> driveTranslationY = driver::getLeftY;
+    Trigger rotateTo180 = driver.a();
+    Trigger rotateTo270 = driver.b();
+    Supplier<Double> driveTranslationX = invertJoystick(driver::getLeftX);
+    Supplier<Double> driveTranslationY = invertJoystick(driver::getLeftY);
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
@@ -171,21 +172,32 @@ public class RobotContainer {
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(0)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(0), slowMode));
     rotateTo90.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(90), slowMode));
     rotateTo180.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(180)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(180), slowMode));
     rotateTo270.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationX, driveTranslationY, Units.degreesToRadians(-90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90), slowMode));
 
     swerveXMode.whileTrue(
         new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
 
-    score.onTrue(new Score(intake));
+    score.onTrue(
+        new Score(intake)
+            .withTimeout(0.5)
+            .andThen(
+                Commands.either(
+                        new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
+                        new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
+                        intake::hasCube)
+                    .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
+
+    // driveAutoAim.whileTrue(new DriveSnapToPose(drive, new Pose2d(), driveTranslationX,
+    // driveTranslationY));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(
@@ -244,5 +256,10 @@ public class RobotContainer {
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
     return () -> joystick.get() * -1;
+  }
+
+  // Method to get this command so we can use it in Robot.java
+  public Command getSyncArmEncoderCommand() {
+    return new SyncArmEncoders(arm);
   }
 }
