@@ -35,19 +35,21 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // Set CAN status frame frequency
     SparkMaxPeriodicFrameConfig.configLeaderFollower(armSparkMax);
     SparkMaxPeriodicFrameConfig.configLeaderFollower(armFollowSparkMax);
+    // Speed up frame with absolute encoder position
+    armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
 
     // Set brake mode
     setBrakeMode(true);
-
     // Get and reset encoder objects
     armAbsoluteEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     armAbsoluteEncoder.setInverted(true);
     armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
     armAbsoluteEncoder.setZeroOffset(Units.rotationsToRadians(0.1893));
+    // Sync with motor encoder so we can use the built-in soft limits on the motor controller
+    // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
+    // that didn't work
     armSparkMax.getEncoder().setPositionConversionFactor(1 / 14.127);
     syncEncoders();
-    // Speed up status message that has encoder position
-    armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
 
     // Setup PID controllers
     // armPIDController = armSparkMax.getPIDController();
