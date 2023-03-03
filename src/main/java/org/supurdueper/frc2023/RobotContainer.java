@@ -32,6 +32,7 @@ import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
+import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -265,5 +266,10 @@ public class RobotContainer {
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
     return () -> joystick.get() * -1;
+  }
+
+  // Method to get this command so we can use it in Robot.java
+  public Command getSyncArmEncoderCommand() {
+    return new SyncArmEncoders(arm);
   }
 }
