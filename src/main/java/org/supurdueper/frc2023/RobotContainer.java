@@ -182,16 +182,16 @@ public class RobotContainer {
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(0)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(0), slowMode));
     rotateTo90.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(90), slowMode));
     rotateTo180.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(180)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(180), slowMode));
     rotateTo270.whileTrue(
         new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90)));
+            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90), slowMode));
 
     swerveXMode.whileTrue(
         new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
