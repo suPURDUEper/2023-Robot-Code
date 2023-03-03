@@ -18,7 +18,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   // private final SparkMaxPIDController armPIDController;
   private final SparkMaxAbsoluteEncoder armAbsoluteEncoder;
   private final double armEncoderToArmGearRatio = 22.0 / 34.0;
-  private final double armEncoderToMotorRatio = (22.0 / 18.0) * 3.0 * 4.0 * 5.0;
+  private final double armEncoderToMotorRatio = (22.0 / 15.0) * 3.0 * 4.0 * 5.0;
 
   public ArmMotorIOSparkMax() {
     armSparkMax = new CANSparkMax(11, MotorType.kBrushless);
@@ -42,16 +42,17 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // Get and reset encoder objects
     armAbsoluteEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     armAbsoluteEncoder.setInverted(true);
-    armAbsoluteEncoder.setZeroOffset(Units.radiansToRotations(0.809101) / armEncoderToArmGearRatio);
+    armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
+    armAbsoluteEncoder.setZeroOffset(Units.rotationsToRadians(0.1893));
+    armSparkMax.getEncoder().setPositionConversionFactor(1 / 14.127);
+    double wrappedArmPos = armAbsoluteEncoder.getPosition();
+    if (wrappedArmPos > Math.PI * 1.5) {
+      wrappedArmPos -= Math.PI * 2;
+    }
+    armSparkMax.getEncoder().setPosition(wrappedArmPos);
     // Speed up status message that has encoder position
     armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
 
-    // Initialize motor encoder to absolute encoder position
-    if (Math.abs(armAbsoluteEncoder.getPosition()) > 0.00001) {
-      armSparkMax
-          .getEncoder()
-          .setPosition(armSensorRotationsToMotorRotations(armAbsoluteEncoder.getPosition()));
-    }
     // Setup PID controllers
     // armPIDController = armSparkMax.getPIDController();
     // armPIDController.setFeedbackDevice(armEncoder);
@@ -63,18 +64,15 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     armFollowSparkMax.setSmartCurrentLimit(30);
 
     armSparkMax.setSoftLimit(
-        SoftLimitDirection.kReverse, (float) armRadiansToMotorRotations(Arm.armMaxAngleRad));
-    armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    armSparkMax.setSoftLimit(
-        SoftLimitDirection.kForward, (float) armRadiansToMotorRotations(Arm.armMinAngleRad));
+        SoftLimitDirection.kForward, (float) (Arm.armMaxAngleRad / armEncoderToArmGearRatio));
     armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    armSparkMax.setSoftLimit(
+        SoftLimitDirection.kReverse, (float) -0.5); // Manually tuned due to backlash
+    armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
     // Setup CAN parameters
     armSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
     armFollowSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
-
-    // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
-    armAbsoluteEncoder.setPositionConversionFactor(1);
 
     if (SparkMaxBurnManager.shouldBurn()) {
       armSparkMax.burnFlash();
@@ -85,15 +83,11 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
   @Override
   public void updateInputs(ArmMotorIOInputs inputs) {
     // Arm state variables for logging
-    double armPositionRot = armAbsoluteEncoder.getPosition() * armEncoderToArmGearRatio;
-    inputs.armPositionRad = Units.rotationsToRadians(armPositionRot);
-    if (inputs.armPositionRad > Math.PI) {
-      armPositionRot = armAbsoluteEncoder.getPosition();
-      if (armPositionRot > 0.5) {
-        armPositionRot--;
-      }
-      inputs.armPositionRad = Units.rotationsToRadians(armPositionRot);
+    double armPositionRad = armAbsoluteEncoder.getPosition();
+    if (armPositionRad > Math.PI * 1.5) {
+      armPositionRad -= Math.PI * 2;
     }
+    inputs.armPositionRad = armPositionRad * armEncoderToArmGearRatio;
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armAbsoluteEncoder.getVelocity() * armEncoderToArmGearRatio);
@@ -128,14 +122,5 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // armPIDController.setP(kP, 0);
     // armPIDController.setI(kI, 0);
     // armPIDController.setD(kD, 0);
-  }
-
-  private double armSensorRotationsToMotorRotations(double absolutePos) {
-    return absolutePos * armEncoderToMotorRatio;
-  }
-
-  private double armRadiansToMotorRotations(double armRadians) {
-    return armSensorRotationsToMotorRotations(
-        Units.radiansToRotations(armRadians) / armEncoderToArmGearRatio);
   }
 }
