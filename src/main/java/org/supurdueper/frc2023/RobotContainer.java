@@ -224,6 +224,8 @@ public class RobotContainer {
             new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
             new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
             intake::hasCube));
+    
+    armavatorLow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator));
 
     armavatorStow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
 
