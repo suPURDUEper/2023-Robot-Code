@@ -43,7 +43,7 @@ public class ScoreConeAuto extends SequentialCommandGroup {
         new DriveToPose(
             drive,
             new Pose2d(
-                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(16),
+                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
                 FieldConstants.Grids.lowTranslations[5].getY(),
                 Rotation2d.fromDegrees(180))),
         new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
