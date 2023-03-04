@@ -34,7 +34,7 @@ import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
-import org.supurdueper.frc2023.commands.auto.ConeAndBalanceAuto;
+import org.supurdueper.frc2023.commands.auto.TwoGamePieceAuto;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -147,8 +147,8 @@ public class RobotContainer {
     Trigger rotateTo90 = driver.x();
     Trigger rotateTo180 = driver.a();
     Trigger rotateTo270 = driver.b();
-    Supplier<Double> driveTranslationX = invertJoystick(driver::getLeftX);
-    Supplier<Double> driveTranslationY = invertJoystick(driver::getLeftY);
+    Supplier<Double> driveTranslationX = driver::getLeftX;
+    Supplier<Double> driveTranslationY = driver::getLeftY;
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
@@ -262,7 +262,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return new ConeAndBalanceAuto(drive, intake, arm, elevator);
+    return new TwoGamePieceAuto(drive, elevator, arm, intake);
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {

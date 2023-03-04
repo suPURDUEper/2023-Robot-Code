@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
@@ -23,13 +24,15 @@ public class ScoreConeAuto extends SequentialCommandGroup {
 
   public ScoreConeAuto(Drive drive, Intake intake, Arm arm, Elevator elevator, int stationIndex) {
     addCommands( // set 0 position and score cone
-        new ResetElevatorPosition(elevator),
-        new ResetPoseCommand(
-            drive,
-            new Pose2d(
-                FieldConstants.Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
-                FieldConstants.Grids.lowTranslations[stationIndex].getY(),
-                Rotation2d.fromDegrees(180))),
+        Commands.parallel(
+            new ResetElevatorPosition(elevator),
+            new ResetPoseCommand(
+                drive,
+                new Pose2d(
+                    FieldConstants.Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
+                    FieldConstants.Grids.lowTranslations[stationIndex].getY(),
+                    Rotation2d.fromDegrees(180))),
+            new InstantCommand(() -> arm.syncEncoders())),
         Commands.parallel(
             new ArmavatorGoToPose(ArmavatorPreset.highCone.getPose(), arm, elevator),
             new IntakeCone(intake)),
@@ -44,7 +47,7 @@ public class ScoreConeAuto extends SequentialCommandGroup {
             drive,
             new Pose2d(
                 FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
-                FieldConstants.Grids.lowTranslations[5].getY(),
+                FieldConstants.Grids.lowTranslations[stationIndex].getY(),
                 Rotation2d.fromDegrees(180))),
         new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
   }

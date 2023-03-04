@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import org.littletonrobotics.frc2023.FieldConstants;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
@@ -32,11 +31,11 @@ public class ConeAndBalanceAuto extends SequentialCommandGroup {
                 (FieldConstants.Community.chargingStationOuterX
                             + FieldConstants.Community.chargingStationInnerX)
                         / 2
-                    +.8,
+                    + .8,
                 FieldConstants.Grids.lowTranslations[5].getY(),
                 Rotation2d.fromDegrees(180))),
         new InstantCommand(() -> drive.setXMode(true))
-        .andThen(new WaitCommand(1))
-        .andThen(new InstantCommand(() -> drive.setXMode(false))));
+            .andThen(new WaitCommand(1))
+            .andThen(new InstantCommand(() -> drive.setXMode(false))));
   }
 }
