@@ -61,10 +61,10 @@ public class DriveToPose extends CommandBase {
         thetaKp.initDefault(7.0);
         thetaKd.initDefault(0.0);
         driveMaxVelocity.initDefault(Units.inchesToMeters(150.0));
-        driveMaxAcceleration.initDefault(Units.inchesToMeters(450.0));
+        driveMaxAcceleration.initDefault(Units.inchesToMeters(225.0));
         thetaMaxVelocity.initDefault(Units.degreesToRadians(360.0));
-        thetaMaxAcceleration.initDefault(Units.degreesToRadians(720.0));
-        driveTolerance.initDefault(0.01);
+        thetaMaxAcceleration.initDefault(Units.degreesToRadians(360.0));
+        driveTolerance.initDefault(Units.inchesToMeters(2));
         thetaTolerance.initDefault(Units.degreesToRadians(2.0));
       default:
         break;
