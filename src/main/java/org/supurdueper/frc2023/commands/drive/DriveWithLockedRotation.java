@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
@@ -25,14 +26,17 @@ public class DriveWithLockedRotation extends CommandBase {
   private Supplier<Double> thetaSupplier;
   private Supplier<Double> leftXSupplier;
   private Supplier<Double> leftYSupplier;
+  private final double sniperModeLinearPercent = 0.5;
+  private BooleanSupplier sniperModeSupplier;
 
   /** Drives to the specified pose under full software control. */
   public DriveWithLockedRotation(
       Drive drive,
       Supplier<Double> leftXSupplier,
       Supplier<Double> leftYSupplier,
-      double thetaRadians) {
-    this(drive, leftXSupplier, leftYSupplier, () -> thetaRadians);
+      double thetaRadians,
+      BooleanSupplier sniperModeSupplier) {
+    this(drive, leftXSupplier, leftYSupplier, () -> thetaRadians, sniperModeSupplier);
   }
 
   /** Drives to the specified pose under full software control. */
@@ -40,11 +44,13 @@ public class DriveWithLockedRotation extends CommandBase {
       Drive drive,
       Supplier<Double> leftXSupplier,
       Supplier<Double> leftYSupplier,
-      Supplier<Double> thetaSupplier) {
+      Supplier<Double> thetaSupplier,
+      BooleanSupplier sniperModeSupplier) {
     this.drive = drive;
     this.leftXSupplier = leftXSupplier;
     this.leftYSupplier = leftYSupplier;
     this.thetaSupplier = thetaSupplier;
+    this.sniperModeSupplier = sniperModeSupplier;
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -84,6 +90,11 @@ public class DriveWithLockedRotation extends CommandBase {
     // Apply squaring
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
 
+    // Apply speed limits
+    if (sniperModeSupplier.getAsBoolean()) {
+      linearMagnitude *= sniperModeLinearPercent;
+    }
+
     // Calcaulate new linear components
     Translation2d linearVelocity =
         new Pose2d(new Translation2d(), linearDirection)
@@ -93,7 +104,6 @@ public class DriveWithLockedRotation extends CommandBase {
     // Calculate theta speed
     double thetaVelocity =
         thetaController.calculate(currentPose.getRotation().getRadians(), targetAngle);
-    Math.abs(currentPose.getRotation().minus(Rotation2d.fromRadians(targetAngle)).getRadians());
     if (thetaController.atGoal()) thetaVelocity = 0.0;
 
     // Convert to meters per second

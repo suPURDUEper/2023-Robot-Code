@@ -25,6 +25,9 @@ public class Arm extends SubsystemBase {
   private static final double armKs = 0.25;
   private static final double armKv = 2.7;
 
+  public static final double armMaxAngleRad = 2.2;
+  public static final double armMinAngleRad = -0.7;
+
   private ArmFeedforward armFeedforward = new ArmFeedforward(armKs, armKg, armKv);
   private PIDController armPIDcontroller = new PIDController(armKp, 0, armKd);
   private boolean runArmPID = false;
@@ -90,10 +93,14 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmTooFarForward() {
-    return inputs.armPositionRad > 2.2;
+    return inputs.armPositionRad > armMaxAngleRad;
   }
 
   public boolean isArmTooFarBack() {
-    return inputs.armPositionRad < -0.7;
+    return inputs.armPositionRad < armMinAngleRad;
+  }
+
+  public void syncEncoders() {
+    io.syncEncoders();
   }
 }

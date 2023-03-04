@@ -9,7 +9,6 @@ package org.littletonrobotics.frc2023.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.List;
 import org.littletonrobotics.frc2023.FieldConstants;
@@ -45,11 +44,7 @@ public class DriveToSubstation extends DriveToPose {
                           AllianceFlipUtil.apply(singleSubstationPose),
                           AllianceFlipUtil.apply(doubleSubstationLeftPose),
                           AllianceFlipUtil.apply(doubleSubstationRightPose)));
-          if (drive.getRotation().minus(nearestTarget.getRotation()).getCos() < 0.0) {
-            nearestTarget =
-                nearestTarget.transformBy(
-                    new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180.0)));
-          }
+
           return nearestTarget;
         });
   }
