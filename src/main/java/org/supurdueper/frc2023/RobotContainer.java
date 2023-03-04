@@ -39,10 +39,13 @@ import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
+import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSim;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
+import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSim;
 import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
+import org.supurdueper.frc2023.subsystems.intake.IntakeIO;
 import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
 
 public class RobotContainer {
@@ -92,22 +95,12 @@ public class RobotContainer {
                   new ModuleIOSim(),
                   new ModuleIOSim(),
                   new ModuleIOSim());
+            elevator = new Elevator(new ElevatorMotorIOSim());
+            arm = new Arm(new ArmMotorIOSim());
+            intake = new Intake(new IntakeIO() {});
           break;
       }
     }
-
-    // Instantiate missing subsystems
-    drive =
-        drive != null
-            ? drive
-            : new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-
-    // Set up subsystems
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing", null);
