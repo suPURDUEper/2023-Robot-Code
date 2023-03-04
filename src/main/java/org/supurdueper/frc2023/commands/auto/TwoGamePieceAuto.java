@@ -32,22 +32,6 @@ public class TwoGamePieceAuto extends SequentialCommandGroup {
                         Rotation2d.fromDegrees(200))),
                 new ArmavatorGoToPose(ArmavatorPreset.intakeCone.getPose(), arm, elevator),
                 new IntakeCone(intake))
-            .withTimeout(10),
-        new DriveToPose(
-            drive,
-            new Pose2d(
-                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(16),
-                FieldConstants.Grids.lowTranslations[7].getY(),
-                Rotation2d.fromDegrees(180))),
-        Commands.parallel(
-            new DriveToPose(
-                drive,
-                new Pose2d(
-                    FieldConstants.Grids.outerX
-                        + Constants.ROBOT_X_OFFSET
-                        + Units.inchesToMeters(16),
-                    FieldConstants.Grids.lowTranslations[6].getY(),
-                    Rotation2d.fromDegrees(180))),
-            new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator)));
+            .withTimeout(10));
   }
 }
