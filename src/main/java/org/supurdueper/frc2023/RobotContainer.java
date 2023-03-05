@@ -34,7 +34,7 @@ import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
-import org.supurdueper.frc2023.commands.auto.TwoGamePieceAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -264,7 +264,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return new TwoGamePieceAuto(drive, elevator, arm, intake);
+    return new ConeCubeBalanceAuto(drive, elevator, arm, intake);
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {

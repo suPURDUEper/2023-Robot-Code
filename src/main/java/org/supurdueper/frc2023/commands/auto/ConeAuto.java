@@ -13,18 +13,19 @@ import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.Score;
+import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.drive.ResetPoseCommand;
+import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ScoreConeAuto extends SequentialCommandGroup {
+public class ConeAuto extends SequentialCommandGroup {
 
-  public ScoreConeAuto(Drive drive, Intake intake, Arm arm, Elevator elevator, int stationIndex) {
-
+  public ConeAuto(Drive drive, Intake intake, Arm arm, Elevator elevator, int stationIndex) {
     Pose2d start =
         AllianceFlipUtil.apply(
             new Pose2d(
@@ -39,24 +40,20 @@ public class ScoreConeAuto extends SequentialCommandGroup {
                 FieldConstants.Grids.lowTranslations[stationIndex].getY(),
                 Rotation2d.fromDegrees(180)));
 
-    Pose2d backupToRetract =
-        AllianceFlipUtil.apply(
-            new Pose2d(
-                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
-                FieldConstants.Grids.lowTranslations[stationIndex].getY(),
-                Rotation2d.fromDegrees(180)));
-
-    addCommands( // set 0 position and score cone
+    addCommands( 
+        // Initialize robot
         Commands.parallel(
             new ResetElevatorPosition(elevator),
             new ResetPoseCommand(drive, start),
             new InstantCommand(() -> arm.syncEncoders())),
+
+        // Drive foward and score cone
         Commands.parallel(
-            new ArmavatorGoToPose(ArmavatorPreset.highCone.getPose(), arm, elevator),
-            new IntakeCone(intake)),
-        new DriveToPose(drive, score),
-        new Score(intake).withTimeout(1),
-        new DriveToPose(drive, backupToRetract),
-        new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
+            new ElevatorGoToPose(elevator, ArmavatorPreset.highCone),
+            new ArmGoToPose(arm, ArmavatorPreset.highCone)
+                .beforeStarting(Commands.waitSeconds(0.3)),
+            new IntakeCone(intake),
+            new DriveToPose(drive, score).beforeStarting(Commands.waitSeconds(0.8))),
+        new Score(intake).withTimeout(0.5));
   }
 }
