@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
-
-import org.eclipse.jetty.xml.XmlAppendable;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.Robot;
@@ -224,7 +222,7 @@ public class RobotContainer {
             new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
             new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
             intake::hasCube));
-    
+
     armavatorLow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator));
 
     armavatorStow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
@@ -278,8 +276,8 @@ public class RobotContainer {
     return new SyncArmEncoders(arm);
   }
 
-// Method to get this command so we can use it in Robot.java
-public Command setDriveXMode(boolean xMode) {
+  // Method to get this command so we can use it in Robot.java
+  public Command setDriveXMode(boolean xMode) {
     return new InstantCommand(() -> drive.setXMode(xMode));
-    }
+  }
 }

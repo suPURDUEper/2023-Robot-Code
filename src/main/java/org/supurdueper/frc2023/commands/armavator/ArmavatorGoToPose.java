@@ -4,10 +4,15 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
 public class ArmavatorGoToPose extends SequentialCommandGroup {
+
+  public ArmavatorGoToPose(ArmavatorPreset preset, Arm arm, Elevator elevator) {
+    new ArmavatorGoToPose(preset.getPose(), arm, elevator);
+  }
 
   public ArmavatorGoToPose(ArmavatorPose pose, Arm arm, Elevator elevator) {
     addCommands(

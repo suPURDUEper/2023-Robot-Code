@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 
 public class ArmGoToPose extends CommandBase {
@@ -18,11 +19,16 @@ public class ArmGoToPose extends CommandBase {
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(Arm.armMaxVelocity, Arm.armMaxAcceleration);
   private final Timer timer = new Timer();
-  ;
 
   public ArmGoToPose(Arm arm, TrapezoidProfile.State target) {
     this.arm = arm;
     this.target = target;
+    addRequirements(arm);
+  }
+
+  public ArmGoToPose(Arm arm, ArmavatorPreset preset) {
+    this.arm = arm;
+    this.target = preset.getPose().getArmProfileState();
     addRequirements(arm);
   }
 
