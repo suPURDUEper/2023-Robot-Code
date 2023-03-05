@@ -23,21 +23,21 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
-                Grids.lowTranslations[5].getY(),
+                Grids.nodeY[5],
                 Rotation2d.fromDegrees(180)));
 
     Pose2d pastStation =
         AllianceFlipUtil.apply(
             new Pose2d(
                 Community.chargingStationOuterX + 1.2,
-                Grids.lowTranslations[5].getY(),
+                Grids.nodeY[5],
                 Rotation2d.fromDegrees(180)));
 
     Pose2d onStation =
         AllianceFlipUtil.apply(
             new Pose2d(
-                (Community.chargingStationOuterX + Community.chargingStationInnerX) / 2 + .8,
-                Grids.lowTranslations[5].getY(),
+                Community.chargingStationCenterX + .8,
+                Grids.nodeY[5],
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
