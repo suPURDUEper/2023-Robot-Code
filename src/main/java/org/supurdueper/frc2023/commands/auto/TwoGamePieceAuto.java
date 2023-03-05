@@ -97,7 +97,7 @@ public class TwoGamePieceAuto extends SequentialCommandGroup {
         Commands.deadline(
             new IntakeCube(intake),
             new DriveToPose(drive, pickupCube),
-            Commands.parallel(
+            Commands.parallel( // Wait to prevent arm motion while rotating
                     new ElevatorGoToPose(elevator, ArmavatorPreset.intakeCube),
                     new ArmGoToPose(arm, ArmavatorPreset.intakeCube))
                 .beforeStarting(Commands.waitSeconds(0.5))),
@@ -114,7 +114,7 @@ public class TwoGamePieceAuto extends SequentialCommandGroup {
             new DriveToPose(drive, inFrontOfStation)
                 .andThen(new DriveToPose(drive, onStation))
                 .andThen(new InstantCommand(() -> drive.setXMode(true), drive)),
-            Commands.parallel(
+            Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
                     new ArmGoToPose(arm, ArmavatorPreset.stowed))
                 .beforeStarting(Commands.waitSeconds(1))));
