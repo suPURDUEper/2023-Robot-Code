@@ -77,22 +77,22 @@ public class AutoCommands {
   }
 
   /** Reset the odometry to the specified pose. */
-  private Command reset(Pose2d pose) {
+  public Command reset(Pose2d pose) {
     return runOnce(() -> drive.setPose(AllianceFlipUtil.apply(pose)));
   }
 
   /** Returns a waypoint for a holonomic pose. */
-  private Waypoint holonomic(Pose2d pose) {
+  public Waypoint holonomic(Pose2d pose) {
     return Waypoint.fromHolonomicPose(pose);
   }
 
   /** Drives along the specified trajectory. */
-  private Command path(Waypoint... waypoints) {
+  public Command path(Waypoint... waypoints) {
     return new DriveTrajectory(drive, Arrays.asList(waypoints), List.of());
   }
 
   /** Drives along the specified trajectory. */
-  private Command path(List<TrajectoryConstraint> constraints, Waypoint... waypoints) {
+  public Command path(List<TrajectoryConstraint> constraints, Waypoint... waypoints) {
     return new DriveTrajectory(drive, Arrays.asList(waypoints), constraints);
   }
 
@@ -115,9 +115,10 @@ public class AutoCommands {
             position0.getY(),
             position0.getRotation());
     return path(
-        Waypoint.fromHolonomicPose(startingPosition),
-        Waypoint.fromHolonomicPose(
-            position0, enterFront ? new Rotation2d() : Rotation2d.fromDegrees(180.0)),
-        Waypoint.fromHolonomicPose(position1));
+            Waypoint.fromHolonomicPose(startingPosition),
+            Waypoint.fromHolonomicPose(
+                position0, enterFront ? new Rotation2d() : Rotation2d.fromDegrees(180.0)),
+            Waypoint.fromHolonomicPose(position1))
+        .andThen(new AutoBalance(drive));
   }
 }
