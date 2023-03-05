@@ -2,7 +2,6 @@ package org.supurdueper.frc2023.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -14,7 +13,6 @@ import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
-import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.drive.ResetPoseCommand;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -40,7 +38,7 @@ public class ConeAuto extends SequentialCommandGroup {
                 FieldConstants.Grids.lowTranslations[stationIndex].getY(),
                 Rotation2d.fromDegrees(180)));
 
-    addCommands( 
+    addCommands(
         // Initialize robot
         Commands.parallel(
             new ResetElevatorPosition(elevator),

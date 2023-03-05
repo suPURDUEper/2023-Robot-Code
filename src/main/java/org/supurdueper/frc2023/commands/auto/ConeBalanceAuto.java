@@ -26,10 +26,10 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
                 Grids.lowTranslations[5].getY(),
                 Rotation2d.fromDegrees(180)));
 
-    Pose2d inFrontOfStation =
+    Pose2d pastStation =
         AllianceFlipUtil.apply(
             new Pose2d(
-                (Community.chargingStationOuterX + Community.chargingStationOuterX) / 2 + 1.2,
+                Community.chargingStationOuterX + 1.2,
                 Grids.lowTranslations[5].getY(),
                 Rotation2d.fromDegrees(180)));
 
@@ -40,12 +40,11 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
                 Grids.lowTranslations[5].getY(),
                 Rotation2d.fromDegrees(180)));
 
-
     addCommands(
         new ConeAuto(drive, intake, arm, elevator, 5),
         new DriveToPose(drive, backupToRetract),
         new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
-        new DriveToPose(drive, inFrontOfStation),
+        new DriveToPose(drive, pastStation),
         new DriveToPose(drive, onStation),
         new InstantCommand(() -> drive.setXMode(true)));
   }
