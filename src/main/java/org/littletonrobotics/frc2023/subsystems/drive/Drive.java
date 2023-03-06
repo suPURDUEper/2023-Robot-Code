@@ -147,8 +147,8 @@ public class Drive extends SubsystemBase {
 
       modules[0].runSetpoint(xStateFlBr); // FL
       modules[1].runSetpoint(xStateFrBl); // FR
-      modules[2].runSetpoint(xStateFlBr); // BL
-      modules[3].runSetpoint(xStateFrBl); // BR
+      modules[2].runSetpoint(xStateFrBl); // BL
+      modules[3].runSetpoint(xStateFlBr); // BR
 
       // Clear setpoint logs
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});

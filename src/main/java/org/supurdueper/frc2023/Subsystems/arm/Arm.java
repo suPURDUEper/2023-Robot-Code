@@ -25,7 +25,7 @@ public class Arm extends SubsystemBase {
   private static final double armKs = 0.25;
   private static final double armKv = 2.7;
 
-  public static final double armMaxAngleRad = 2.2;
+  public static final double armMaxAngleRad = 2.4;
   public static final double armMinAngleRad = -0.7;
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(armKs, armKg, armKv);

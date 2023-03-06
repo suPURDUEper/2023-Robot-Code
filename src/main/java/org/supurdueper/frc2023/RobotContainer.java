@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.Robot;
 import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
@@ -33,6 +34,11 @@ import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
+import org.supurdueper.frc2023.commands.auto.ConeAuto;
+import org.supurdueper.frc2023.commands.auto.ConeBalanceAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -101,6 +107,14 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing", null);
+    for (int i = 0; i < Grids.nodeRowCount; i++) {
+      autoChooser.addOption("1 [" + i + "]", new ConeAuto(drive, elevator, arm, intake, i));
+    }
+    autoChooser.addOption("1 + Balance [3]", new ConeBalanceAuto(drive, elevator, arm, intake, 3));
+    autoChooser.addOption("1 + Balance [5]", new ConeBalanceAuto(drive, elevator, arm, intake, 5));
+    autoChooser.addOption("2", new ConeCubeAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
     autoChooser.addDefaultOption(
         "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
 
@@ -136,8 +150,8 @@ public class RobotContainer {
     Trigger rotateTo90 = driver.x();
     Trigger rotateTo180 = driver.a();
     Trigger rotateTo270 = driver.b();
-    Supplier<Double> driveTranslationX = invertJoystick(driver::getLeftX);
-    Supplier<Double> driveTranslationY = invertJoystick(driver::getLeftY);
+    Supplier<Double> driveTranslationX = driver::getLeftX;
+    Supplier<Double> driveTranslationY = driver::getLeftY;
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
@@ -212,6 +226,8 @@ public class RobotContainer {
             new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
             intake::hasCube));
 
+    armavatorLow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator));
+
     armavatorStow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
 
     intakeCube.onTrue(
@@ -261,5 +277,10 @@ public class RobotContainer {
   // Method to get this command so we can use it in Robot.java
   public Command getSyncArmEncoderCommand() {
     return new SyncArmEncoders(arm);
+  }
+
+  // Method to get this command so we can use it in Robot.java
+  public Command setDriveXMode(boolean xMode) {
+    return new InstantCommand(() -> drive.setXMode(xMode));
   }
 }
