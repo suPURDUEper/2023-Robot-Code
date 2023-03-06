@@ -5,7 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.littletonrobotics.frc2023.FieldConstants;
+import org.littletonrobotics.frc2023.FieldConstants.Community;
+import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -23,19 +24,19 @@ import org.supurdueper.frc2023.subsystems.intake.Intake;
 
 public class ConeAuto extends SequentialCommandGroup {
 
-  public ConeAuto(Drive drive, Intake intake, Arm arm, Elevator elevator, int stationIndex) {
+  public ConeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
     Pose2d start =
         AllianceFlipUtil.apply(
             new Pose2d(
-                FieldConstants.Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
-                FieldConstants.Grids.lowTranslations[stationIndex].getY(),
+                Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
+                Grids.nodeY[stationIndex],
                 Rotation2d.fromDegrees(180)));
 
     Pose2d score =
         AllianceFlipUtil.apply(
             new Pose2d(
-                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET,
-                FieldConstants.Grids.lowTranslations[stationIndex].getY(),
+                Grids.outerX + Constants.ROBOT_X_OFFSET,
+                Grids.nodeY[stationIndex],
                 Rotation2d.fromDegrees(180)));
 
     addCommands(

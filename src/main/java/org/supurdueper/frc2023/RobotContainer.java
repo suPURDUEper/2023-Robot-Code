@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
+import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.Robot;
 import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
@@ -34,6 +35,10 @@ import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
+import org.supurdueper.frc2023.commands.auto.ConeAuto;
+import org.supurdueper.frc2023.commands.auto.ConeBalanceAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -112,6 +117,14 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing", null);
+    for (int i = 0; i < Grids.nodeRowCount; i++) {
+      autoChooser.addOption("1 [" + i + "]", new ConeAuto(drive, elevator, arm, intake, i));
+    }
+    autoChooser.addOption("1 + Balance [3]", new ConeBalanceAuto(drive, elevator, arm, intake, 3));
+    autoChooser.addOption("1 + Balance [5]", new ConeBalanceAuto(drive, elevator, arm, intake, 5));
+    autoChooser.addOption("2", new ConeCubeAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
     autoChooser.addDefaultOption(
         "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
 
@@ -264,7 +277,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return new ConeCubeBalanceAuto(drive, elevator, arm, intake);
+    return autoChooser.get();
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {

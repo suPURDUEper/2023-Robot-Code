@@ -61,6 +61,8 @@ public final class FieldConstants {
     public static final double chargingStationOuterX = outerX - tapeWidth;
     public static final double chargingStationInnerX =
         chargingStationOuterX - chargingStationLength;
+    public static double chargingStationCenterX =
+        (chargingStationOuterX + chargingStationInnerX) / 2.0;
     public static final double chargingStationLeftY = midY - tapeWidth;
     public static final double chargingStationRightY = chargingStationLeftY - chargingStationWidth;
     public static final Translation2d[] chargingStationCorners =

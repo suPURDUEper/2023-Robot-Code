@@ -6,7 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.littletonrobotics.frc2023.FieldConstants;
+import org.littletonrobotics.frc2023.FieldConstants.Grids;
+import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -27,18 +28,18 @@ public class ConeCubeAuto extends SequentialCommandGroup {
     Pose2d pickupCube =
         AllianceFlipUtil.apply(
             new Pose2d(
-                FieldConstants.StagingLocations.translations[3].plus(new Translation2d(0.3, 0.4)),
+                StagingLocations.translations[3].plus(new Translation2d(0.3, 0.4)),
                 Rotation2d.fromDegrees(-30)));
 
     Pose2d secondScore =
         AllianceFlipUtil.apply(
             new Pose2d(
-                FieldConstants.Grids.outerX + Constants.ROBOT_X_OFFSET + Units.feetToMeters(1),
-                FieldConstants.Grids.lowTranslations[7].getY() - Units.inchesToMeters(8),
+                Grids.outerX + Constants.ROBOT_X_OFFSET + Units.feetToMeters(1),
+                Grids.nodeY[7] - Units.inchesToMeters(8),
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
-        new ConeAuto(drive, intake, arm, elevator, 8),
+        new ConeAuto(drive, elevator, arm, intake, 8),
 
         // Drive and intake cube
         Commands.deadline(
