@@ -20,14 +20,15 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.TimestampedVisionUpdate;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.vision.VisionIOInputsAutoLogged;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
@@ -293,22 +294,14 @@ public class Drive extends SubsystemBase {
   }
 
   /** Adds vision data to the pose esimation. */
-  public void addVisionData(List<TimestampedVisionUpdate> visionData) {
-    if (lastEnabledTimer.hasElapsed(aprilTagGyroThresholdSecs)) {
-      poseEstimator.addVisionData(visionData);
-    } else {
-      List<TimestampedVisionUpdate> newVisionData = new ArrayList<>();
-      for (var update : visionData) {
-        newVisionData.add(
-            new TimestampedVisionUpdate(
-                update.timestamp(),
-                update.pose(),
-                VecBuilder.fill(
-                    update.stdDevs().get(0, 0),
-                    update.stdDevs().get(1, 0),
-                    Double.POSITIVE_INFINITY)));
-      }
-      poseEstimator.addVisionData(newVisionData);
+  public void addVisionData(VisionIOInputsAutoLogged visionData) {
+    TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
+    Pose2d currentPose = getPose();
+
+    // Only use measurements if we see more than 1 tag or we are
+    // relatively close to the alliance station wall
+    if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
+      poseEstimator.addVisionData(List.of(visionUpdate));
     }
   }
 
