@@ -51,12 +51,12 @@ public class Drive extends SubsystemBase {
   private boolean isCharacterizing = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
   private SwerveModuleState[] lastSetpointStates =
-  new SwerveModuleState[] {
-    new SwerveModuleState(),
-    new SwerveModuleState(),
-    new SwerveModuleState(),
-    new SwerveModuleState()
-  };
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      };
   private double characterizationVolts = 0.0;
   private boolean isBrakeMode = false;
   private Timer lastMovementTimer = new Timer();
@@ -169,7 +169,6 @@ public class Drive extends SubsystemBase {
         }
       }
       lastSetpointStates = setpointStates;
-
 
       // Log setpoint states
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", setpointStates);
