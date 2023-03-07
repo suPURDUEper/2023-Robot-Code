@@ -20,8 +20,8 @@ public class VisionIOLimelight implements VisionIO {
 
   public VisionIOLimelight() {
     // Where is the limelight relative to the center of the robot?
-    // TODO: Set these values
-    LimelightHelpers.setCameraPose_RobotSpace("", 0, 0, 0, 0, 0, 0);
+    // up, right, forward in meters, roll, pitch, yaw in degrees
+    LimelightHelpers.setCameraPose_RobotSpace("", Units.inchesToMeters(12), 0, Units.inchesToMeters(36), 0, -8, 0);
   }
 
   @Override
