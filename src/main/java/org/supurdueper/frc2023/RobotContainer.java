@@ -94,6 +94,7 @@ public class RobotContainer {
           elevator = new Elevator(new ElevatorMotorIOSparkMax());
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
+          lights = new Lights();
           break;
         case ROBOT_SIMBOT:
           drive =
