@@ -9,8 +9,9 @@ package org.littletonrobotics.frc2023.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import java.util.List;
+import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.FieldConstants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -20,31 +21,18 @@ public class DriveToSubstation extends DriveToPose {
       new Pose2d(
           FieldConstants.LoadingZone.singleSubstationTranslation.plus(new Translation2d(0.0, -0.7)),
           Rotation2d.fromDegrees(90.0));
-  public static final Pose2d doubleSubstationLeftPose =
-      new Pose2d(
-          FieldConstants.LoadingZone.doubleSubstationX - 0.5,
-          FieldConstants.LoadingZone.doubleSubstationCenterY + 0.65,
-          new Rotation2d());
-  public static final Pose2d doubleSubstationRightPose =
-      new Pose2d(
-          FieldConstants.LoadingZone.doubleSubstationX - 0.5,
-          FieldConstants.LoadingZone.doubleSubstationCenterY - 0.65,
-          new Rotation2d());
+  public static final double doubleSubstationX = FieldConstants.LoadingZone.doubleSubstationX - 0.4;
 
   /** Automatically drives to the nearest substation. */
-  public DriveToSubstation(Drive drive) {
+  public DriveToSubstation(Drive drive, Supplier<Boolean> useDouble) {
     super(
         drive,
         () -> {
           var nearestTarget =
-              drive
-                  .getPose()
-                  .nearest(
-                      List.of(
-                          AllianceFlipUtil.apply(singleSubstationPose),
-                          AllianceFlipUtil.apply(doubleSubstationLeftPose),
-                          AllianceFlipUtil.apply(doubleSubstationRightPose)));
-
+              useDouble.get()
+                  ? AllianceFlipUtil.apply(
+                      new Pose2d(doubleSubstationX, drive.getPose().getY(), new Rotation2d()))
+                  : AllianceFlipUtil.apply(singleSubstationPose);
           return nearestTarget;
         });
   }

@@ -50,7 +50,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
         Commands.parallel(
             new DriveToPose(drive, inFrontOfStation)
                 .andThen(new DriveToPose(drive, onStation))
-                .andThen(new InstantCommand(() -> drive.setXMode(true), drive)),
+                .andThen(new InstantCommand(() -> drive.stopWithX(), drive)),
             Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
                     new ArmGoToPose(arm, ArmavatorPreset.stowed))

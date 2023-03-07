@@ -49,8 +49,14 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
   private boolean isCharacterizing = false;
-  private boolean isXMode = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
+  private SwerveModuleState[] lastSetpointStates =
+  new SwerveModuleState[] {
+    new SwerveModuleState(),
+    new SwerveModuleState(),
+    new SwerveModuleState(),
+    new SwerveModuleState()
+  };
   private double characterizationVolts = 0.0;
   private boolean isBrakeMode = false;
   private Timer lastMovementTimer = new Timer();
@@ -131,18 +137,6 @@ public class Drive extends SubsystemBase {
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
 
-    } else if (isXMode) {
-      SwerveModuleState xStateFlBr = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
-      SwerveModuleState xStateFrBl = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
-
-      modules[0].runSetpoint(xStateFlBr); // FL
-      modules[1].runSetpoint(xStateFrBl); // FR
-      modules[2].runSetpoint(xStateFrBl); // BL
-      modules[3].runSetpoint(xStateFlBr); // BR
-
-      // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
     } else {
       // Calculate module setpoints
       var setpointTwist =
@@ -165,6 +159,17 @@ public class Drive extends SubsystemBase {
       for (int i = 0; i < 4; i++) {
         optimizedStates[i] = modules[i].runSetpoint(setpointStates[i]);
       }
+
+      // Set to last angles if zero
+      if (adjustedSpeeds.vxMetersPerSecond == 0.0
+          && adjustedSpeeds.vyMetersPerSecond == 0.0
+          && adjustedSpeeds.omegaRadiansPerSecond == 0) {
+        for (int i = 0; i < 4; i++) {
+          setpointStates[i] = new SwerveModuleState(0.0, lastSetpointStates[i].angle);
+        }
+      }
+      lastSetpointStates = setpointStates;
+
 
       // Log setpoint states
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -249,6 +254,19 @@ public class Drive extends SubsystemBase {
     runVelocity(new ChassisSpeeds());
   }
 
+  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
+   */
+  public void stopWithX() {
+    stop();
+    for (int i = 0; i < 4; i++) {
+      lastSetpointStates[i] =
+          new SwerveModuleState(
+              lastSetpointStates[i].speedMetersPerSecond, getModuleTranslations()[i].getAngle());
+    }
+  }
+
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     return maxLinearSpeed.get();
@@ -305,11 +323,6 @@ public class Drive extends SubsystemBase {
   /** Adds vision data to the pose esimation. */
   public void addVisionData(double timestamp, List<VisionUpdate> visionUpdates) {
     poseEstimator.addVisionData(timestamp, visionUpdates);
-  }
-
-  /** Move modules into an X to maximize holding traction */
-  public void setXMode(boolean xMode) {
-    isXMode = xMode;
   }
 
   /** Returns an array of module translations. */

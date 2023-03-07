@@ -171,7 +171,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-    CommandScheduler.getInstance().schedule(robotContainer.setDriveXMode(false));
   }
 
   @Override

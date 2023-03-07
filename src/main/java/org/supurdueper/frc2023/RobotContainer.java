@@ -194,8 +194,7 @@ public class RobotContainer {
         new DriveWithLockedRotation(
             drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90), slowMode));
 
-    swerveXMode.whileTrue(
-        new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
+    swerveXMode.onTrue(new InstantCommand(() -> drive.stopWithX(), drive));
 
     score.onTrue(
         new Score(intake)
@@ -274,10 +273,5 @@ public class RobotContainer {
   // Method to get this command so we can use it in Robot.java
   public Command getSyncArmEncoderCommand() {
     return new SyncArmEncoders(arm);
-  }
-
-  // Method to get this command so we can use it in Robot.java
-  public Command setDriveXMode(boolean xMode) {
-    return new InstantCommand(() -> drive.setXMode(xMode));
   }
 }
