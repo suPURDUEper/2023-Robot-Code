@@ -15,7 +15,7 @@ import org.supurdueper.frc2023.subsystems.vision.LimelightHelpers.Results;
 public class VisionIOLimelight implements VisionIO {
 
   // Suggestion from 6800, only ever update x and y from limelight
-  private static final Matrix<N3, N1> stdDevs =
+  public static final Matrix<N3, N1> stdDevs =
       new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, Double.POSITIVE_INFINITY);
 
   public VisionIOLimelight() {
