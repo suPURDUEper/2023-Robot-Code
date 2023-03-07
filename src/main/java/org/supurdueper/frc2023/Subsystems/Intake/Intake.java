@@ -1,7 +1,6 @@
 package org.supurdueper.frc2023.subsystems.intake;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
@@ -95,14 +94,6 @@ public class Intake extends SubsystemBase {
 
   public double getRollerAmps() {
     return io.getRollerAmps();
-  }
-
-  public Command scoreConeCommand() {
-    return startEnd(() -> mode = Mode.SCORE_CONE, () -> mode = Mode.NOT_RUNNING);
-  }
-
-  public Command scoreCubeCommand() {
-    return startEnd(() -> mode = Mode.SCORE_CUBE, () -> mode = Mode.NOT_RUNNING);
   }
 
   public boolean hasCube() {

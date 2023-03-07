@@ -5,16 +5,21 @@
         "Armavator": {
           "Motors": {
             "open": true
-          },
-          "open": true
+          }
         },
-        "Intake": {
-          "open": true
+        "Drive": {
+          "Gyro": {
+            "open": true
+          }
         },
         "RealOutputs": {
           "CommandsAll": {
             "open": true
-          }
+          },
+          "Odometry": {
+            "open": true
+          },
+          "open": true
         },
         "open": true
       },
@@ -26,9 +31,6 @@
           "open": true
         },
         "open": true
-      },
-      "SmartDashboard": {
-        "open": true
       }
     },
     "types": {
@@ -39,7 +41,7 @@
     }
   },
   "NetworkTables Settings": {
-    "mode": "Disabled",
+    "mode": "Client (NT4)",
     "serverTeam": "10.74.57.2"
   },
   "Plots": {

@@ -7,6 +7,7 @@ package org.supurdueper.frc2023.commands.elevator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 
 public class ElevatorGoToPose extends CommandBase {
@@ -23,6 +24,12 @@ public class ElevatorGoToPose extends CommandBase {
   public ElevatorGoToPose(Elevator elevator, TrapezoidProfile.State target) {
     this.elevator = elevator;
     this.target = target;
+    addRequirements(elevator);
+  }
+
+  public ElevatorGoToPose(Elevator elevator, ArmavatorPreset preset) {
+    this.elevator = elevator;
+    this.target = preset.getPose().getElevatorProfileState();
     addRequirements(elevator);
   }
 
