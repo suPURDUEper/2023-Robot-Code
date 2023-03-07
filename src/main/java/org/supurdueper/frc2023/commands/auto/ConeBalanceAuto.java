@@ -18,30 +18,30 @@ import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
 public class ConeBalanceAuto extends SequentialCommandGroup {
-  public ConeBalanceAuto(Drive drive, Intake intake, Arm arm, Elevator elevator) {
+  public ConeBalanceAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
     Pose2d backupToRetract =
         AllianceFlipUtil.apply(
             new Pose2d(
                 Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
-                Grids.nodeY[5],
+                Grids.nodeY[stationIndex],
                 Rotation2d.fromDegrees(180)));
 
     Pose2d pastStation =
         AllianceFlipUtil.apply(
             new Pose2d(
                 Community.chargingStationOuterX + 1.2,
-                Grids.nodeY[5],
+                Grids.nodeY[stationIndex],
                 Rotation2d.fromDegrees(180)));
 
     Pose2d onStation =
         AllianceFlipUtil.apply(
             new Pose2d(
                 Community.chargingStationCenterX + .8,
-                Grids.nodeY[5],
+                Grids.nodeY[stationIndex],
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
-        new ConeAuto(drive, intake, arm, elevator, 5),
+        new ConeAuto(drive, elevator, arm, intake, stationIndex),
         new DriveToPose(drive, backupToRetract),
         new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
         new DriveToPose(drive, pastStation),

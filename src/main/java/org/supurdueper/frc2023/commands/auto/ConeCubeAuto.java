@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.littletonrobotics.frc2023.FieldConstants;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
@@ -40,7 +39,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
-        new ConeAuto(drive, intake, arm, elevator, 8),
+        new ConeAuto(drive, elevator, arm, intake, 8),
 
         // Drive and intake cube
         Commands.deadline(
