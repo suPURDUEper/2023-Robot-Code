@@ -8,13 +8,11 @@ import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax roller;
-  private final Spark lights;
 
   public IntakeIOSparkMax() {
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
         roller = new CANSparkMax(13, MotorType.kBrushless);
-        lights = new Spark(5);
 
         break;
       default:
@@ -50,11 +48,6 @@ public class IntakeIOSparkMax implements IntakeIO {
   @Override
   public double getRollerAmps() {
     return roller.getOutputCurrent();
-  }
-
-  @Override
-  public void setLightsValue(double outputValue) {
-    lights.set(outputValue);
   }
 
   @Override

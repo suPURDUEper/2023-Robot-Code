@@ -31,12 +31,15 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
+import org.supurdueper.frc2023.commands.SetLightsPurple;
+import org.supurdueper.frc2023.commands.SetLightsYellow;
 import org.supurdueper.frc2023.commands.ConeAndBalanceAuto;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
+import org.supurdueper.frc2023.subsystems.Lights;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.arm.ArmMotorIOSparkMax;
@@ -52,6 +55,7 @@ public class RobotContainer {
   private Elevator elevator;
   private Arm arm;
   private Intake intake;
+  private Lights lights;
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -239,6 +243,8 @@ public class RobotContainer {
 
     operator.start().onTrue(new ResetElevatorPosition(elevator));
 
+    operator.rightTrigger().whileTrue(new SetLightsPurple(lights));
+    operator.leftTrigger().whileTrue(new SetLightsYellow(lights));
     singleStationConeIntake.onTrue(
         new ArmavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose(), arm, elevator)
             .andThen(new IntakeCone(intake)));
