@@ -6,7 +6,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.littletonrobotics.frc2023.FieldConstants;
 import org.littletonrobotics.frc2023.FieldConstants.Community;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
@@ -25,10 +24,8 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
     Pose2d inFrontOfStation =
         AllianceFlipUtil.apply(
             new Pose2d(
-                FieldConstants.Community.chargingStationInnerX
-                    - Constants.ROBOT_X_OFFSET
-                    + Units.feetToMeters(1),
-                FieldConstants.Community.chargingStationLeftY
+                Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET + Units.feetToMeters(1),
+                Community.chargingStationLeftY
                     - Constants.ROBOT_Y_OFFSET
                     - Units.feetToMeters(1.25),
                 Rotation2d.fromDegrees(180)));
@@ -37,7 +34,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 Community.chargingStationCenterX + Units.feetToMeters(3.5),
-                FieldConstants.Community.chargingStationLeftY
+                Community.chargingStationLeftY
                     - Constants.ROBOT_Y_OFFSET
                     - Units.feetToMeters(1.25),
                 Rotation2d.fromDegrees(180)));
