@@ -295,14 +295,14 @@ public class Drive extends SubsystemBase {
 
   /** Adds vision data to the pose esimation. */
   public void addVisionData(VisionIOInputsAutoLogged visionData) {
-    TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
-    Pose2d currentPose = getPose();
+    // TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
+    // Pose2d currentPose = getPose();
 
-    // Only use measurements if we see more than 1 tag or we are
-    // relatively close to the alliance station wall
-    if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
-      poseEstimator.addVisionData(List.of(visionUpdate));
-    }
+    // // Only use measurements if we see more than 1 tag or we are
+    // // relatively close to the alliance station wall
+    // if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
+    //   poseEstimator.addVisionData(List.of(visionUpdate));
+    // }
   }
 
   /** Move modules into an X to maximize holding traction */
