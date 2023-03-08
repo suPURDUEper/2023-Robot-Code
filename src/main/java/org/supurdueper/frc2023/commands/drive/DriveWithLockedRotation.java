@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 
 public class DriveWithLockedRotation extends CommandBase {
@@ -74,11 +75,17 @@ public class DriveWithLockedRotation extends CommandBase {
 
     // Get current and target pose
     var currentPose = drive.getPose();
-    var targetAngle = thetaSupplier.get();
+    var targetAngle =
+        AllianceFlipUtil.apply(Rotation2d.fromRadians(thetaSupplier.get())).getRadians();
 
     // Get values from double suppliers
     double leftX = leftXSupplier.get();
     double leftY = leftYSupplier.get();
+
+    if (AllianceFlipUtil.shouldFlip()) {
+      leftX *= -1;
+      leftY *= -1;
+    }
 
     // Get direction and magnitude of linear axes
     double linearMagnitude = Math.hypot(leftX, leftY);

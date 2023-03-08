@@ -23,16 +23,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Arrays;
 import java.util.List;
 import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
-import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
+import org.littletonrobotics.frc2023.util.PoseEstimator.TimestampedVisionUpdate;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.vision.VisionIOInputsAutoLogged;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
       0.05; // Need to be under this to switch to coast when disabling
   private static final double coastThresholdSecs =
       6.0; // Need to be under the above speed for this length of time to switch to coast
+  private static final double aprilTagGyroThresholdSecs =
+      6.0; // Must be disabled for this time to start using AprilTag gyro data
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -60,6 +64,7 @@ public class Drive extends SubsystemBase {
   private double characterizationVolts = 0.0;
   private boolean isBrakeMode = false;
   private Timer lastMovementTimer = new Timer();
+  private Timer lastEnabledTimer = new Timer();
 
   private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
   private double[] lastModulePositionsMeters = new double[] {0.0, 0.0, 0.0, 0.0};
@@ -91,6 +96,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
     lastMovementTimer.start();
+    lastEnabledTimer.start();
     for (var module : modules) {
       module.setBrakeMode(false);
     }
@@ -114,6 +120,11 @@ public class Drive extends SubsystemBase {
                   .map(translation -> translation.getNorm())
                   .max(Double::compare)
                   .get();
+    }
+
+    // Reset last enabled timer
+    if (DriverStation.isEnabled()) {
+      lastEnabledTimer.reset();
     }
 
     // Run modules
@@ -320,8 +331,15 @@ public class Drive extends SubsystemBase {
   }
 
   /** Adds vision data to the pose esimation. */
-  public void addVisionData(double timestamp, List<VisionUpdate> visionUpdates) {
-    poseEstimator.addVisionData(timestamp, visionUpdates);
+  public void addVisionData(VisionIOInputsAutoLogged visionData) {
+    // TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
+    // Pose2d currentPose = getPose();
+
+    // // Only use measurements if we see more than 1 tag or we are
+    // // relatively close to the alliance station wall
+    // if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
+    //   poseEstimator.addVisionData(List.of(visionUpdate));
+    // }
   }
 
   /** Returns an array of module translations. */

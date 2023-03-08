@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
+import org.littletonrobotics.frc2023.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -129,6 +129,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 99);
+    VirtualSubsystem.periodicAll();
     CommandScheduler.getInstance().run();
 
     // Check logging fault
@@ -171,16 +172,14 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+    CommandScheduler.getInstance().schedule(robotContainer.getSyncArmEncoderCommand());
   }
 
   @Override
   public void teleopPeriodic() {}
 
   @Override
-  public void disabledInit() {
-    CommandScheduler.getInstance()
-        .schedule(new WaitCommand(2).andThen(robotContainer.getSyncArmEncoderCommand()));
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
