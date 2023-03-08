@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -172,16 +171,14 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
     CommandScheduler.getInstance().schedule(robotContainer.setDriveXMode(false));
+    CommandScheduler.getInstance().schedule(robotContainer.getSyncArmEncoderCommand());
   }
 
   @Override
   public void teleopPeriodic() {}
 
   @Override
-  public void disabledInit() {
-    CommandScheduler.getInstance()
-        .schedule(new WaitCommand(2).andThen(robotContainer.getSyncArmEncoderCommand()));
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
