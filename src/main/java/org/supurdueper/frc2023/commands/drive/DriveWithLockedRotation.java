@@ -75,8 +75,7 @@ public class DriveWithLockedRotation extends CommandBase {
 
     // Get current and target pose
     var currentPose = drive.getPose();
-    var targetAngle =
-        AllianceFlipUtil.apply(Rotation2d.fromRadians(thetaSupplier.get())).getRadians();
+    var targetAngle = AllianceFlipUtil.apply(Rotation2d.fromRadians(thetaSupplier.get())).getRadians();
 
     // Get values from double suppliers
     double leftX = leftXSupplier.get();

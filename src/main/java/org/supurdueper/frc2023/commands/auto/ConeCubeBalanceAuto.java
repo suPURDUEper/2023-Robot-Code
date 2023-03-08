@@ -24,7 +24,9 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
     Pose2d inFrontOfStation =
         AllianceFlipUtil.apply(
             new Pose2d(
-                Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET + Units.feetToMeters(1),
+                Community.chargingStationInnerX
+                    - Constants.ROBOT_X_OFFSET
+                    + Units.inchesToMeters(8),
                 Community.chargingStationLeftY
                     - Constants.ROBOT_Y_OFFSET
                     - Units.feetToMeters(1.25),
