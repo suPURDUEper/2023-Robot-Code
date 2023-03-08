@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
@@ -173,7 +174,9 @@ public class RobotContainer {
 
     // Operator
     Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
+    Trigger manualArmTrigger = new Trigger(joystickTrigger(operator::getLeftY, 0.1));
     Supplier<Double> manualElevatorControl = invertJoystick(operator::getRightY);
+    Trigger manualElevatorTrigger = new Trigger(joystickTrigger(operator::getRightY, 0.1));
     Trigger armavatorLow = operator.a();
     Trigger armavatorMid = operator.b();
     Trigger armavatorHigh = operator.y();
@@ -274,8 +277,8 @@ public class RobotContainer {
             .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
-    elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
-    arm.setDefaultCommand(new MoveArmWithJoystick(arm, manualArmControl));
+    manualElevatorTrigger.onTrue(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
+    manualArmTrigger.onTrue(new MoveArmWithJoystick(arm, manualArmControl));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */
@@ -285,6 +288,10 @@ public class RobotContainer {
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
     return () -> joystick.get() * -1;
+  }
+
+  public BooleanSupplier joystickTrigger(Supplier<Double> joystick, double threshold) {
+    return () -> Math.abs(joystick.get()) > threshold;
   }
 
   // Method to get this command so we can use it in Robot.java
