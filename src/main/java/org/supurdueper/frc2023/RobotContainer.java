@@ -19,6 +19,7 @@ import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.Robot;
+import org.littletonrobotics.frc2023.commands.AutoBalance;
 import org.littletonrobotics.frc2023.commands.DriveWithJoysticks;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.subsystems.drive.GyroIO;
@@ -160,6 +161,7 @@ public class RobotContainer {
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
     Trigger swerveXMode = driver.povDown();
+    Trigger autoBalance = driver.povUp();
     Trigger slowMode = driver.leftTrigger(0.2).or(driver.rightTrigger(0.2));
 
     // Operator
@@ -176,7 +178,7 @@ public class RobotContainer {
     Trigger intakeCube = operator.leftBumper();
     Trigger intakeCone = operator.rightBumper();
     Trigger intakeOff = operator.back();
-    Trigger singleStationConeIntake = operator.povLeft();
+    Trigger singleStationConeIntake = operator.povLeft().or(operator.povRight());
     Trigger doubleStationConeIntake = operator.povUp();
 
     // *** DRIVER CONTROLS ***
@@ -204,6 +206,8 @@ public class RobotContainer {
             drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90), slowMode));
 
     swerveXMode.onTrue(new InstantCommand(() -> drive.stopWithX(), drive));
+
+    autoBalance.whileTrue(new AutoBalance(drive));
 
     score.onTrue(
         new Score(intake)
