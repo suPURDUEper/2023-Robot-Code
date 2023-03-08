@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.Constants.Mode;
@@ -26,6 +27,7 @@ import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSim;
 import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.supurdueper.frc2023.commands.IntakeCone;
@@ -144,12 +146,14 @@ public class RobotContainer {
   public void bindControls() {
     // Rely on our custom alerts for disconnected controllers
     DriverStation.silenceJoystickConnectionWarning(true);
+    Trigger invertControls = new Trigger(AllianceFlipUtil::shouldFlip);
 
     // Driver
     Trigger rotateTo0 = driver.y();
-    Trigger rotateTo90 = driver.x();
+    Trigger rotateTo90 = driver.x().and(invertControls.negate()).or(driver.b().and(invertControls));
     Trigger rotateTo180 = driver.a();
-    Trigger rotateTo270 = driver.b();
+    Trigger rotateTo270 =
+        driver.b().and(invertControls.negate()).or(driver.x().and(invertControls));
     Supplier<Double> driveTranslationX = driver::getLeftX;
     Supplier<Double> driveTranslationY = driver::getLeftY;
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
@@ -160,7 +164,9 @@ public class RobotContainer {
 
     // Operator
     Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
+    Trigger manualArmTrigger = new Trigger(joystickTrigger(operator::getLeftY, 0.1));
     Supplier<Double> manualElevatorControl = invertJoystick(operator::getRightY);
+    Trigger manualElevatorTrigger = new Trigger(joystickTrigger(operator::getRightY, 0.1));
     Trigger armavatorLow = operator.a();
     Trigger armavatorMid = operator.b();
     Trigger armavatorHigh = operator.y();
@@ -261,8 +267,8 @@ public class RobotContainer {
             .andThen(new IntakeCone(intake)));
 
     // Change this later - touching joystick should interrupt command
-    elevator.setDefaultCommand(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
-    arm.setDefaultCommand(new MoveArmWithJoystick(arm, manualArmControl));
+    manualElevatorTrigger.onTrue(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
+    manualArmTrigger.onTrue(new MoveArmWithJoystick(arm, manualArmControl));
   }
 
   /** Passes the autonomous command to the {@link Robot} class. */
@@ -272,6 +278,10 @@ public class RobotContainer {
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
     return () -> joystick.get() * -1;
+  }
+
+  public BooleanSupplier joystickTrigger(Supplier<Double> joystick, double threshold) {
+    return () -> Math.abs(joystick.get()) > threshold;
   }
 
   // Method to get this command so we can use it in Robot.java
