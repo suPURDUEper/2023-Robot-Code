@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -85,6 +86,11 @@ public class DriveWithJoysticks extends CommandBase {
     double leftX = leftXSupplier.get();
     double leftY = leftYSupplier.get();
     double rightY = rightYSupplier.get();
+
+    if (AllianceFlipUtil.shouldFlip()) {
+      leftX *= -1;
+      leftY *= -1;
+    }
 
     // Get direction and magnitude of linear axes
     double linearMagnitude = Math.hypot(leftX, leftY);
