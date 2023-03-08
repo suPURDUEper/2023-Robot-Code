@@ -11,7 +11,7 @@ import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 public class ArmavatorGoToPose extends SequentialCommandGroup {
 
   public ArmavatorGoToPose(ArmavatorPreset preset, Arm arm, Elevator elevator) {
-    new ArmavatorGoToPose(preset.getPose(), arm, elevator);
+    this(preset.getPose(), arm, elevator);
   }
 
   public ArmavatorGoToPose(ArmavatorPose pose, Arm arm, Elevator elevator) {
