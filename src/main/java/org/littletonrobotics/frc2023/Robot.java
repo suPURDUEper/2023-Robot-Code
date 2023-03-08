@@ -172,6 +172,8 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
     CommandScheduler.getInstance().schedule(robotContainer.setDriveXMode(false));
+    CommandScheduler.getInstance()
+    .schedule(robotContainer.getSyncArmEncoderCommand());
   }
 
   @Override
@@ -179,8 +181,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledInit() {
-    CommandScheduler.getInstance()
-        .schedule(new WaitCommand(2).andThen(robotContainer.getSyncArmEncoderCommand()));
   }
 
   @Override

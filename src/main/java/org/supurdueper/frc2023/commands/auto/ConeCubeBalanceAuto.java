@@ -27,7 +27,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
             new Pose2d(
                 FieldConstants.Community.chargingStationInnerX
                     - Constants.ROBOT_X_OFFSET
-                    + Units.feetToMeters(1),
+                    + Units.inchesToMeters(8),
                 FieldConstants.Community.chargingStationLeftY
                     - Constants.ROBOT_Y_OFFSET
                     - Units.feetToMeters(1.25),

@@ -26,6 +26,7 @@ import org.littletonrobotics.frc2023.subsystems.drive.ModuleIO;
 import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSim;
 import org.littletonrobotics.frc2023.subsystems.drive.ModuleIOSparkMax;
 import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.frc2023.util.SparkMaxBurnManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -182,6 +183,13 @@ public class RobotContainer {
     Trigger intakeOff = operator.back();
     Trigger singleStationConeIntake = operator.povLeft();
     Trigger doubleStationConeIntake = operator.povUp();
+
+    if (AllianceFlipUtil.shouldFlip()) {
+      driveTranslationX = invertJoystick(driver::getLeftX);
+      driveTranslationY = invertJoystick(driver::getLeftY);
+      rotateTo90 = driver.b();
+      rotateTo270 = driver.x();
+    }
 
     // *** DRIVER CONTROLS ***
     drive.setDefaultCommand(
