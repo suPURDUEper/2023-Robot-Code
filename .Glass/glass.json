@@ -5,7 +5,8 @@
         "Armavator": {
           "Motors": {
             "open": true
-          }
+          },
+          "open": true
         },
         "Drive": {
           "Gyro": {

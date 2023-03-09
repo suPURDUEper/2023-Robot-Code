@@ -275,8 +275,11 @@ public class RobotContainer {
     singleStationConeIntake.onTrue(
         new ArmavatorGoToPose(ArmavatorPreset.singleSubstationCone.getPose(), arm, elevator)
             .andThen(new IntakeCone(intake)));
+    
+    doubleStationConeIntake.onTrue(
+        new ArmavatorGoToPose(ArmavatorPreset.doubleSubstationCone.getPose(), arm, elevator)
+            .andThen(new IntakeCone(intake)));
 
-    // Change this later - touching joystick should interrupt command
     manualElevatorTrigger.onTrue(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
     manualArmTrigger.onTrue(new MoveArmWithJoystick(arm, manualArmControl));
   }
