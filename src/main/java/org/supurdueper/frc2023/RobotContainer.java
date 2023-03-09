@@ -292,7 +292,7 @@ public class RobotContainer {
 
   /** Passes the autonomous command to the {@link Robot} class. */
   public Command getAutonomousCommand() {
-    return new ConeAndBalanceAuto(drive, intake, arm, elevator);
+    return autoChooser.get();
   }
 
   public Supplier<Double> invertJoystick(Supplier<Double> joystick) {
