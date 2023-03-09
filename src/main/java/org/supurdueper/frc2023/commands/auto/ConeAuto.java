@@ -2,6 +2,7 @@ package org.supurdueper.frc2023.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -29,14 +30,14 @@ public class ConeAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
-                Grids.nodeY[stationIndex],
+                Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
                 Rotation2d.fromDegrees(180)));
 
     Pose2d score =
         AllianceFlipUtil.apply(
             new Pose2d(
                 Grids.outerX + Constants.ROBOT_X_OFFSET,
-                Grids.nodeY[stationIndex],
+                Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
                 Rotation2d.fromDegrees(180)));
 
     addCommands(

@@ -2,12 +2,14 @@ package org.supurdueper.frc2023.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
+import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -21,7 +23,15 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
 
     Pose2d backup =
         AllianceFlipUtil.apply(
-            new Pose2d(StagingLocations.translations[3], Rotation2d.fromDegrees(-90)));
+            new Pose2d(
+                StagingLocations.translations[3].plus(new Translation2d(0, 1)),
+                Rotation2d.fromDegrees(-90)));
+    Pose2d forwardToPickup =
+        AllianceFlipUtil.apply(
+            new Pose2d(
+                StagingLocations.translations[2].plus(
+                    new Translation2d(0, Constants.ROBOT_X_OFFSET)),
+                Rotation2d.fromDegrees(-90)));
 
     addCommands(
         new ConeCubeAuto(drive, elevator, arm, intake),
@@ -31,6 +41,7 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
             Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
                     new ArmGoToPose(arm, ArmavatorPreset.stowed))
-                .beforeStarting(Commands.waitSeconds(1))));
+                .beforeStarting(Commands.waitSeconds(2))),
+        new DriveToPose(drive, forwardToPickup));
   }
 }
