@@ -41,6 +41,7 @@ import org.supurdueper.frc2023.commands.auto.ConeBalanceAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
+import org.supurdueper.frc2023.commands.drive.DriveSnapToPose;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -62,6 +63,8 @@ public class RobotContainer {
   private Arm arm;
   private Intake intake;
   private Vision vision;
+
+  private Pose2d autoAimTargetPose = new Pose2d();
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -206,6 +209,13 @@ public class RobotContainer {
     swerveXMode.whileTrue(
         new StartEndCommand(() -> drive.setXMode(true), () -> drive.setXMode(false), drive));
 
+    driveAutoAim.onTrue(
+        Commands.runOnce(() -> this.autoAimTargetPose = drive.getPose())
+            .andThen(
+                new DriveSnapToPose(
+                    drive, () -> this.autoAimTargetPose, driveTranslationX, driveTranslationY))
+            .until(driveAutoAim.negate()));
+
     score.onTrue(
         new Score(intake)
             .withTimeout(0.5)
@@ -215,9 +225,6 @@ public class RobotContainer {
                         new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
                         intake::hasCube)
                     .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
-
-    // driveAutoAim.whileTrue(new DriveSnapToPose(drive, new Pose2d(), driveTranslationX,
-    // driveTranslationY));
 
     // *** OPERATOR CONTROLS ***
     armavatorHigh.onTrue(
