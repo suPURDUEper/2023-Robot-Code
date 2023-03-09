@@ -97,7 +97,7 @@ public class RobotContainer {
           elevator = new Elevator(new ElevatorMotorIOSparkMax());
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
-          vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
+        //   vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -158,8 +158,8 @@ public class RobotContainer {
     Trigger rotateTo180 = driver.a();
     Trigger rotateTo270 =
         driver.b().and(invertControls.negate()).or(driver.x().and(invertControls));
-    Supplier<Double> driveTranslationX = driver::getLeftX;
-    Supplier<Double> driveTranslationY = driver::getLeftY;
+    Supplier<Double> driveTranslationX = invertJoystick(driver::getLeftX);
+    Supplier<Double> driveTranslationY = invertJoystick(driver::getLeftY);
     Supplier<Double> driveRotate = invertJoystick(driver::getRightX);
     Trigger score = driver.leftBumper();
     Trigger driveAutoAim = driver.rightBumper();
@@ -212,12 +212,12 @@ public class RobotContainer {
 
     autoBalance.whileTrue(new AutoBalance(drive));
 
-    driveAutoAim.onTrue(
-        Commands.runOnce(() -> this.autoAimTargetPose = drive.getPose())
-            .andThen(
-                new DriveSnapToPose(
-                    drive, () -> this.autoAimTargetPose, driveTranslationX, driveTranslationY))
-            .until(driveAutoAim.negate()));
+    // driveAutoAim.onTrue(
+    //     Commands.runOnce(() -> this.autoAimTargetPose = drive.getPose())
+    //         .andThen(
+    //             new DriveSnapToPose(
+    //                 drive, new Pose2d(), driveTranslationX, driveTranslationY))
+    //         .until(driveAutoAim.negate()));
 
     score.onTrue(
         new Score(intake)

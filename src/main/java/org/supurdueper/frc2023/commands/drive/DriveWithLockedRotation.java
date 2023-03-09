@@ -82,11 +82,6 @@ public class DriveWithLockedRotation extends CommandBase {
     double leftX = leftXSupplier.get();
     double leftY = leftYSupplier.get();
 
-    if (AllianceFlipUtil.shouldFlip()) {
-      leftX *= -1;
-      leftY *= -1;
-    }
-
     // Get direction and magnitude of linear axes
     double linearMagnitude = Math.hypot(leftX, leftY);
     Rotation2d linearDirection = new Rotation2d(leftX, leftY);

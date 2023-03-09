@@ -25,7 +25,7 @@ import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.junction.Logger;
-import org.supurdueper.frc2023.subsystems.vision.VisionIOInputsAutoLogged;
+import org.supurdueper.frc2023.subsystems.vision.VisionIO.VisionIOInputs;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
@@ -293,6 +293,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the current pitch (Y rotation). */
+  // Flipped because pig
   public Rotation2d getPitch() {
     return new Rotation2d(gyroInputs.pitchPositionRad);
   }
@@ -328,7 +329,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Adds vision data to the pose esimation. */
-  public void addVisionData(VisionIOInputsAutoLogged visionData) {
+  public void addVisionData(VisionIOInputs visionData) {
     // TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
     // Pose2d currentPose = getPose();
 

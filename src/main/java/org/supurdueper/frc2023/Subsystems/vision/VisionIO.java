@@ -29,23 +29,28 @@ public interface VisionIO {
 
     @Override
     public void toLog(LogTable table) {
-      targetsInView = (int) table.getInteger("TargetsInView", targetsInView);
-      lastCaptureLatencyMs = table.getDouble("Vision Latency (ms)", lastCaptureLatencyMs);
-      double[] visionMeasurements =
-          table.getDoubleArray(
-              "VisionUpdate/Pose",
-              new double[] {
-                visionUpdate.pose().getX(),
-                visionUpdate.pose().getY(),
-                visionUpdate.pose().getRotation().getRadians()
-              });
-      Pose2d visionPose =
-          new Pose2d(
-              visionMeasurements[0],
-              visionMeasurements[1],
-              Rotation2d.fromRadians(visionMeasurements[2]));
-      double timestamp = table.getDouble("VisiosnUpdate/Timestamp", visionUpdate.timestamp());
-      visionUpdate = new TimestampedVisionUpdate(timestamp, visionPose, VisionIOLimelight.stdDevs);
+      try {
+        targetsInView = (int) table.getInteger("TargetsInView", targetsInView);
+        lastCaptureLatencyMs = table.getDouble("Vision Latency (ms)", lastCaptureLatencyMs);
+        double[] visionMeasurements =
+            table.getDoubleArray(
+                "VisionUpdate/Pose",
+                new double[] {
+                  visionUpdate.pose().getX(),
+                  visionUpdate.pose().getY(),
+                  visionUpdate.pose().getRotation().getRadians()
+                });
+        Pose2d visionPose =
+            new Pose2d(
+                visionMeasurements[0],
+                visionMeasurements[1],
+                Rotation2d.fromRadians(visionMeasurements[2]));
+        double timestamp = table.getDouble("VisiosnUpdate/Timestamp", visionUpdate.timestamp());
+        visionUpdate =
+            new TimestampedVisionUpdate(timestamp, visionPose, VisionIOLimelight.stdDevs);
+      } catch (Exception e) {
+        // Do nothing
+      }
     }
   }
 
