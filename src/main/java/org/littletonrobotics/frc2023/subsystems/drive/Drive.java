@@ -1,3 +1,10 @@
+// Copyright (c) 2023 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package org.littletonrobotics.frc2023.subsystems.drive;
 
 import edu.wpi.first.math.VecBuilder;
@@ -14,22 +21,22 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Arrays;
-import java.util.List;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
-import org.littletonrobotics.frc2023.util.PoseEstimator.VisionUpdate;
 import org.littletonrobotics.junction.Logger;
+import org.supurdueper.frc2023.subsystems.vision.VisionIO.VisionIOInputs;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
       0.05; // Need to be under this to switch to coast when disabling
   private static final double coastThresholdSecs =
       6.0; // Need to be under the above speed for this length of time to switch to coast
+  private static final double aprilTagGyroThresholdSecs =
+      6.0; // Must be disabled for this time to start using AprilTag gyro data
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private static final LoggedTunableNumber maxLinearSpeed =
@@ -43,15 +50,23 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
   private boolean isCharacterizing = false;
-  private boolean isXMode = false;
   private ChassisSpeeds setpoint = new ChassisSpeeds();
+  private SwerveModuleState[] lastSetpointStates =
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      };
   private double characterizationVolts = 0.0;
-  private boolean isBrakeMode = true;
+  private boolean isBrakeMode = false;
   private Timer lastMovementTimer = new Timer();
+  private Timer lastEnabledTimer = new Timer();
 
-  private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.1, 0.1, 0.1));
+  private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
   private double[] lastModulePositionsMeters = new double[] {0.0, 0.0, 0.0, 0.0};
   private Rotation2d lastGyroYaw = new Rotation2d();
+  private Twist2d fieldVelocity = new Twist2d();
 
   static {
     switch (Constants.getRobot()) {
@@ -78,6 +93,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
     lastMovementTimer.start();
+    lastEnabledTimer.start();
     for (var module : modules) {
       module.setBrakeMode(false);
     }
@@ -103,6 +119,11 @@ public class Drive extends SubsystemBase {
                   .get();
     }
 
+    // Reset last enabled timer
+    if (DriverStation.isEnabled()) {
+      lastEnabledTimer.reset();
+    }
+
     // Run modules
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
@@ -124,18 +145,6 @@ public class Drive extends SubsystemBase {
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
 
-    } else if (isXMode) {
-      SwerveModuleState xStateFlBr = new SwerveModuleState(0, Rotation2d.fromDegrees(45));
-      SwerveModuleState xStateFrBl = new SwerveModuleState(0, Rotation2d.fromDegrees(-45));
-
-      modules[0].runSetpoint(xStateFlBr); // FL
-      modules[1].runSetpoint(xStateFrBl); // FR
-      modules[2].runSetpoint(xStateFrBl); // BL
-      modules[3].runSetpoint(xStateFlBr); // BR
-
-      // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
     } else {
       // Calculate module setpoints
       var setpointTwist =
@@ -158,6 +167,16 @@ public class Drive extends SubsystemBase {
       for (int i = 0; i < 4; i++) {
         optimizedStates[i] = modules[i].runSetpoint(setpointStates[i]);
       }
+
+      // Set to last angles if zero
+      if (adjustedSpeeds.vxMetersPerSecond == 0.0
+          && adjustedSpeeds.vyMetersPerSecond == 0.0
+          && adjustedSpeeds.omegaRadiansPerSecond == 0) {
+        for (int i = 0; i < 4; i++) {
+          setpointStates[i] = new SwerveModuleState(0.0, lastSetpointStates[i].angle);
+        }
+      }
+      lastSetpointStates = setpointStates;
 
       // Log setpoint states
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -188,6 +207,19 @@ public class Drive extends SubsystemBase {
     lastGyroYaw = gyroYaw;
     poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
     Logger.getInstance().recordOutput("Odometry/Robot", getPose());
+
+    // Update field velocity
+    ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(measuredStates);
+    Translation2d linearFieldVelocity =
+        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+            .rotateBy(getRotation());
+    fieldVelocity =
+        new Twist2d(
+            linearFieldVelocity.getX(),
+            linearFieldVelocity.getY(),
+            gyroInputs.connected
+                ? gyroInputs.yawVelocityRadPerSec
+                : chassisSpeeds.omegaRadiansPerSecond);
 
     // Update brake mode
     boolean stillMoving = false;
@@ -229,6 +261,19 @@ public class Drive extends SubsystemBase {
     runVelocity(new ChassisSpeeds());
   }
 
+  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
+   */
+  public void stopWithX() {
+    stop();
+    for (int i = 0; i < 4; i++) {
+      lastSetpointStates[i] =
+          new SwerveModuleState(
+              lastSetpointStates[i].speedMetersPerSecond, getModuleTranslations()[i].getAngle());
+    }
+  }
+
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     return maxLinearSpeed.get();
@@ -237,6 +282,35 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return maxAngularSpeed;
+  }
+
+  /**
+   * Returns the measured X, Y, and theta field velocities in meters per sec. The components of the
+   * twist are velocities and NOT changes in position.
+   */
+  public Twist2d getFieldVelocity() {
+    return fieldVelocity;
+  }
+
+  /** Returns the current pitch (Y rotation). */
+  // Flipped because pig
+  public Rotation2d getPitch() {
+    return new Rotation2d(gyroInputs.pitchPositionRad);
+  }
+
+  /** Returns the current roll (X rotation). */
+  public Rotation2d getRoll() {
+    return new Rotation2d(gyroInputs.rollPositionRad);
+  }
+
+  /** Returns the current pitch velocity (Y rotation) in radians per second. */
+  public double getPitchVelocity() {
+    return gyroInputs.pitchVelocityRadPerSec;
+  }
+
+  /** Returns the current roll velocity (X rotation) in radians per second. */
+  public double getRollVelocity() {
+    return gyroInputs.rollVelocityRadPerSec;
   }
 
   /** Returns the current odometry pose. */
@@ -255,13 +329,15 @@ public class Drive extends SubsystemBase {
   }
 
   /** Adds vision data to the pose esimation. */
-  public void addVisionData(double timestamp, List<VisionUpdate> visionUpdates) {
-    poseEstimator.addVisionData(timestamp, visionUpdates);
-  }
+  public void addVisionData(VisionIOInputs visionData) {
+    // TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
+    // Pose2d currentPose = getPose();
 
-  /** Move modules into an X to maximize holding traction */
-  public void setXMode(boolean xMode) {
-    isXMode = xMode;
+    // // Only use measurements if we see more than 1 tag or we are
+    // // relatively close to the alliance station wall
+    // if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
+    //   poseEstimator.addVisionData(List.of(visionUpdate));
+    // }
   }
 
   /** Returns an array of module translations. */

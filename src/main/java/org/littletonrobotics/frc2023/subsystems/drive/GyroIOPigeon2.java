@@ -22,6 +22,7 @@ public class GyroIOPigeon2 implements GyroIO {
 
     pigeon.configFactoryDefault();
     pigeon.zeroGyroBiasNow();
+    pigeon.configMountPose(-90, 0, 0);
     pigeon.setYaw(0.0);
   }
 

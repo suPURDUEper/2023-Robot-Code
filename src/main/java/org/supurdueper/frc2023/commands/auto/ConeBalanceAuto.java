@@ -46,6 +46,6 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
         new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
         new DriveToPose(drive, pastStation),
         new DriveToPose(drive, onStation),
-        new InstantCommand(() -> drive.setXMode(true)));
+        new InstantCommand(() -> drive.stopWithX(), drive));
   }
 }

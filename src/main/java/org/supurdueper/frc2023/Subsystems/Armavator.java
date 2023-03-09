@@ -31,7 +31,8 @@ public interface Armavator {
       midCube(new ArmavatorPose(new Rotation2d(1.75), ELEVATOR_SAFE, 0.0, 0.0)),
       highCone(new ArmavatorPose(new Rotation2d(2), ELEVATOR_MAX, 0.0, 0.0)),
       highCube(new ArmavatorPose(new Rotation2d(1.57), ELEVATOR_MAX, 0.0, 0.0)),
-      singleSubstationCone(new ArmavatorPose(new Rotation2d(1.9), 0.0, 0, 0));
+      singleSubstationCone(new ArmavatorPose(new Rotation2d(1.9), 0.0, 0, 0)),
+      doubleSubstationCone(new ArmavatorPose(new Rotation2d(1.81), .582, 0, 0));
 
       private ArmavatorPose pose;
 

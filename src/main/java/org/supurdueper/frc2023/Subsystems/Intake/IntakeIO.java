@@ -16,7 +16,6 @@ public interface IntakeIO {
   /** Set the intake roller voltage */
   public default void setRollerVoltage(double volts) {}
 
-
   public default double getRollerAmps() {
     return 0;
   }

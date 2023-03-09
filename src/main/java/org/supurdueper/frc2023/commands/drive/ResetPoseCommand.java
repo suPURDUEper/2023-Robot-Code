@@ -11,10 +11,10 @@ public class ResetPoseCommand extends InstantCommand {
   }
 
   public ResetPoseCommand(Drive drive, double x, double y, Rotation2d z) {
-    new ResetPoseCommand(drive, new Pose2d(x, y, z));
+    this(drive, new Pose2d(x, y, z));
   }
 
   public ResetPoseCommand(Drive drive, double x, double y, double z) {
-    new ResetPoseCommand(drive, x, y, Rotation2d.fromRadians(z));
+    this(drive, x, y, Rotation2d.fromRadians(z));
   }
 }

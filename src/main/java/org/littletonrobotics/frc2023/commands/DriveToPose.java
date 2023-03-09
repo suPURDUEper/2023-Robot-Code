@@ -20,6 +20,7 @@ import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveToPose extends CommandBase {
   private final Drive drive;
@@ -143,13 +144,8 @@ public class DriveToPose extends CommandBase {
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
             driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, currentPose.getRotation()));
-  }
 
-  
-
-  @Override
-  public boolean isFinished() {
-    return atGoal();
+    Logger.getInstance().recordOutput("Odometry/Target Pose", targetPose);
   }
 
   @Override

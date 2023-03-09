@@ -78,7 +78,7 @@ public class Intake extends SubsystemBase {
           voltage = rollerCubeScoreVolts.get();
           break;
         case HOLD_CONE:
-          voltage = -1;
+          voltage = -2;
           break;
         case HOLD_CUBE:
           voltage = 0;
