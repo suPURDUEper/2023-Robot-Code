@@ -28,14 +28,14 @@ public class ConeCubeAuto extends SequentialCommandGroup {
     Pose2d pickupCube =
         AllianceFlipUtil.apply(
             new Pose2d(
-                StagingLocations.translations[3].plus(new Translation2d(0.3, 0.55)),
+                StagingLocations.translations[3].plus(new Translation2d(0.5, 0.55)),
                 Rotation2d.fromDegrees(-30)));
 
     Pose2d secondScore =
         AllianceFlipUtil.apply(
             new Pose2d(
-                Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(9),
-                Grids.nodeY[7] - Units.inchesToMeters(6),
+                Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(14),
+                Grids.nodeY[7] - Units.inchesToMeters(12),
                 Rotation2d.fromDegrees(180)));
 
     addCommands(

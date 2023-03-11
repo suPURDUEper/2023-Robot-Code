@@ -25,7 +25,7 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 StagingLocations.translations[3].plus(new Translation2d(0, 1)),
-                Rotation2d.fromDegrees(-90)));
+                Rotation2d.fromDegrees(175)));
     Pose2d forwardToPickup =
         AllianceFlipUtil.apply(
             new Pose2d(
