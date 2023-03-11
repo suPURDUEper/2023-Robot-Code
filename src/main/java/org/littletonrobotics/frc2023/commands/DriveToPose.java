@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -117,7 +118,7 @@ public class DriveToPose extends CommandBase {
 
     // Get current and target pose
     var currentPose = drive.getPose();
-    var targetPose = poseSupplier.get();
+    var targetPose = AllianceFlipUtil.apply(poseSupplier.get());
 
     // Calculate drive speed
     double currentDistance =

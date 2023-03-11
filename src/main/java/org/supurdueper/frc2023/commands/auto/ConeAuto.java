@@ -15,7 +15,6 @@ import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
-import org.supurdueper.frc2023.commands.drive.ResetPoseCommand;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -27,24 +26,22 @@ public class ConeAuto extends SequentialCommandGroup {
 
   public ConeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
     Pose2d start =
-        AllianceFlipUtil.apply(
-            new Pose2d(
-                Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
-                Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
-                Rotation2d.fromDegrees(180)));
+        new Pose2d(
+            Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
+            Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
+            Rotation2d.fromDegrees(180));
 
     Pose2d score =
-        AllianceFlipUtil.apply(
-            new Pose2d(
-                Grids.outerX + Constants.ROBOT_X_OFFSET,
-                Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
-                Rotation2d.fromDegrees(180)));
+        new Pose2d(
+            Grids.outerX + Constants.ROBOT_X_OFFSET,
+            Grids.nodeY[stationIndex] - Units.inchesToMeters(4),
+            Rotation2d.fromDegrees(180));
 
     addCommands(
         // Initialize robot
         Commands.parallel(
             new ResetElevatorPosition(elevator),
-            new ResetPoseCommand(drive, start),
+            Commands.runOnce(() -> drive.setPose(AllianceFlipUtil.apply(start))),
             new InstantCommand(() -> arm.syncEncoders())),
 
         // Drive foward and score cone
