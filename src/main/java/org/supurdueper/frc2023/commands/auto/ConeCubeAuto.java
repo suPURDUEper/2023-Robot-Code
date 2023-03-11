@@ -43,7 +43,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
 
         // Drive and intake cube
         Commands.deadline(
-            new IntakeCube(intake),
+            new IntakeCube(intake).withTimeout(3.2),
             new DriveToPose(drive, pickupCube),
             Commands.parallel( // Wait to prevent arm motion while rotating
                     new ElevatorGoToPose(elevator, ArmavatorPreset.intakeCube),
