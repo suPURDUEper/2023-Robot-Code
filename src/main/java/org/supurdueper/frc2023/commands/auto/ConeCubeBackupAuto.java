@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
@@ -33,11 +34,11 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
         new ConeCubeAuto(drive, elevator, arm, intake),
         // Drive to middle of field
         Commands.parallel(
-            new DriveToPose(drive, backup),
+            new DriveToPose(drive, () -> AllianceFlipUtil.apply(backup)),
             Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
                     new ArmGoToPose(arm, ArmavatorPreset.stowed))
                 .beforeStarting(Commands.waitSeconds(2))),
-        new DriveToPose(drive, forwardToPickup));
+        new DriveToPose(drive, () -> AllianceFlipUtil.apply(forwardToPickup)));
   }
 }
