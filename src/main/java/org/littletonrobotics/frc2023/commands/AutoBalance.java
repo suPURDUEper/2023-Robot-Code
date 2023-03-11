@@ -20,7 +20,7 @@ public class AutoBalance extends CommandBase {
   private static final LoggedTunableNumber positionThresholdDegrees =
       new LoggedTunableNumber("AutoBalance/PositionThresholdDegrees", 3.0);
   private static final LoggedTunableNumber velocityThresholdDegreesPerSec =
-      new LoggedTunableNumber("AutoBalance/VelocityThresholdDegreesPerSec", 8.0);
+      new LoggedTunableNumber("AutoBalance/VelocityThresholdDegreesPerSec", 6.0);
 
   private final Drive drive;
   private double angleDegrees;
