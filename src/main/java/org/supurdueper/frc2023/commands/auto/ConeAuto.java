@@ -51,6 +51,7 @@ public class ConeAuto extends SequentialCommandGroup {
                 .beforeStarting(Commands.waitSeconds(0.3)),
             new IntakeCone(intake),
             new DriveToPose(drive, score).beforeStarting(Commands.waitSeconds(0.8))),
+        Commands.runOnce(() -> drive.stop(), drive),
         new Score(intake).withTimeout(0.5));
   }
 }
