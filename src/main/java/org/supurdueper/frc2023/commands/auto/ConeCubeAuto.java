@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
@@ -50,11 +51,12 @@ public class ConeCubeAuto extends SequentialCommandGroup {
                     new ArmGoToPose(arm, ArmavatorPreset.intakeCube))
                 .beforeStarting(Commands.waitSeconds(0.5))),
 
+        new InstantCommand(() -> drive.stop(), drive));
         // Drive to grid and score cube
-        Commands.parallel(
-            new DriveToPose(drive, secondScore).withTimeout(3.2),
-            new ArmavatorGoToPose(ArmavatorPreset.highCube.getPose(), arm, elevator)
-                .beforeStarting(Commands.waitSeconds(1))),
-        new Score(intake).withTimeout(0.5));
+        // Commands.parallel(
+        //     new DriveToPose(drive, secondScore).withTimeout(3.2),
+        //     new ArmavatorGoToPose(ArmavatorPreset.highCube.getPose(), arm, elevator)
+        //         .beforeStarting(Commands.waitSeconds(1))),
+        // new Score(intake).withTimeout(0.5));
   }
 }

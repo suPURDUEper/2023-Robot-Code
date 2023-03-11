@@ -121,7 +121,7 @@ public class RobotContainer {
     autoChooser.addOption("1 + Balance [3]", new ConeBalanceAuto(drive, elevator, arm, intake, 3));
     autoChooser.addOption("1 + Balance [5]", new ConeBalanceAuto(drive, elevator, arm, intake, 5));
     autoChooser.addOption("2", new ConeCubeAuto(drive, elevator, arm, intake));
-    autoChooser.addDefaultOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
 
     // Alert if in tuning mode
