@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.Community;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
+import org.littletonrobotics.frc2023.commands.AutoBalance;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -46,6 +47,6 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
         new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
         new DriveToPose(drive, pastStation),
         new DriveToPose(drive, onStation),
-        new InstantCommand(() -> drive.stopWithX(), drive));
+        new AutoBalance(drive));
   }
 }

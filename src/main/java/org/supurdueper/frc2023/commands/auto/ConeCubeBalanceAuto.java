@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.Community;
+import org.littletonrobotics.frc2023.commands.AutoBalance;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
@@ -48,7 +49,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
         Commands.parallel(
             new DriveToPose(drive, inFrontOfStation)
                 .andThen(new DriveToPose(drive, onStation))
-                .andThen(new InstantCommand(() -> drive.stopWithX(), drive)),
+                .andThen(new AutoBalance(drive)),
             Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
                     new ArmGoToPose(arm, ArmavatorPreset.stowed))
