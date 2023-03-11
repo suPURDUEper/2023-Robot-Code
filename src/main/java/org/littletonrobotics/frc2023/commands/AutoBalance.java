@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class AutoBalance extends CommandBase {
   private static final LoggedTunableNumber speedInchesPerSec =
-      new LoggedTunableNumber("AutoBalance/SpeedInchesPerSec", 15.0);
+      new LoggedTunableNumber("AutoBalance/SpeedInchesPerSec", 10.0);
   private static final LoggedTunableNumber positionThresholdDegrees =
       new LoggedTunableNumber("AutoBalance/PositionThresholdDegrees", 3.0);
   private static final LoggedTunableNumber velocityThresholdDegreesPerSec =
