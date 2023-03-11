@@ -121,10 +121,8 @@ public class RobotContainer {
     autoChooser.addOption("1 + Balance [3]", new ConeBalanceAuto(drive, elevator, arm, intake, 3));
     autoChooser.addOption("1 + Balance [5]", new ConeBalanceAuto(drive, elevator, arm, intake, 5));
     autoChooser.addOption("2", new ConeCubeAuto(drive, elevator, arm, intake));
-    autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
+    autoChooser.addDefaultOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
-    autoChooser.addDefaultOption(
-        "Reset Odometry", new InstantCommand(() -> drive.setPose(new Pose2d())));
 
     // Alert if in tuning mode
     if (Constants.tuningMode) {
@@ -168,6 +166,7 @@ public class RobotContainer {
     Trigger swerveXMode = driver.povDown();
     Trigger autoBalance = driver.povUp();
     Trigger slowMode = driver.leftTrigger(0.2).or(driver.rightTrigger(0.2));
+    Trigger resetRotation = driver.start();
 
     // Operator
     Supplier<Double> manualArmControl = invertJoystick(operator::getLeftY);
@@ -213,6 +212,8 @@ public class RobotContainer {
     swerveXMode.onTrue(new InstantCommand(() -> drive.stopWithX(), drive));
 
     autoBalance.whileTrue(new AutoBalance(drive));
+
+    resetRotation.onTrue(Commands.runOnce(() -> drive.resetRotation()));
 
     // driveAutoAim.onTrue(
     //     Commands.runOnce(() -> this.autoAimTargetPose = drive.getPose())
