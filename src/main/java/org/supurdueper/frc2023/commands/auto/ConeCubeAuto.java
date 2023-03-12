@@ -36,7 +36,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(20),
-                Grids.nodeY[7],
+                Grids.nodeY[7] + Units.inchesToMeters(3),
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
