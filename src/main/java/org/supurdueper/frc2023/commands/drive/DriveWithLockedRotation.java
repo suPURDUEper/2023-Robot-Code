@@ -27,7 +27,7 @@ public class DriveWithLockedRotation extends CommandBase {
   private Supplier<Double> thetaSupplier;
   private Supplier<Double> leftXSupplier;
   private Supplier<Double> leftYSupplier;
-  private final double sniperModeLinearPercent = 0.5;
+  private final double sniperModeLinearPercent = 0.35;
   private BooleanSupplier sniperModeSupplier;
 
   /** Drives to the specified pose under full software control. */
