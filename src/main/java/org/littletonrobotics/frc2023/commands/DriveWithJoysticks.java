@@ -26,8 +26,8 @@ public class DriveWithJoysticks extends CommandBase {
   public static final double minExtensionMaxLinearAcceleration = Units.inchesToMeters(900.0);
   public static final double fullExtensionMaxLinearAcceleration = Units.inchesToMeters(200.0);
   public static final double fullExtensionMaxAngularVelocity = Units.degreesToRadians(90.0);
-  public static final double sniperModeLinearPercent = 0.5;
-  public static final double sniperModeAngularPercent = 0.5;
+  public static final double sniperModeLinearPercent = 0.35;
+  public static final double sniperModeAngularPercent = 0.35;
 
   private final Drive drive;
   private final Supplier<Double> leftXSupplier;

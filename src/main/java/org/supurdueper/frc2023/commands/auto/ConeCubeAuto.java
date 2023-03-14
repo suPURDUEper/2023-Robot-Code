@@ -36,7 +36,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         AllianceFlipUtil.apply(
             new Pose2d(
                 Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(20),
-                Grids.nodeY[7] - Units.inchesToMeters(18),
+                Grids.nodeY[7] + Units.inchesToMeters(3),
                 Rotation2d.fromDegrees(180)));
 
     addCommands(
@@ -50,13 +50,11 @@ public class ConeCubeAuto extends SequentialCommandGroup {
                     new ElevatorGoToPose(elevator, ArmavatorPreset.intakeCube),
                     new ArmGoToPose(arm, ArmavatorPreset.intakeCube))
                 .beforeStarting(Commands.waitSeconds(0.5))),
-        new DriveToPose(drive, () -> AllianceFlipUtil.apply(secondScore)).withTimeout(3.2),
-        new InstantCommand(() -> drive.stop(), drive));
         // Drive to grid and score cube
-        // Commands.parallel(
-        //     new DriveToPose(drive, secondScore).withTimeout(3.2),
-        //     new ArmavatorGoToPose(ArmavatorPreset.highCube.getPose(), arm, elevator)
-        //         .beforeStarting(Commands.waitSeconds(1))),
-        // new Score(intake).withTimeout(0.5));
+        Commands.parallel(
+            new DriveToPose(drive, secondScore).withTimeout(3.2),
+            new ArmavatorGoToPose(ArmavatorPreset.low.getPose(), arm, elevator)
+                .beforeStarting(Commands.waitSeconds(1))),
+        new Score(intake).withTimeout(0.5));
   }
 }
