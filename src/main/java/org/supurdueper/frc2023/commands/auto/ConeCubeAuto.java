@@ -30,10 +30,10 @@ public class ConeCubeAuto extends SequentialCommandGroup {
             Rotation2d.fromDegrees(-30));
 
     Pose2d secondScore =
-            new Pose2d(
-                Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(20),
-                Grids.nodeY[7] + Units.inchesToMeters(3),
-                Rotation2d.fromDegrees(180));
+        new Pose2d(
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(20),
+            Grids.nodeY[7] + Units.inchesToMeters(3),
+            Rotation2d.fromDegrees(180));
 
     addCommands(
         new ConeAuto(drive, elevator, arm, intake, 8),
