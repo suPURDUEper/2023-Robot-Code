@@ -194,7 +194,7 @@ public class RobotContainer {
             driveRotate,
             slowMode::getAsBoolean, // Slow mode
             () -> false, // Switch to robot relative driving
-            () -> 0.0)); // Limit acceleration based on arm extension percentage
+            () -> getIntakeExtensionPercentage(elevator, arm))); // Limit acceleration based on arm extension percentage
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
@@ -306,5 +306,15 @@ public class RobotContainer {
   // Method to get this command so we can use it in Robot.java
   public Command getSyncArmEncoderCommand() {
     return new SyncArmEncoders(arm);
+  }
+
+  public double getIntakeExtensionPercentage(Elevator elevator, Arm arm) {
+    double elevatorPosM = elevator.getElevatorPosition();
+    double armShoulderHeight = elevatorPosM * Math.sin(Units.degreesToRadians(49)) + Units.inchesToMeters(29);
+    double armEndHeight = arm.getArmPosition().getCos() * -1.0 * Units.inchesToMeters(21);
+    double intakeHeight = armEndHeight + armShoulderHeight;
+    double intakeMaxHeight = 61.166;
+    double intakeMinHeight = 9.337;
+    return intakeHeight / (intakeMaxHeight - intakeMinHeight);
   }
 }
