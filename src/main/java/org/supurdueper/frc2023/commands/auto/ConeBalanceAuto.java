@@ -9,7 +9,6 @@ import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.commands.AutoBalance;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
-import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -39,10 +38,10 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
 
     addCommands(
         new ConeAuto(drive, elevator, arm, intake, stationIndex),
-        new DriveToPose(drive, () -> AllianceFlipUtil.apply(backupToRetract)),
+        new DriveToPose(drive, backupToRetract),
         new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
-        new DriveToPose(drive, () -> AllianceFlipUtil.apply(pastStation)),
-        new DriveToPose(drive, () -> AllianceFlipUtil.apply(onStation)),
+        new DriveToPose(drive, pastStation),
+        new DriveToPose(drive, onStation),
         new AutoBalance(drive));
   }
 }

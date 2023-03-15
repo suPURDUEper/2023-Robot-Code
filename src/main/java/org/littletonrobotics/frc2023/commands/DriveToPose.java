@@ -118,7 +118,7 @@ public class DriveToPose extends CommandBase {
 
     // Get current and target pose
     var currentPose = drive.getPose();
-    var targetPose = poseSupplier.get();
+    var targetPose = AllianceFlipUtil.apply(poseSupplier.get());
 
     // Calculate drive speed
     double currentDistance =

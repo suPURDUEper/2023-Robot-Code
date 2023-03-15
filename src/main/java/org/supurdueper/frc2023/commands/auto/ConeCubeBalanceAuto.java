@@ -16,7 +16,6 @@ import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPrese
 import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
-import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 
 public class ConeCubeBalanceAuto extends SequentialCommandGroup {
 
@@ -38,8 +37,8 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
 
         // Drive to charging station
         Commands.parallel(
-            new DriveToPose(drive, () -> AllianceFlipUtil.apply(inFrontOfStation))
-                .andThen(new DriveToPose(drive, () -> AllianceFlipUtil.apply(onStation)))
+            new DriveToPose(drive, inFrontOfStation)
+                .andThen(new DriveToPose(drive, onStation))
                 .andThen(new AutoBalance(drive)),
             Commands.parallel( // Wait so arm doesn't hit grid
                     new ElevatorGoToPose(elevator, ArmavatorPreset.stowed),
