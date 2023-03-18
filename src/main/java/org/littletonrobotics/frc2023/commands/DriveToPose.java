@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -80,7 +81,7 @@ public class DriveToPose extends CommandBase {
   /** Drives to the specified pose under full software control. */
   public DriveToPose(Drive drive, Supplier<Pose2d> poseSupplier) {
     this.drive = drive;
-    this.poseSupplier = poseSupplier;
+    this.poseSupplier = () -> AllianceFlipUtil.apply(poseSupplier.get());
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
