@@ -24,8 +24,8 @@ public interface Armavator {
 
     public static enum ArmavatorPreset {
       stowed(new ArmavatorPose(new Rotation2d(-0.55), ELEVATOR_SAFE, 0.0, 0.0)),
-      intakeCube(new ArmavatorPose(new Rotation2d(.185), .128, 0.0, 0.0)),
-      intakeCone(new ArmavatorPose(new Rotation2d(-.09), .16, 0.0, 0.0)),
+      intakeCube(new ArmavatorPose(new Rotation2d(0.0398), 0.158575, 0.0, 0.0)),
+      intakeCone(new ArmavatorPose(new Rotation2d(-.2618), .174575, 0.0, 0.0)),
       low(new ArmavatorPose(new Rotation2d(.2), .2, 0.0, 0.0)),
       midCone(new ArmavatorPose(new Rotation2d(2.15), ELEVATOR_MIN, 0.0, 0.0)),
       midCube(new ArmavatorPose(new Rotation2d(1.75), ELEVATOR_SAFE, 0.0, 0.0)),

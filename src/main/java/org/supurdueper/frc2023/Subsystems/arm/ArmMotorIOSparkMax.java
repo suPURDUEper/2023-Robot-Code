@@ -42,9 +42,9 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     setBrakeMode(true);
     // Get and reset encoder objects
     armAbsoluteEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-    armAbsoluteEncoder.setInverted(true);
+    armAbsoluteEncoder.setInverted(false);
     armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
-    armAbsoluteEncoder.setZeroOffset(Units.rotationsToRadians(0.1893));
+    armAbsoluteEncoder.setZeroOffset(3.420);
     // Sync with motor encoder so we can use the built-in soft limits on the motor controller
     // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
     // that didn't work
@@ -83,6 +83,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
     // Arm state variables for logging
     double armPositionRad = wrapAbsoluteArmAngle(armAbsoluteEncoder.getPosition());
     inputs.armPositionRad = armPositionRad * armEncoderToArmGearRatio;
+    // inputs.armPositionRad = armAbsoluteEncoder.getPosition();
     inputs.armVelocityRadS =
         Units.rotationsPerMinuteToRadiansPerSecond(
             armAbsoluteEncoder.getVelocity() * armEncoderToArmGearRatio);
