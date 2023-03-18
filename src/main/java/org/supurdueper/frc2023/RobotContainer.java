@@ -56,6 +56,7 @@ import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
 import org.supurdueper.frc2023.subsystems.vision.Vision;
+import org.supurdueper.frc2023.subsystems.vision.VisionIOLimelight;
 
 public class RobotContainer {
 
@@ -99,7 +100,7 @@ public class RobotContainer {
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
           lights = new Lights();
-          //   vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
+            vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
           break;
         case ROBOT_SIMBOT:
           drive =
