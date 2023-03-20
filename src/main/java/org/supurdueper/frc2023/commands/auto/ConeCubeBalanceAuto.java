@@ -9,7 +9,6 @@ import org.littletonrobotics.frc2023.FieldConstants.Community;
 import org.littletonrobotics.frc2023.commands.AutoBalance;
 import org.littletonrobotics.frc2023.commands.DriveToPose;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
-import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.supurdueper.frc2023.Constants;
 import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
@@ -22,24 +21,16 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
 
   public ConeCubeBalanceAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
     Pose2d inFrontOfStation =
-        AllianceFlipUtil.apply(
-            new Pose2d(
-                Community.chargingStationInnerX
-                    - Constants.ROBOT_X_OFFSET
-                    + Units.inchesToMeters(8),
-                Community.chargingStationLeftY
-                    - Constants.ROBOT_Y_OFFSET
-                    - Units.feetToMeters(1.25),
-                Rotation2d.fromDegrees(180)));
+        new Pose2d(
+            Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET + Units.inchesToMeters(8),
+            Community.chargingStationLeftY - Constants.ROBOT_Y_OFFSET - Units.feetToMeters(1.25),
+            Rotation2d.fromDegrees(180));
 
     Pose2d onStation =
-        AllianceFlipUtil.apply(
-            new Pose2d(
-                Community.chargingStationCenterX + Units.feetToMeters(3.5),
-                Community.chargingStationLeftY
-                    - Constants.ROBOT_Y_OFFSET
-                    - Units.feetToMeters(1.25),
-                Rotation2d.fromDegrees(180)));
+        new Pose2d(
+            Community.chargingStationCenterX + Units.feetToMeters(3.5),
+            Community.chargingStationLeftY - Constants.ROBOT_Y_OFFSET - Units.feetToMeters(1.25),
+            Rotation2d.fromDegrees(180));
 
     addCommands(
         new ConeCubeAuto(drive, elevator, arm, intake),
