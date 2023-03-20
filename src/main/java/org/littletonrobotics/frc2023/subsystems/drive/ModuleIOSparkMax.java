@@ -1,9 +1,17 @@
+// Copyright (c) 2023 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package org.littletonrobotics.frc2023.subsystems.drive;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -68,26 +76,32 @@ public class ModuleIOSparkMax implements ModuleIO {
       turnSparkMax.restoreFactoryDefaults();
     }
 
-    turnSparkMax.setInverted(isTurnMotorInverted);
-
-    driveSparkMax.setSmartCurrentLimit(30);
-    turnSparkMax.setSmartCurrentLimit(30);
-    driveSparkMax.enableVoltageCompensation(12.0);
-    turnSparkMax.enableVoltageCompensation(12.0);
-
-    driveSparkMax.getEncoder().setPosition(0.0);
-    driveEncoder = driveSparkMax.getEncoder();
-    driveEncoder.setMeasurementPeriod(10);
-    driveEncoder.setAverageDepth(2);
-
-    turnRelativeEncoder = turnSparkMax.getEncoder();
-    turnRelativeEncoder.setPosition(0.0);
-
     driveSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
     turnSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
 
-    SparkMaxPeriodicFrameConfig.configNotLeader(driveSparkMax);
-    SparkMaxPeriodicFrameConfig.configNotLeader(turnSparkMax);
+    driveEncoder = driveSparkMax.getEncoder();
+    turnRelativeEncoder = turnSparkMax.getEncoder();
+
+    for (int i = 0; i < SparkMaxBurnManager.configCount; i++) {
+      SparkMaxPeriodicFrameConfig.configNotLeader(driveSparkMax);
+      SparkMaxPeriodicFrameConfig.configNotLeader(turnSparkMax);
+
+      turnSparkMax.setInverted(isTurnMotorInverted);
+
+      driveSparkMax.setSmartCurrentLimit(30);
+      turnSparkMax.setSmartCurrentLimit(30);
+      driveSparkMax.enableVoltageCompensation(12.0);
+      turnSparkMax.enableVoltageCompensation(12.0);
+
+      driveEncoder.setPosition(0.0);
+      driveEncoder.setMeasurementPeriod(10);
+      driveEncoder.setAverageDepth(2);
+
+      turnRelativeEncoder.setPosition(0.0);
+    }
+
+    driveSparkMax.setCANTimeout(0);
+    turnSparkMax.setCANTimeout(0);
 
     if (SparkMaxBurnManager.shouldBurn()) {
       driveSparkMax.burnFlash();
@@ -106,10 +120,14 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.driveTempCelcius = new double[] {driveSparkMax.getMotorTemperature()};
 
     inputs.turnAbsolutePositionRad =
-        new Rotation2d(
-                turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 * Math.PI)
-            .minus(absoluteEncoderOffset)
-            .getRadians();
+        MathUtil.angleModulus(
+            new Rotation2d(
+                    turnAbsoluteEncoder.getVoltage()
+                        / RobotController.getVoltage5V()
+                        * 2.0
+                        * Math.PI)
+                .minus(absoluteEncoderOffset)
+                .getRadians());
     inputs.turnPositionRad =
         Units.rotationsToRadians(turnRelativeEncoder.getPosition()) / turnAfterEncoderReduction;
     inputs.turnVelocityRadPerSec =

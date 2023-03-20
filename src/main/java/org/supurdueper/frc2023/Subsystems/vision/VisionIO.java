@@ -34,8 +34,7 @@ public interface VisionIO {
       try {
         targetsInView = (int) table.getInteger("TargetsInView", -1);
         lastCaptureLatencyMs = table.getDouble("Latency", -1);
-        double[] visionMeasurements =
-            table.getDoubleArray("Pose", new double[] {-1, -1, -1});
+        double[] visionMeasurements = table.getDoubleArray("Pose", new double[] {-1, -1, -1});
         Pose2d visionPose =
             new Pose2d(
                 visionMeasurements[0],

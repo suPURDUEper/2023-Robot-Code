@@ -29,44 +29,49 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
       armFollowSparkMax.restoreFactoryDefaults();
     }
 
-    // Set followers
-    armFollowSparkMax.follow(armSparkMax, true);
-
-    // Set CAN status frame frequency
-    SparkMaxPeriodicFrameConfig.configLeaderFollower(armSparkMax);
-    SparkMaxPeriodicFrameConfig.configLeaderFollower(armFollowSparkMax);
-    // Speed up frame with absolute encoder position
-    armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
-
-    // Set brake mode
-    setBrakeMode(true);
-    // Get and reset encoder objects
     armAbsoluteEncoder = armSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-    armAbsoluteEncoder.setInverted(false);
-    armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
-    armAbsoluteEncoder.setZeroOffset(3.420);
-    // Sync with motor encoder so we can use the built-in soft limits on the motor controller
-    // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
-    // that didn't work
-    armSparkMax.getEncoder().setPositionConversionFactor(1 / 14.127);
-    syncEncoders();
 
-    // Setup PID controllers
-    // armPIDController = armSparkMax.getPIDController();
-    // armPIDController.setFeedbackDevice(armEncoder);
+    for (int i = 0; i < SparkMaxBurnManager.configCount; i++) {
+      // Set followers
+      armFollowSparkMax.follow(armSparkMax, true);
 
-    // Setup power parameters
-    armSparkMax.enableVoltageCompensation(12.0);
-    armFollowSparkMax.enableVoltageCompensation(12.0);
-    armSparkMax.setSmartCurrentLimit(30);
-    armFollowSparkMax.setSmartCurrentLimit(30);
+      // Set CAN status frame frequency
+      SparkMaxPeriodicFrameConfig.configLeaderFollower(armSparkMax);
+      SparkMaxPeriodicFrameConfig.configLeaderFollower(armFollowSparkMax);
 
-    armSparkMax.setSoftLimit(
-        SoftLimitDirection.kForward, (float) (Arm.armMaxAngleRad / armEncoderToArmGearRatio));
-    armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-    armSparkMax.setSoftLimit(
-        SoftLimitDirection.kReverse, (float) -0.5); // Manually tuned due to backlash
-    armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      // Speed up frame with absolute encoder position
+      armSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+
+      // Set brake mode
+      setBrakeMode(true);
+
+      // Get and reset encoder objects
+      armAbsoluteEncoder.setInverted(false);
+      armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
+      armAbsoluteEncoder.setZeroOffset(3.420);
+      // Sync with motor encoder so we can use the built-in soft limits on the motor controller
+      // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
+      // that didn't work
+      armSparkMax.getEncoder().setPositionConversionFactor(1 / 14.127);
+      syncEncoders();
+
+      // Setup PID controllers
+      // armPIDController = armSparkMax.getPIDController();
+      // armPIDController.setFeedbackDevice(armEncoder);
+
+      // Setup power parameters
+      armSparkMax.enableVoltageCompensation(12.0);
+      armFollowSparkMax.enableVoltageCompensation(12.0);
+      armSparkMax.setSmartCurrentLimit(30);
+      armFollowSparkMax.setSmartCurrentLimit(30);
+
+      armSparkMax.setSoftLimit(
+          SoftLimitDirection.kForward, (float) (Arm.armMaxAngleRad / armEncoderToArmGearRatio));
+      armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+      armSparkMax.setSoftLimit(
+          SoftLimitDirection.kReverse, (float) -0.5); // Manually tuned due to backlash
+      armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    }
 
     // Setup CAN parameters
     armSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);

@@ -22,11 +22,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Arrays;
 import java.util.List;
-
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.FieldConstants;
-import org.littletonrobotics.frc2023.FieldConstants.Community;
-import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
 import org.littletonrobotics.frc2023.util.PoseEstimator.TimestampedVisionUpdate;
@@ -357,9 +354,9 @@ public class Drive extends SubsystemBase {
       usingVision = false;
     }
     // Only use vision if we're close enough to a tag
-    else if (currentPose.getX() > distanceFromWall && 
-        currentPose.getX() < (FieldConstants.fieldLength - distanceFromWall)) {
-          usingVision = false;
+    else if (currentPose.getX() > distanceFromWall
+        && currentPose.getX() < (FieldConstants.fieldLength - distanceFromWall)) {
+      usingVision = false;
     }
 
     // Only use measurements if we see more than 1 tag or we are

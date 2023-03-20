@@ -4,7 +4,6 @@
 
 package org.supurdueper.frc2023;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -102,7 +101,7 @@ public class RobotContainer {
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
           lights = new Lights();
-            vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
+          vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -197,7 +196,9 @@ public class RobotContainer {
             driveRotate,
             slowMode::getAsBoolean, // Slow mode
             () -> false, // Switch to robot relative driving
-            () -> getIntakeExtensionPercentage(elevator, arm))); // Limit acceleration based on arm extension percentage
+            () ->
+                getIntakeExtensionPercentage(
+                    elevator, arm))); // Limit acceleration based on arm extension percentage
 
     rotateTo0.whileTrue(
         new DriveWithLockedRotation(
@@ -309,7 +310,8 @@ public class RobotContainer {
 
   public double getIntakeExtensionPercentage(Elevator elevator, Arm arm) {
     double elevatorPosM = elevator.getElevatorPosition();
-    double armShoulderHeight = elevatorPosM * Math.sin(Units.degreesToRadians(49)) + Units.inchesToMeters(29);
+    double armShoulderHeight =
+        elevatorPosM * Math.sin(Units.degreesToRadians(49)) + Units.inchesToMeters(29);
     double armEndHeight = arm.getArmPosition().getCos() * -1.0 * Units.inchesToMeters(21);
     double intakeHeight = armEndHeight + armShoulderHeight;
     double intakeMaxHeight = 61.166;

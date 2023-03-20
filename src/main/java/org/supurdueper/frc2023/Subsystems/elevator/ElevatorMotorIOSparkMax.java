@@ -29,44 +29,45 @@ public class ElevatorMotorIOSparkMax implements ElevatorMotorIO {
       elevatorFollowSparkMax.restoreFactoryDefaults();
     }
 
-    // Configure status frames
-    SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorSparkMax);
-    SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorFollowSparkMax);
-
-    // Set followers
-    elevatorFollowSparkMax.follow(elevatorSparkMax, true);
-
-    // Set brake mode
-    setBrakeMode(true);
-
-    // Get and reset encoder objects
     elevatorEncoder = elevatorSparkMax.getEncoder();
-    elevatorEncoder.setPosition(0);
-
-    // Setup PID controllers
     elevatorPIDController = elevatorSparkMax.getPIDController();
 
-    // Setup power parameters
-    elevatorSparkMax.enableVoltageCompensation(12.0);
-    elevatorFollowSparkMax.enableVoltageCompensation(12.0);
-    elevatorSparkMax.setSmartCurrentLimit(40);
-    elevatorFollowSparkMax.setSmartCurrentLimit(40);
+    for (int i = 0; i < SparkMaxBurnManager.configCount; i++) {
+      // Configure status frames
+      SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorSparkMax);
+      SparkMaxPeriodicFrameConfig.configLeaderFollower(elevatorFollowSparkMax);
+
+      // Set followers
+      elevatorFollowSparkMax.follow(elevatorSparkMax, true);
+
+      // Set brake mode
+      setBrakeMode(true);
+
+      // Get and reset encoder objects
+      elevatorEncoder.setPosition(0);
+
+      // Setup power parameters
+      elevatorSparkMax.enableVoltageCompensation(12.0);
+      elevatorFollowSparkMax.enableVoltageCompensation(12.0);
+      elevatorSparkMax.setSmartCurrentLimit(40);
+      elevatorFollowSparkMax.setSmartCurrentLimit(40);
+
+      // Set soft limits
+      elevatorSparkMax.setSoftLimit(SoftLimitDirection.kReverse, 0);
+      elevatorSparkMax.setSoftLimit(
+          SoftLimitDirection.kForward,
+          (float) elevatorMetersToRotations(Elevator.elevatorMaxTravelM));
+      elevatorSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+      elevatorSparkMax.enableSoftLimit(
+          SoftLimitDirection.kReverse, false); // Need to finish homing routine first
+
+      // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
+      elevatorEncoder.setPositionConversionFactor(1);
+    }
 
     // Setup CAN parameters
     elevatorSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
     elevatorFollowSparkMax.setCANTimeout(SparkMaxBurnManager.configCANTimeout);
-
-    // Set soft limits
-    elevatorSparkMax.setSoftLimit(SoftLimitDirection.kReverse, 0);
-    elevatorSparkMax.setSoftLimit(
-        SoftLimitDirection.kForward,
-        (float) elevatorMetersToRotations(Elevator.elevatorMaxTravelM));
-    elevatorSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-    elevatorSparkMax.enableSoftLimit(
-        SoftLimitDirection.kReverse, false); // Need to finish homing routine first
-
-    // Set scale conversion factors. Return native units and handle the unit conversion ourselves.
-    elevatorEncoder.setPositionConversionFactor(1);
 
     if (SparkMaxBurnManager.shouldBurn()) {
       elevatorSparkMax.burnFlash();
