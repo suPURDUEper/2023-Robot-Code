@@ -36,6 +36,7 @@ public class DriveToPose extends CommandBase {
           0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0), Constants.loopPeriodSecs);
   private double driveErrorAbs;
   private double thetaErrorAbs;
+  private boolean autoEnd;
 
   private static final LoggedTunableNumber driveKp = new LoggedTunableNumber("DriveToPose/DriveKp");
   private static final LoggedTunableNumber driveKd = new LoggedTunableNumber("DriveToPose/DriveKd");
@@ -80,10 +81,16 @@ public class DriveToPose extends CommandBase {
 
   /** Drives to the specified pose under full software control. */
   public DriveToPose(Drive drive, Supplier<Pose2d> poseSupplier) {
+    this(drive, poseSupplier, true);
+  }
+
+  /** Drives to the specified pose under full software control. */
+  public DriveToPose(Drive drive, Supplier<Pose2d> poseSupplier, boolean autoEnd) {
     this.drive = drive;
     this.poseSupplier = () -> AllianceFlipUtil.apply(poseSupplier.get());
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    this.autoEnd = autoEnd;
   }
 
   @Override
@@ -151,7 +158,7 @@ public class DriveToPose extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return atGoal();
+    return atGoal() && autoEnd;
   }
 
   @Override

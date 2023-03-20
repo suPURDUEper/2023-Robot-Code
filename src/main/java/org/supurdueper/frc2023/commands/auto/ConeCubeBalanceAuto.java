@@ -22,13 +22,13 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
   public ConeCubeBalanceAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
     Pose2d inFrontOfStation =
         new Pose2d(
-            Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET + Units.inchesToMeters(8),
+            Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET - Units.inchesToMeters(8),
             Community.chargingStationLeftY - Constants.ROBOT_Y_OFFSET - Units.feetToMeters(1.25),
             Rotation2d.fromDegrees(180));
 
     Pose2d onStation =
         new Pose2d(
-            Community.chargingStationCenterX + Units.feetToMeters(3.5),
+            Community.chargingStationCenterX - Units.inchesToMeters(6),
             Community.chargingStationLeftY - Constants.ROBOT_Y_OFFSET - Units.feetToMeters(1.25),
             Rotation2d.fromDegrees(180));
 

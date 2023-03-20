@@ -26,13 +26,13 @@ public class ConeCubeAuto extends SequentialCommandGroup {
   public ConeCubeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
     Pose2d pickupCube =
         new Pose2d(
-            StagingLocations.translations[3].plus(new Translation2d(0.5, 0.55)),
+            StagingLocations.translations[3].plus(new Translation2d(0.6, 0.35)),
             Rotation2d.fromDegrees(-30));
 
     Pose2d secondScore =
         new Pose2d(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(20),
-            Grids.nodeY[7] + Units.inchesToMeters(3),
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(21),
+            Grids.nodeY[7] - Units.inchesToMeters(1),
             Rotation2d.fromDegrees(180));
 
     addCommands(
@@ -40,12 +40,12 @@ public class ConeCubeAuto extends SequentialCommandGroup {
 
         // Drive and intake cube
         Commands.deadline(
-            new IntakeCube(intake).withTimeout(3.2),
+            new IntakeCube(intake).withTimeout(3.7),
             new DriveToPose(drive, pickupCube),
             Commands.parallel( // Wait to prevent arm motion while rotating
                     new ElevatorGoToPose(elevator, ArmavatorPreset.intakeCube),
                     new ArmGoToPose(arm, ArmavatorPreset.intakeCube))
-                .beforeStarting(Commands.waitSeconds(0.5))),
+                .beforeStarting(Commands.waitSeconds(1))),
         // Drive to grid and score cube
         Commands.parallel(
             new DriveToPose(drive, secondScore).withTimeout(3.2),

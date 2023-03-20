@@ -21,9 +21,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Arrays;
+import java.util.List;
+
 import org.littletonrobotics.frc2023.Constants;
+import org.littletonrobotics.frc2023.FieldConstants;
+import org.littletonrobotics.frc2023.FieldConstants.Community;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.frc2023.util.PoseEstimator;
+import org.littletonrobotics.frc2023.util.PoseEstimator.TimestampedVisionUpdate;
 import org.littletonrobotics.junction.Logger;
 import org.supurdueper.frc2023.subsystems.vision.VisionIO.VisionIOInputs;
 
@@ -337,14 +343,31 @@ public class Drive extends SubsystemBase {
 
   /** Adds vision data to the pose esimation. */
   public void addVisionData(VisionIOInputs visionData) {
-    // TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
-    // Pose2d currentPose = getPose();
+    TimestampedVisionUpdate visionUpdate = visionData.visionUpdate;
+    Pose2d visionPose = visionUpdate.pose();
+    Pose2d currentPose = getPose();
+    boolean usingVision = true;
+    double distanceFromWall = 4.5;
 
-    // // Only use measurements if we see more than 1 tag or we are
-    // // relatively close to the alliance station wall
-    // if (visionData.targetsInView > 1 || AllianceFlipUtil.apply(currentPose.getX()) < 3) {
-    //   poseEstimator.addVisionData(List.of(visionUpdate));
-    // }
+    if (visionData.targetsInView == 0) {
+      usingVision = false;
+    }
+    // Reject measurements that are too far away from the robot
+    else if (currentPose.getTranslation().getDistance(visionPose.getTranslation()) > 1) {
+      usingVision = false;
+    }
+    // Only use vision if we're close enough to a tag
+    else if (currentPose.getX() > distanceFromWall && 
+        currentPose.getX() < (FieldConstants.fieldLength - distanceFromWall)) {
+          usingVision = false;
+    }
+
+    // Only use measurements if we see more than 1 tag or we are
+    // relatively close to the alliance station wall
+    Logger.getInstance().recordOutput("Vision/usingVision", usingVision);
+    if (usingVision) {
+      poseEstimator.addVisionData(List.of(visionUpdate));
+    }
   }
 
   /** Returns an array of module translations. */

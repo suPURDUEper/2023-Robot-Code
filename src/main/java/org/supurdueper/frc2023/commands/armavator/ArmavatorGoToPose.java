@@ -22,7 +22,7 @@ public class ArmavatorGoToPose extends SequentialCommandGroup {
         Commands.parallel(
             new ArmGoToPose(arm, pose.getArmProfileState()),
             new ElevatorGoToPose(elevator, pose.getElevatorProfileState())
-                .beforeStarting(Commands.waitSeconds(0.25))));
+                .beforeStarting(Commands.waitSeconds(0.5))));
   }
 
   private boolean skipElevatorSafeHeight(ArmavatorPose targetPose, Arm arm, Elevator elevator) {

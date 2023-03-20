@@ -36,6 +36,7 @@ import org.supurdueper.frc2023.commands.IntakeCube;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.SetLightsPurple;
 import org.supurdueper.frc2023.commands.SetLightsYellow;
+import org.supurdueper.frc2023.commands.arm.ArmGoToPose;
 import org.supurdueper.frc2023.commands.arm.MoveArmWithJoystick;
 import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
@@ -44,7 +45,9 @@ import org.supurdueper.frc2023.commands.auto.ConeBalanceAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
+import org.supurdueper.frc2023.commands.drive.AutoAim;
 import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
+import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -56,6 +59,7 @@ import org.supurdueper.frc2023.subsystems.elevator.ElevatorMotorIOSparkMax;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 import org.supurdueper.frc2023.subsystems.intake.IntakeIOTalonFX;
 import org.supurdueper.frc2023.subsystems.vision.Vision;
+import org.supurdueper.frc2023.subsystems.vision.VisionIOLimelight;
 
 public class RobotContainer {
 
@@ -66,7 +70,6 @@ public class RobotContainer {
   private Intake intake;
   private Lights lights;
   private Vision vision;
-  private Pose2d autoAimTargetPose = new Pose2d();
 
   // OI objects
   private CommandXboxController driver = new CommandXboxController(0);
@@ -99,7 +102,7 @@ public class RobotContainer {
           arm = new Arm(new ArmMotorIOSparkMax());
           intake = new Intake(new IntakeIOTalonFX());
           lights = new Lights();
-          //   vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
+            vision = new Vision(new VisionIOLimelight(), drive::addVisionData);
           break;
         case ROBOT_SIMBOT:
           drive =
@@ -215,12 +218,7 @@ public class RobotContainer {
 
     resetRotation.onTrue(Commands.runOnce(() -> drive.resetRotation()));
 
-    // driveAutoAim.onTrue(
-    //     Commands.runOnce(() -> this.autoAimTargetPose = drive.getPose())
-    //         .andThen(
-    //             new DriveSnapToPose(
-    //                 drive, new Pose2d(), driveTranslationX, driveTranslationY))
-    //         .until(driveAutoAim.negate()));
+    driveAutoAim.whileTrue(new AutoAim(drive, driveTranslationX, driveTranslationY));
 
     score.onTrue(
         new Score(intake)
@@ -252,7 +250,8 @@ public class RobotContainer {
     intakeCube.onTrue(
         new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator)
             .andThen(new IntakeCube(intake))
-            .andThen(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator)));
+            .andThen(new ElevatorGoToPose(elevator, ArmavatorPreset.cubeStowed))
+            .andThen(new ArmGoToPose(arm, ArmavatorPreset.cubeStowed)));
 
     manualIntakeCone.whileTrue(
         new StartEndCommand(
