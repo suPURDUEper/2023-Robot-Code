@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -20,14 +19,25 @@ import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.GeomUtil;
+import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 
 public class DriveWithJoysticks extends CommandBase {
-  public static final double deadband = 0.1;
-  public static final double minExtensionMaxLinearAcceleration = Units.inchesToMeters(900.0);
-  public static final double fullExtensionMaxLinearAcceleration = Units.inchesToMeters(200.0);
-  public static final double fullExtensionMaxAngularVelocity = Units.degreesToRadians(90.0);
-  public static final double sniperModeLinearPercent = 0.35;
-  public static final double sniperModeAngularPercent = 0.35;
+  public static final LoggedTunableNumber deadband =
+      new LoggedTunableNumber("DriveWithJoysticks/Deadband", 0.1);
+  public static final LoggedTunableNumber minExtensionMaxLinearAcceleration =
+      new LoggedTunableNumber("DriveWithJoysticks/MinExtensionMaxLinearAcceleration", 10.0);
+  public static final LoggedTunableNumber fullExtensionMaxLinearAcceleration =
+      new LoggedTunableNumber("DriveWithJoysticks/FullExtensionMaxLinearAcceleration", 3.0);
+  public static final LoggedTunableNumber maxAngularVelocityFullExtensionPercent =
+      new LoggedTunableNumber("DriveWithJoysticks/MaxAngularVelocityFullExtensionPercent", 0.3);
+  public static final LoggedTunableNumber minExtensionMaxAngularVelocity =
+      new LoggedTunableNumber("DriveWithJoysticks/MinExtensionMaxAngularVelocity", 9.0);
+  public static final LoggedTunableNumber fullExtensionMaxAngularVelocity =
+      new LoggedTunableNumber("DriveWithJoysticks/FullExtensionMaxAngularVelocity", 1.5);
+  public static final LoggedTunableNumber sniperModeLinearPercent =
+      new LoggedTunableNumber("DriveWithJoysticks/SniperModeLinearPercent", 0.2);
+  public static final LoggedTunableNumber sniperModeAngularPercent =
+      new LoggedTunableNumber("DriveWithJoysticks/SniperModeAngularPercent", 0.2);
 
   private final Drive drive;
   private final Supplier<Double> leftXSupplier;
@@ -74,8 +84,8 @@ public class DriveWithJoysticks extends CommandBase {
     Rotation2d linearDirection = new Rotation2d(leftX, leftY);
 
     // Apply deadband
-    linearMagnitude = MathUtil.applyDeadband(linearMagnitude, deadband);
-    rightY = MathUtil.applyDeadband(rightY, deadband);
+    linearMagnitude = MathUtil.applyDeadband(linearMagnitude, deadband.get());
+    rightY = MathUtil.applyDeadband(rightY, deadband.get());
 
     // Apply squaring
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
@@ -83,8 +93,8 @@ public class DriveWithJoysticks extends CommandBase {
 
     // Apply speed limits
     if (sniperModeSupplier.get()) {
-      linearMagnitude *= sniperModeLinearPercent;
-      rightY *= sniperModeAngularPercent;
+      linearMagnitude *= sniperModeLinearPercent.get();
+      rightY *= sniperModeAngularPercent.get();
     }
 
     // Calcaulate new linear components
@@ -98,7 +108,7 @@ public class DriveWithJoysticks extends CommandBase {
         new ChassisSpeeds(
             linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
             linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-            rightY * drive.getMaxAngularSpeedRadPerSec());
+            rightY * minExtensionMaxAngularVelocity.get());
 
     // Convert from field relative
     if (!robotRelativeOverride.get()) {
@@ -117,14 +127,17 @@ public class DriveWithJoysticks extends CommandBase {
     // Apply acceleration and velocity limits based on arm extension
     double maxLinearAcceleration =
         MathUtil.interpolate(
-            minExtensionMaxLinearAcceleration,
-            fullExtensionMaxLinearAcceleration,
+            minExtensionMaxLinearAcceleration.get(),
+            fullExtensionMaxLinearAcceleration.get(),
             armExtensionPercentSupplier.get());
     double maxAngularVelocity =
         MathUtil.interpolate(
-            drive.getMaxAngularSpeedRadPerSec(),
-            fullExtensionMaxAngularVelocity,
-            armExtensionPercentSupplier.get());
+            minExtensionMaxAngularVelocity.get(),
+            fullExtensionMaxAngularVelocity.get(),
+            MathUtil.clamp(
+                armExtensionPercentSupplier.get() / maxAngularVelocityFullExtensionPercent.get(),
+                0.0,
+                1.0));
     speeds =
         new ChassisSpeeds(
             MathUtil.clamp(
