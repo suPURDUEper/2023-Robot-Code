@@ -33,7 +33,7 @@ public class ConeAuto extends SequentialCommandGroup {
 
     Pose2d score =
         new Pose2d(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(4),
+            Grids.outerX + Constants.ROBOT_X_OFFSET - Units.inchesToMeters(2),
             Grids.nodeY[stationIndex] - Units.inchesToMeters(9),
             Rotation2d.fromDegrees(180));
 

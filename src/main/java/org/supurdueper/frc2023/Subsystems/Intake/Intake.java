@@ -66,9 +66,11 @@ public class Intake extends SubsystemBase {
           voltage = 0.0;
           break;
         case INTAKE_CONE:
+          io.setCurrentLimit(40, 40, 1);
           voltage = rollerConeIntakeVolts.get();
           break;
         case INTAKE_CUBE:
+          io.setCurrentLimit(40, 40, 1);
           voltage = rollerCubeIntakeVolts.get();
           break;
         case SCORE_CONE:
@@ -78,10 +80,10 @@ public class Intake extends SubsystemBase {
           voltage = rollerCubeScoreVolts.get();
           break;
         case HOLD_CONE:
-          voltage = -2;
+          voltage = -10;
           break;
         case HOLD_CUBE:
-          voltage = 0;
+          voltage = 10;
           break;
       }
       io.setRollerVoltage(voltage);
