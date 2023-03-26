@@ -48,7 +48,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
       // Get and reset encoder objects
       armAbsoluteEncoder.setInverted(false);
       armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
-      armAbsoluteEncoder.setZeroOffset(0.8394);
+      armAbsoluteEncoder.setZeroOffset(5.130);
       // Sync with motor encoder so we can use the built-in soft limits on the motor controller
       // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
       // that didn't work
