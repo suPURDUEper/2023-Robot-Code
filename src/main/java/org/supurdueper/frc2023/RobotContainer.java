@@ -45,7 +45,6 @@ import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
 import org.supurdueper.frc2023.commands.drive.AutoAim;
-import org.supurdueper.frc2023.commands.drive.DriveWithLockedRotation;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
 import org.supurdueper.frc2023.commands.elevator.ResetElevatorPosition;
@@ -194,24 +193,12 @@ public class RobotContainer {
             driveTranslationY,
             driveTranslationX,
             driveRotate,
-            slowMode::getAsBoolean, // Slow mode
-            () -> false, // Switch to robot relative driving
-            () ->
-                getIntakeExtensionPercentage(
-                    elevator, arm))); // Limit acceleration based on arm extension percentage
-
-    rotateTo0.whileTrue(
-        new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(0), slowMode));
-    rotateTo90.whileTrue(
-        new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(90), slowMode));
-    rotateTo180.whileTrue(
-        new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(180), slowMode));
-    rotateTo270.whileTrue(
-        new DriveWithLockedRotation(
-            drive, driveTranslationY, driveTranslationX, Units.degreesToRadians(-90), slowMode));
+            slowMode::getAsBoolean,
+            () -> getIntakeExtensionPercentage(elevator, arm),
+            rotateTo0::getAsBoolean,
+            rotateTo90::getAsBoolean,
+            rotateTo180::getAsBoolean,
+            rotateTo270::getAsBoolean));
 
     swerveXMode.onTrue(new InstantCommand(() -> drive.stopWithX(), drive));
 
