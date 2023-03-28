@@ -69,7 +69,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
           SoftLimitDirection.kForward, (float) (Arm.armMaxAngleRad / armEncoderToArmGearRatio));
       armSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
       armSparkMax.setSoftLimit(
-          SoftLimitDirection.kReverse, (float) -0.69); // Manually tuned due to backlash
+          SoftLimitDirection.kReverse, (float) -0.5); // Manually tuned due to backlash
       armSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
     }
 
