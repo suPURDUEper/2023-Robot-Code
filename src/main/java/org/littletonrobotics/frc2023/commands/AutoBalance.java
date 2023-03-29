@@ -48,9 +48,6 @@ public class AutoBalance extends CommandBase {
         (angleDegrees < 0.0 && angleVelocityDegreesPerSec > velocityThresholdDegreesPerSec.get())
             || (angleDegrees > 0.0
                 && angleVelocityDegreesPerSec < -velocityThresholdDegreesPerSec.get());
-    Logger.getInstance().recordOutput("AutoBalance/AngleDegrees", angleDegrees);
-    Logger.getInstance().recordOutput("AutoBalance/AngleVelocity", angleVelocityDegreesPerSec);
-    Logger.getInstance().recordOutput("AutoBalance/ShouldStop", shouldStop);
 
     // Send velocity to drive
     if (shouldStop) {
