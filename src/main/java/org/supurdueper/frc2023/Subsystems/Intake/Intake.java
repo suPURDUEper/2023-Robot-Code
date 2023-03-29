@@ -2,8 +2,6 @@ package org.supurdueper.frc2023.subsystems.intake;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.frc2023.Constants;
-import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {

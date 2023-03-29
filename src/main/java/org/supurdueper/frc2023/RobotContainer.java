@@ -224,7 +224,7 @@ public class RobotContainer {
 
     score.onTrue(
         new Score(intake)
-            .withTimeout(0.5)
+            .withTimeout(1)
             .andThen(
                 Commands.either(
                         new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
