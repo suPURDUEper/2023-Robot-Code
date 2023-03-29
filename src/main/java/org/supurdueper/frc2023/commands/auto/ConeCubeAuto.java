@@ -1,10 +1,11 @@
 package org.supurdueper.frc2023.commands.auto;
 
+import static org.supurdueper.frc2023.commands.auto.Autos.*;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.littletonrobotics.frc2023.FieldConstants.Community;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
@@ -26,25 +27,13 @@ public class ConeCubeAuto extends SequentialCommandGroup {
     ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, 8);
 
     Waypoint pickupCube =
-        Autos.waypoint(
+        waypoint(
             StagingLocations.translations[3].getX() - Constants.ROBOT_X_OFFSET / 2,
             StagingLocations.translations[3].getY(),
             Rotation2d.fromDegrees(-30));
 
-    Waypoint communityTransitOut =
-        Autos.waypoint(
-            Community.chargingStationOuterX + Constants.ROBOT_X_OFFSET * 2,
-            (Community.chargingStationRightY + Community.rightY) / 2.0,
-            Rotation2d.fromDegrees(180));
-
-    Waypoint communityTransitIn =
-        Autos.waypoint(
-            Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET * 2,
-            (Community.chargingStationRightY + Community.rightY) / 2.0,
-            Rotation2d.fromDegrees(180));
-
     Waypoint secondScore =
-        Autos.waypoint(
+        waypoint(
             Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
             Grids.nodeY[7] + Units.inchesToMeters(2),
             Rotation2d.fromDegrees(180));
@@ -54,8 +43,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         // Drive and intake cube
         Commands.deadline(
             new IntakeCube(intake), // .withTimeout(3.7),
-            Autos.path(
-                drive, coneAuto.getEndPose(), communityTransitIn, communityTransitOut, pickupCube),
+            path(drive, coneAuto.getEndPose(), communityTransitIn, communityTransitOut, pickupCube),
             // new DriveToPose(drive, pickupCube),
             Commands.parallel( // Wait to prevent arm motion while rotating
                     new ElevatorGoToPose(elevator, ArmavatorPreset.intakeCube),
@@ -64,7 +52,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         // Drive to grid and score cube
         Commands.parallel(
             // new DriveToPose(drive, secondScore).withTimeout(3.2),
-            Autos.path(drive, pickupCube, communityTransitOut, communityTransitIn, secondScore),
+            path(drive, pickupCube, communityTransitOut, communityTransitIn, secondScore),
             new ArmavatorGoToPose(ArmavatorPreset.cubeLow.getPose(), arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         new Score(intake).withTimeout(0.5));
