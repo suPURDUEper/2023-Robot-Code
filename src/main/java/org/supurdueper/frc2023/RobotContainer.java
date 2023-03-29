@@ -186,6 +186,7 @@ public class RobotContainer {
     Trigger intakeOff = operator.back();
     Trigger singleStationConeIntake = operator.povLeft().or(operator.povRight());
     Trigger doubleStationConeIntake = operator.povUp();
+    Trigger shootCubeSetpoint = operator.povDown();
 
     // *** DRIVER CONTROLS ***
     drive.setDefaultCommand(
@@ -244,7 +245,11 @@ public class RobotContainer {
             new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
             intake::hasCube));
 
-    armavatorLow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.intakeCube.getPose(), arm, elevator));
+    armavatorLow.onTrue(
+        Commands.either(
+            new ArmavatorGoToPose(ArmavatorPreset.cubeLow.getPose(), arm, elevator),
+            new ArmavatorGoToPose(ArmavatorPreset.coneLow.getPose(), arm, elevator),
+            intake::hasCube));
 
     armavatorStow.onTrue(new ArmavatorGoToPose(ArmavatorPreset.stowed.getPose(), arm, elevator));
 
@@ -285,6 +290,8 @@ public class RobotContainer {
     doubleStationConeIntake.onTrue(
         new ArmavatorGoToPose(ArmavatorPreset.doubleSubstationCone.getPose(), arm, elevator)
             .andThen(new IntakeCone(intake)));
+
+    shootCubeSetpoint.onTrue(new ArmavatorGoToPose(ArmavatorPreset.shootCube, arm, elevator));
 
     manualElevatorTrigger.onTrue(new MoveElevatorWithJoystick(elevator, manualElevatorControl));
     manualArmTrigger.onTrue(new MoveArmWithJoystick(arm, manualArmControl));

@@ -37,7 +37,6 @@ public class IntakeCube extends CommandBase {
     if (!interrupted) {
       intake.hasCube = true;
       intake.setIntakeMode(Mode.HOLD_CUBE);
-      intake.io.setCurrentLimit(10, rollerAmpsLimit, 1);
     } else {
       intake.setIntakeMode(Mode.NOT_RUNNING);
     }
