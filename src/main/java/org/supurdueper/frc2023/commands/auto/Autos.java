@@ -14,17 +14,17 @@ import org.supurdueper.frc2023.Constants;
 
 public class Autos {
 
-  public static Waypoint communityTransitOut =
+  public static Waypoint communityTransit =
       Autos.waypoint(
-          Community.chargingStationOuterX + Constants.ROBOT_X_OFFSET * 2,
-          (Community.chargingStationRightY + Community.rightY) / 2.0,
+          Community.chargingStationCenterX,
+          (Community.leftY - Community.chargingStationLeftY) / 2.0 + Community.chargingStationLeftY,
           Rotation2d.fromDegrees(180));
 
-  public static Waypoint communityTransitIn =
+  public static Waypoint communityTransitOut =
       Autos.waypoint(
-          Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET * 2,
-          (Community.chargingStationRightY + Community.rightY) / 2.0,
-          Rotation2d.fromDegrees(180));
+          Community.chargingStationOuterX + Constants.ROBOT_X_OFFSET,
+          (Community.leftY - Community.chargingStationLeftY) / 2.0
+              + Community.chargingStationLeftY);
 
   public static Command path(Drive drive, Waypoint... waypoints) {
     return new DriveTrajectory(drive, Arrays.asList(waypoints), List.of());
@@ -38,5 +38,15 @@ public class Autos {
   /** Returns a waypoint for a holonomic pose. */
   public static Waypoint waypoint(Translation2d translation, Rotation2d rot) {
     return Waypoint.fromHolonomicPose(new Pose2d(translation, rot));
+  }
+
+  /** Returns a waypoint for a holonomic pose. */
+  public static Waypoint waypoint(Translation2d translation) {
+    return new Waypoint(translation);
+  }
+
+  /** Returns a waypoint for a holonomic pose. */
+  public static Waypoint waypoint(double x, double y) {
+    return new Waypoint(new Translation2d(x, y));
   }
 }

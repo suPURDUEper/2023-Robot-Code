@@ -11,7 +11,7 @@ import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
 import org.littletonrobotics.frc2023.util.trajectory.Waypoint;
 import org.supurdueper.frc2023.Constants;
-import org.supurdueper.frc2023.commands.IntakeCube;
+import org.supurdueper.frc2023.commands.IntakeCone;
 import org.supurdueper.frc2023.commands.Score;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.subsystems.Armavator.ArmavatorPose.ArmavatorPreset;
@@ -30,11 +30,11 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         waypoint(
             StagingLocations.translations[3].getX() - Constants.ROBOT_X_OFFSET / 2,
             StagingLocations.translations[3].getY(),
-            Rotation2d.fromDegrees(-30));
+            Rotation2d.fromDegrees(1));
 
     Waypoint secondScore =
         waypoint(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(6),
             Grids.nodeY[7] + Units.inchesToMeters(2),
             Rotation2d.fromDegrees(180));
 
@@ -44,14 +44,14 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         coneAuto,
         // Drive and intake cube
         Commands.deadline(
-            new IntakeCube(intake), // .withTimeout(3.7),
-            path(drive, coneAuto.getEndPose(), communityTransitIn, communityTransitOut, pickupCube),
-            new ArmavatorGoToPose(ArmavatorPreset.intakeCube, arm, elevator)
+            new IntakeCone(intake), // .withTimeout(3.7),
+            path(drive, coneAuto.getEndPose(), communityTransit, pickupCube),
+            new ArmavatorGoToPose(ArmavatorPreset.intakeCone, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         // Drive to grid and score cube
         Commands.parallel(
-            path(drive, pickupCube, communityTransitOut, communityTransitIn, secondScore),
-            new ArmavatorGoToPose(ArmavatorPreset.cubeLow, arm, elevator)
+            path(drive, pickupCube, communityTransitOut, communityTransit, secondScore),
+            new ArmavatorGoToPose(ArmavatorPreset.coneLow, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         new Score(intake).withTimeout(0.5));
   }

@@ -4,7 +4,6 @@ import static org.supurdueper.frc2023.commands.auto.Autos.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,7 +36,7 @@ public class ConeAuto extends SequentialCommandGroup {
 
     score =
         waypoint(
-            Grids.outerX + Constants.ROBOT_X_OFFSET - Units.inchesToMeters(2),
+            Grids.outerX + Constants.ROBOT_X_OFFSET,
             Grids.nodeY[stationIndex],
             Rotation2d.fromDegrees(180));
 
@@ -51,7 +50,7 @@ public class ConeAuto extends SequentialCommandGroup {
         // Drive foward and score cone
         Commands.parallel(
                 new ElevatorGoToPose(elevator, ArmavatorPreset.highCone),
-                new ArmGoToPose(arm, ArmavatorPreset.coneLow)
+                new ArmGoToPose(arm, ArmavatorPreset.highCone)
                     .beforeStarting(Commands.waitSeconds(0.3)),
                 new IntakeCone(intake).withTimeout(1),
                 path(drive, Waypoint.fromHolonomicPose(start), score)

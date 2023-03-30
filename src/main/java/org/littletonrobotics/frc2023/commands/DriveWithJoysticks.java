@@ -8,6 +8,7 @@
 package org.littletonrobotics.frc2023.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,7 +26,7 @@ public class DriveWithJoysticks extends CommandBase {
   public static final LoggedTunableNumber deadband =
       new LoggedTunableNumber("DriveWithJoysticks/Deadband", 0.1);
   public static final LoggedTunableNumber minExtensionMaxLinearAcceleration =
-      new LoggedTunableNumber("DriveWithJoysticks/MinExtensionMaxLinearAcceleration", 10.0);
+      new LoggedTunableNumber("DriveWithJoysticks/MinExtensionMaxLinearAcceleration", 20.0);
   public static final LoggedTunableNumber fullExtensionMaxLinearAcceleration =
       new LoggedTunableNumber("DriveWithJoysticks/FullExtensionMaxLinearAcceleration", 3.0);
   public static final LoggedTunableNumber maxAngularVelocityFullExtensionPercent =
@@ -46,7 +47,15 @@ public class DriveWithJoysticks extends CommandBase {
   private final Supplier<Boolean> sniperModeSupplier;
   private final Supplier<Boolean> robotRelativeOverride;
   private final Supplier<Double> armExtensionPercentSupplier;
+  private final Supplier<Boolean> lockTo0;
+  private final Supplier<Boolean> lockTo90;
+  private final Supplier<Boolean> lockTo180;
+  private final Supplier<Boolean> lockTo270;
   private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
+
+  private final PIDController thetaController = new PIDController(8.0, 0.0, 0.0);
+  Rotation2d lastCommandedRotation;
+  double lastRightY;
 
   /** Creates a new DriveWithJoysticks. */
   public DriveWithJoysticks(
@@ -56,7 +65,11 @@ public class DriveWithJoysticks extends CommandBase {
       Supplier<Double> rightYSupplier,
       Supplier<Boolean> sniperModeSupplier,
       Supplier<Boolean> robotRelativeOverride,
-      Supplier<Double> armExtensionPercentSupplier) {
+      Supplier<Double> armExtensionPercentSupplier,
+      Supplier<Boolean> lockTo0,
+      Supplier<Boolean> lockTo90,
+      Supplier<Boolean> lockTo180,
+      Supplier<Boolean> lockTo270) {
     addRequirements(drive);
     this.drive = drive;
     this.leftXSupplier = leftXSupplier;
@@ -65,11 +78,18 @@ public class DriveWithJoysticks extends CommandBase {
     this.sniperModeSupplier = sniperModeSupplier;
     this.robotRelativeOverride = robotRelativeOverride;
     this.armExtensionPercentSupplier = armExtensionPercentSupplier;
+    this.lockTo0 = lockTo0;
+    this.lockTo90 = lockTo90;
+    this.lockTo180 = lockTo180;
+    this.lockTo270 = lockTo270;
   }
 
   @Override
   public void initialize() {
     lastSpeeds = new ChassisSpeeds();
+    lastRightY = 0;
+    lastCommandedRotation = drive.getPose().getRotation();
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -103,12 +123,38 @@ public class DriveWithJoysticks extends CommandBase {
             .transformBy(GeomUtil.translationToTransform(linearMagnitude, 0.0))
             .getTranslation();
 
+    // Lock rotation when not using rotation stick
+    if (lastRightY != 0 && rightY == 0) {
+      lastCommandedRotation = drive.getPose().getRotation();
+      thetaController.reset();
+    }
+    double thetaVelocityRadPerS = rightY * minExtensionMaxAngularVelocity.get();
+    if (lockTo0.get()) {
+      lastCommandedRotation = Rotation2d.fromDegrees(0);
+    } else if (lockTo90.get()) {
+      lastCommandedRotation = Rotation2d.fromDegrees(90);
+    } else if (lockTo180.get()) {
+      lastCommandedRotation = Rotation2d.fromDegrees(180);
+    } else if (lockTo270.get()) {
+      lastCommandedRotation = Rotation2d.fromDegrees(-90);
+    }
+    if ((rightY == 0.0 && linearVelocity.getNorm() > 1.0)
+        || lockTo0.get()
+        || lockTo90.get()
+        || lockTo180.get()
+        || lockTo270.get()) {
+      thetaVelocityRadPerS =
+          thetaController.calculate(
+              drive.getPose().getRotation().getRadians(), lastCommandedRotation.getRadians());
+    }
+    lastRightY = rightY;
+
     // Convert to meters per second
     ChassisSpeeds speeds =
         new ChassisSpeeds(
             linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
             linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-            rightY * minExtensionMaxAngularVelocity.get());
+            thetaVelocityRadPerS);
 
     // Convert from field relative
     if (!robotRelativeOverride.get()) {

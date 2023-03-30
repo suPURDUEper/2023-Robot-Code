@@ -4,6 +4,7 @@ import static org.supurdueper.frc2023.commands.auto.Autos.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.Community;
 import org.littletonrobotics.frc2023.FieldConstants.Grids;
@@ -40,9 +41,12 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
 
     addCommands(
         coneAuto,
-        path(drive, coneAuto.getEndPose(), backupToRetract),
-        new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator),
-        path(drive, backupToRetract, pastStation, onStation),
+        Commands.deadline(
+            new ArmavatorGoToPose(ArmavatorPreset.stowed, arm, elevator)
+                .beforeStarting(Commands.waitSeconds(1)),
+            path(drive, coneAuto.getEndPose(), backupToRetract)),
+        path(drive, backupToRetract, pastStation),
+        path(drive, pastStation, onStation),
         new AutoBalance(drive));
   }
 }
