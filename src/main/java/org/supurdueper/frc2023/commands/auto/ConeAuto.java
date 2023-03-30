@@ -1,5 +1,7 @@
 package org.supurdueper.frc2023.commands.auto;
 
+import static org.supurdueper.frc2023.commands.auto.Autos.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -23,11 +25,10 @@ import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
 public class ConeAuto extends SequentialCommandGroup {
-  public int stationIndex;
+
   Waypoint score;
 
   public ConeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
-    this.stationIndex = stationIndex;
     Pose2d start =
         new Pose2d(
             Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,
@@ -35,11 +36,10 @@ public class ConeAuto extends SequentialCommandGroup {
             Rotation2d.fromDegrees(180));
 
     score =
-        Waypoint.fromHolonomicPose(
-            new Pose2d(
-                Grids.outerX + Constants.ROBOT_X_OFFSET - Units.inchesToMeters(2),
-                Grids.nodeY[stationIndex],
-                Rotation2d.fromDegrees(180)));
+        waypoint(
+            Grids.outerX + Constants.ROBOT_X_OFFSET - Units.inchesToMeters(2),
+            Grids.nodeY[stationIndex],
+            Rotation2d.fromDegrees(180));
 
     addCommands(
         // Initialize robot
@@ -54,7 +54,7 @@ public class ConeAuto extends SequentialCommandGroup {
                 new ArmGoToPose(arm, ArmavatorPreset.coneLow)
                     .beforeStarting(Commands.waitSeconds(0.3)),
                 new IntakeCone(intake).withTimeout(1),
-                Autos.path(drive, Waypoint.fromHolonomicPose(start), score)
+                path(drive, Waypoint.fromHolonomicPose(start), score)
                     .beforeStarting(Commands.waitSeconds(0.8)))
             // new DriveToPose(drive, score).beforeStarting(Commands.waitSeconds(0.8)))
             .withTimeout(4),

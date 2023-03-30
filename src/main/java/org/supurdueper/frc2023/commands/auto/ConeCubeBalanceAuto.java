@@ -34,7 +34,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
 
     addCommands(
         new ConeCubeAuto(drive, elevator, arm, intake),
-
+        
         // Drive to charging station
         Commands.parallel(
             new DriveToPose(drive, inFrontOfStation)
