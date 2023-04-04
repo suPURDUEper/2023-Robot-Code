@@ -3,6 +3,7 @@ package org.supurdueper.frc2023.commands.auto;
 import static org.supurdueper.frc2023.commands.auto.Autos.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.littletonrobotics.frc2023.FieldConstants.StagingLocations;
@@ -24,7 +25,9 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
     coneCubeAuto = new ConeCubeAuto(drive, elevator, arm, intake);
 
     Waypoint forwardToPickup =
-        waypoint(StagingLocations.translations[2], Rotation2d.fromDegrees(-30));
+        waypoint(StagingLocations.translations[2].getX(),
+        StagingLocations.translations[2].getY() - Units.feetToMeters(1),
+        Rotation2d.fromDegrees(-30));
 
     addCommands(
         coneCubeAuto,

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.Constants;
 import org.littletonrobotics.frc2023.subsystems.drive.Drive;
+import org.littletonrobotics.frc2023.util.AllianceFlipUtil;
 import org.littletonrobotics.frc2023.util.GeomUtil;
 import org.littletonrobotics.frc2023.util.LoggedTunableNumber;
 
@@ -130,13 +131,13 @@ public class DriveWithJoysticks extends CommandBase {
     }
     double thetaVelocityRadPerS = rightY * minExtensionMaxAngularVelocity.get();
     if (lockTo0.get()) {
-      lastCommandedRotation = Rotation2d.fromDegrees(0);
+      lastCommandedRotation = AllianceFlipUtil.apply(Rotation2d.fromDegrees(0));
     } else if (lockTo90.get()) {
-      lastCommandedRotation = Rotation2d.fromDegrees(90);
+      lastCommandedRotation = AllianceFlipUtil.apply(Rotation2d.fromDegrees(90));
     } else if (lockTo180.get()) {
-      lastCommandedRotation = Rotation2d.fromDegrees(180);
+      lastCommandedRotation = AllianceFlipUtil.apply(Rotation2d.fromDegrees(180));
     } else if (lockTo270.get()) {
-      lastCommandedRotation = Rotation2d.fromDegrees(-90);
+      lastCommandedRotation = AllianceFlipUtil.apply(Rotation2d.fromDegrees(-90));
     }
     if ((rightY == 0.0 && linearVelocity.getNorm() > 1.0)
         || lockTo0.get()

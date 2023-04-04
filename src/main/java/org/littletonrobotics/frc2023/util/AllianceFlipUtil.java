@@ -31,6 +31,10 @@ public class AllianceFlipUtil {
     }
   }
 
+  public static Translation2d forceApply(Translation2d translation) {
+    return new Translation2d(FieldConstants.fieldLength - translation.getX(), translation.getY());
+  }
+
   /** Flips an x coordinate to the correct side of the field based on the current alliance color. */
   public static double apply(double xCoordinate) {
     if (shouldFlip()) {

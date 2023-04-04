@@ -42,11 +42,11 @@ public class Intake extends SubsystemBase {
           voltage = 0.0;
           break;
         case INTAKE_CONE:
-          io.setCurrentLimit(200, 200, 1);
+          io.setCurrentLimit(60, 60, 1);
           voltage = -12;
           break;
         case INTAKE_CUBE:
-          io.setCurrentLimit(200, 200, 1);
+          io.setCurrentLimit(60, 60, 1);
           voltage = 12;
           break;
         case SCORE_CONE:

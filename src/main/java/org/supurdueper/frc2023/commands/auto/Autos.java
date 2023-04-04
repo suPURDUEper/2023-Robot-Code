@@ -3,6 +3,7 @@ package org.supurdueper.frc2023.commands.auto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Autos {
 
   public static Waypoint communityTransit =
       Autos.waypoint(
-          Community.chargingStationCenterX,
+          Community.chargingStationCenterX - Units.inchesToMeters(12),
           (Community.leftY - Community.chargingStationLeftY) / 2.0 + Community.chargingStationLeftY,
           Rotation2d.fromDegrees(180));
 
@@ -25,6 +26,16 @@ public class Autos {
           Community.chargingStationOuterX + Constants.ROBOT_X_OFFSET,
           (Community.leftY - Community.chargingStationLeftY) / 2.0
               + Community.chargingStationLeftY);
+
+  public static Waypoint communityBumpTransit =
+      Autos.waypoint(
+          Community.chargingStationCenterX,
+          Community.chargingStationRightY / 2.0);
+
+  public static Waypoint communityBumpTransitOut =
+      Autos.waypoint(
+          Community.chargingStationOuterX + Constants.ROBOT_X_OFFSET,
+          Community.chargingStationRightY / 2.0);
 
   public static Command path(Drive drive, Waypoint... waypoints) {
     return new DriveTrajectory(drive, Arrays.asList(waypoints), List.of());

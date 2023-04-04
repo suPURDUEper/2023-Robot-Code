@@ -19,28 +19,23 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeCubeAuto extends SequentialCommandGroup {
+public class ConeCubeBumpAuto extends SequentialCommandGroup {
 
   Waypoint endPose;
 
-  public ConeCubeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
-    ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, 8);
+  public ConeCubeBumpAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
+    ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, 0);
 
     Waypoint pickupCube =
         waypoint(
-            StagingLocations.translations[3].getX() - Constants.ROBOT_X_OFFSET / 2,
-            StagingLocations.translations[3].getY(),
-            Rotation2d.fromDegrees(-30));
-    
-    Waypoint pickupCubeFinishRotating =
-        waypoint(
-            StagingLocations.translations[3].getX() - Constants.ROBOT_X_OFFSET / 2 - Units.feetToMeters(4),
-            StagingLocations.translations[3].getY() + Units.feetToMeters(4));
+            StagingLocations.translations[0].getX() - Constants.ROBOT_X_OFFSET / 2,
+            StagingLocations.translations[0].getY(),
+            Rotation2d.fromDegrees(1));
 
     Waypoint secondScore =
         waypoint(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(9),
-            Grids.nodeY[7] + Units.inchesToMeters(2),
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(6),
+            Grids.nodeY[1] + Units.inchesToMeters(2),
             Rotation2d.fromDegrees(180));
 
     endPose = secondScore;
@@ -50,12 +45,14 @@ public class ConeCubeAuto extends SequentialCommandGroup {
         // Drive and intake cube
         Commands.deadline(
             new IntakeCone(intake), // .withTimeout(3.7),
-            path(drive, coneAuto.getEndPose(), communityTransit, pickupCube),
+            path(drive, coneAuto.getEndPose(), communityBumpTransit).andThen(
+                path(drive, communityBumpTransit, pickupCube)
+            ),
             new ArmavatorGoToPose(ArmavatorPreset.intakeCone, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         // Drive to grid and score cube
         Commands.parallel(
-            path(drive, pickupCube, communityTransitOut, communityTransit, secondScore),
+            path(drive, pickupCube, communityBumpTransitOut, communityBumpTransit, secondScore),
             new ArmavatorGoToPose(ArmavatorPreset.coneLow, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         new Score(intake).withTimeout(0.5));

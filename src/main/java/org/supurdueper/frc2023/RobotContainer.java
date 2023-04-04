@@ -44,6 +44,7 @@ import org.supurdueper.frc2023.commands.auto.ConeBalanceAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
+import org.supurdueper.frc2023.commands.auto.ConeCubeBumpAuto;
 import org.supurdueper.frc2023.commands.drive.AutoAim;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -122,6 +123,7 @@ public class RobotContainer {
     autoChooser.addOption("1 + Balance [3]", new ConeBalanceAuto(drive, elevator, arm, intake, 3));
     autoChooser.addOption("1 + Balance [5]", new ConeBalanceAuto(drive, elevator, arm, intake, 5));
     autoChooser.addOption("2", new ConeCubeAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("2 (Bump)", new ConeCubeBumpAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
 
