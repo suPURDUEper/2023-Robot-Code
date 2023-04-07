@@ -29,14 +29,20 @@ public class ConeCubeBumpAuto extends SequentialCommandGroup {
     Waypoint pickupCube =
         waypoint(
             StagingLocations.translations[0].getX() - Constants.ROBOT_X_OFFSET / 2,
-            StagingLocations.translations[0].getY(),
+            StagingLocations.translations[0].getY() + Units.inchesToMeters(6),
             Rotation2d.fromDegrees(1));
 
     Waypoint secondScore =
         waypoint(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(6),
-            Grids.nodeY[1] + Units.inchesToMeters(2),
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(14),
+            Grids.nodeY[1],
             Rotation2d.fromDegrees(180));
+
+    Waypoint pickupTwo =
+        waypoint(
+            StagingLocations.translations[1].getX() - Constants.ROBOT_X_OFFSET / 2,
+            StagingLocations.translations[1].getY() + Units.inchesToMeters(6),
+            Rotation2d.fromDegrees(45));
 
     endPose = secondScore;
 
@@ -45,9 +51,9 @@ public class ConeCubeBumpAuto extends SequentialCommandGroup {
         // Drive and intake cube
         Commands.deadline(
             new IntakeCone(intake), // .withTimeout(3.7),
-            path(drive, coneAuto.getEndPose(), communityBumpTransit).andThen(
-                path(drive, communityBumpTransit, pickupCube)
-            ),
+            path(drive, coneAuto.getEndPose(), communityBumpTransitFront)
+                .andThen(path(drive, communityBumpTransitFront, communityBumpTransitBack))
+                .andThen(path(drive, communityBumpTransitBack, pickupCube)),
             new ArmavatorGoToPose(ArmavatorPreset.intakeCone, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         // Drive to grid and score cube
@@ -55,7 +61,12 @@ public class ConeCubeBumpAuto extends SequentialCommandGroup {
             path(drive, pickupCube, communityBumpTransitOut, communityBumpTransit, secondScore),
             new ArmavatorGoToPose(ArmavatorPreset.coneLow, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
-        new Score(intake).withTimeout(0.5));
+        new Score(intake).withTimeout(0.5),
+        Commands.parallel(
+        new ArmavatorGoToPose(ArmavatorPreset.intakeCone, arm, elevator)
+            .beforeStarting(Commands.waitSeconds(1)),
+        new IntakeCone(intake),
+        path(drive, communityBumpTransitBack, communityBumpTransitOut, pickupTwo)));
   }
 
   public Waypoint getEndPose() {

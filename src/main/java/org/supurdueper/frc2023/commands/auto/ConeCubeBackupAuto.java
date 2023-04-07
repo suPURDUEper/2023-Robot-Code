@@ -25,9 +25,10 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
     coneCubeAuto = new ConeCubeAuto(drive, elevator, arm, intake);
 
     Waypoint forwardToPickup =
-        waypoint(StagingLocations.translations[2].getX(),
-        StagingLocations.translations[2].getY() - Units.feetToMeters(1),
-        Rotation2d.fromDegrees(-30));
+        waypoint(
+            StagingLocations.translations[2].getX(),
+            StagingLocations.translations[2].getY() - Units.feetToMeters(1),
+            Rotation2d.fromDegrees(-30));
 
     addCommands(
         coneCubeAuto,

@@ -17,7 +17,7 @@ public class Autos {
 
   public static Waypoint communityTransit =
       Autos.waypoint(
-          Community.chargingStationCenterX - Units.inchesToMeters(12),
+          Community.chargingStationCenterX,
           (Community.leftY - Community.chargingStationLeftY) / 2.0 + Community.chargingStationLeftY,
           Rotation2d.fromDegrees(180));
 
@@ -28,9 +28,14 @@ public class Autos {
               + Community.chargingStationLeftY);
 
   public static Waypoint communityBumpTransit =
-      Autos.waypoint(
-          Community.chargingStationCenterX,
-          Community.chargingStationRightY / 2.0);
+      Autos.waypoint(Community.chargingStationCenterX, Community.chargingStationRightY / 2.0, Rotation2d.fromDegrees(180));
+
+  public static Waypoint communityBumpTransitFront =
+  Autos.waypoint(Community.chargingStationCenterX - Units.feetToMeters(1.5), Community.chargingStationRightY / 2.0, Rotation2d.fromDegrees(180));
+
+  public static Waypoint communityBumpTransitBack =
+  Autos.waypoint(Community.chargingStationCenterX + Units.feetToMeters(1.5), Community.chargingStationRightY / 2.0, Rotation2d.fromDegrees(180));
+
 
   public static Waypoint communityBumpTransitOut =
       Autos.waypoint(

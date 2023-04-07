@@ -23,7 +23,7 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
     ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, stationIndex);
     Waypoint backupToRetract =
         waypoint(
-            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(18),
+            Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(23),
             Grids.nodeY[stationIndex],
             Rotation2d.fromDegrees(180));
 
