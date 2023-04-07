@@ -37,7 +37,7 @@ public class DriveWithJoysticks extends CommandBase {
   public static final LoggedTunableNumber fullExtensionMaxAngularVelocity =
       new LoggedTunableNumber("DriveWithJoysticks/FullExtensionMaxAngularVelocity", 1.5);
   public static final LoggedTunableNumber sniperModeLinearPercent =
-      new LoggedTunableNumber("DriveWithJoysticks/SniperModeLinearPercent", 0.2);
+      new LoggedTunableNumber("DriveWithJoysticks/SniperModeLinearPercent", 0.275);
   public static final LoggedTunableNumber sniperModeAngularPercent =
       new LoggedTunableNumber("DriveWithJoysticks/SniperModeAngularPercent", 0.2);
 

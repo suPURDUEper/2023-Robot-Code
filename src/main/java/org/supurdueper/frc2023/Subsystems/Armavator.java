@@ -30,12 +30,13 @@ public interface Armavator {
       intakeCone(new ArmavatorPose(new Rotation2d(-.2618), .174575, 0.0, 0.0)),
       coneLow(new ArmavatorPose(new Rotation2d(-0.7), .2, 0.0, 0.0)),
       cubeLow(new ArmavatorPose(new Rotation2d(-.102), .291, 0.0, 0.0)),
-      midCone(new ArmavatorPose(new Rotation2d(2.15), ELEVATOR_MIN, 0.0, 0.0)),
+      midCone(new ArmavatorPose(new Rotation2d(1.96), ELEVATOR_MIN, 0.0, 0.0)),
+      afterHighCone(new ArmavatorPose(new Rotation2d(2.15), ELEVATOR_MIN, 0.0, 0.0)),
       midCube(new ArmavatorPose(new Rotation2d(1.9), 0.1, 0.0, 0.0)),
       highCone(new ArmavatorPose(new Rotation2d(1.98), 0.57 - Units.inchesToMeters(3), 0.0, 0.0)),
       highCube(new ArmavatorPose(new Rotation2d(1.62), ELEVATOR_MAX, 0.0, 0.0)),
       singleSubstationCone(new ArmavatorPose(new Rotation2d(1.9), 0.0, 0, 0)),
-      doubleSubstationCone(new ArmavatorPose(new Rotation2d(1.89), .582, 0, 0)),
+      doubleSubstationCone(new ArmavatorPose(new Rotation2d(1.797), .582, 0, 0)),
       shootCube(new ArmavatorPose(new Rotation2d(0.5439), 0, 0, 0));
 
       private ArmavatorPose pose;

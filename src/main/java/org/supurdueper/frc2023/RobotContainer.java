@@ -214,11 +214,11 @@ public class RobotContainer {
 
     score.onTrue(
         new Score(intake)
-            .withTimeout(1)
+            .withTimeout(0.5)
             .andThen(
                 Commands.either(
                         new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
-                        new ArmavatorGoToPose(ArmavatorPreset.midCone.getPose(), arm, elevator),
+                        new ArmavatorGoToPose(ArmavatorPreset.afterHighCone.getPose(), arm, elevator),
                         intake::hasCube)
                     .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
 

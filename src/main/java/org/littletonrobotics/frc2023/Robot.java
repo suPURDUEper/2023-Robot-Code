@@ -4,6 +4,7 @@
 
 package org.littletonrobotics.frc2023;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
@@ -43,6 +44,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    PortForwarder.add(1234, "http://limelight.local", 5801);
     Logger logger = Logger.getInstance();
 
     // Record metadata
