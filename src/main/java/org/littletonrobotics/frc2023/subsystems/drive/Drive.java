@@ -7,6 +7,7 @@
 
 package org.littletonrobotics.frc2023.subsystems.drive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -363,12 +364,17 @@ public class Drive extends SubsystemBase {
       usingVision = false;
     }
     // Reject measurements that are too far away from the robot
-    else if (currentPose.getTranslation().getDistance(visionPose.getTranslation()) > 1) {
+    else if (currentPose.getX() > 0
+        && currentPose.getY() > 0
+        && currentPose.getX() < FieldConstants.fieldLength
+        && currentPose.getY() < FieldConstants.fieldWidth
+        && currentPose.getTranslation().getDistance(visionPose.getTranslation()) > 1) {
       usingVision = false;
     }
     // Only use vision if we're close enough to a tag
-    else if (currentPose.getX() > distanceFromWall
-        && currentPose.getX() < (FieldConstants.fieldLength - distanceFromWall)) {
+    double currentPoseX = MathUtil.clamp(distanceFromWall, 0, FieldConstants.fieldLength);
+    if (currentPoseX > distanceFromWall
+        && currentPoseX < (FieldConstants.fieldLength - distanceFromWall)) {
       usingVision = false;
     }
 

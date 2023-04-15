@@ -45,6 +45,7 @@ import org.supurdueper.frc2023.commands.auto.ConeCubeAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBackupAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBalanceAuto;
 import org.supurdueper.frc2023.commands.auto.ConeCubeBumpAuto;
+import org.supurdueper.frc2023.commands.auto.ThreeCleanAuto;
 import org.supurdueper.frc2023.commands.drive.AutoAim;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -126,6 +127,7 @@ public class RobotContainer {
     autoChooser.addOption("2 (Bump)", new ConeCubeBumpAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2.5", new ConeCubeBackupAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2 + Balance", new ConeCubeBalanceAuto(drive, elevator, arm, intake));
+    autoChooser.addOption("3 (Clean)", new ThreeCleanAuto(drive, elevator, arm, intake));
 
     // Alert if in tuning mode
     if (Constants.tuningMode) {
@@ -218,7 +220,8 @@ public class RobotContainer {
             .andThen(
                 Commands.either(
                         new ArmavatorGoToPose(ArmavatorPreset.midCube.getPose(), arm, elevator),
-                        new ArmavatorGoToPose(ArmavatorPreset.afterHighCone.getPose(), arm, elevator),
+                        new ArmavatorGoToPose(
+                            ArmavatorPreset.afterHighCone.getPose(), arm, elevator),
                         intake::hasCube)
                     .unless(() -> arm.getArmPosition().getRadians() < 1.0)));
 

@@ -31,12 +31,15 @@ public class ConeCubeAuto extends SequentialCommandGroup {
             StagingLocations.translations[3].getX() - Constants.ROBOT_X_OFFSET / 2,
             StagingLocations.translations[3].getY(),
             Rotation2d.fromDegrees(1));
-          
+
     Waypoint secondScore =
         waypoint(
             Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(14),
             Grids.nodeY[7],
             Rotation2d.fromDegrees(180));
+
+    Waypoint communityTransitTurnOther =
+        Autos.waypoint(communityTransitOut.getTranslation(), Rotation2d.fromDegrees(182));
 
     endPose = secondScore;
 
@@ -50,7 +53,7 @@ public class ConeCubeAuto extends SequentialCommandGroup {
                 .beforeStarting(Commands.waitSeconds(1))),
         // Drive to grid and score cube
         Commands.parallel(
-            path(drive, pickupCube, communityTransitOut, communityTransit, secondScore),
+            path(drive, pickupCube, communityTransitTurnOther, communityTransit, secondScore),
             new ArmavatorGoToPose(ArmavatorPreset.coneLow, arm, elevator)
                 .beforeStarting(Commands.waitSeconds(1))),
         new Score(intake).withTimeout(0.5));

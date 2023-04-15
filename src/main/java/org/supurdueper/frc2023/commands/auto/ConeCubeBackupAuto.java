@@ -20,20 +20,21 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
 
   ConeCubeAuto coneCubeAuto;
 
+  Waypoint forwardToPickup =
+      waypoint(
+          StagingLocations.translations[2].getX() - Units.inchesToMeters(6),
+          StagingLocations.translations[2].getY() - Units.feetToMeters(1),
+          Rotation2d.fromDegrees(-30));
+
   public ConeCubeBackupAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
 
     coneCubeAuto = new ConeCubeAuto(drive, elevator, arm, intake);
 
-    Waypoint forwardToPickup =
-        waypoint(
-            StagingLocations.translations[2].getX(),
-            StagingLocations.translations[2].getY() - Units.feetToMeters(1),
-            Rotation2d.fromDegrees(-30));
-
     addCommands(
         coneCubeAuto,
         // Drive to middle of field
-        Commands.parallel(
+        Commands.deadline(
+            new IntakeCone(intake),
             path(
                 drive,
                 coneCubeAuto.getEndPose(),
@@ -41,7 +42,10 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
                 communityTransitOut,
                 forwardToPickup),
             new ArmavatorGoToPose(ArmavatorPreset.intakeCone, arm, elevator)
-                .beforeStarting(Commands.waitSeconds(2)),
-            new IntakeCone(intake)));
+                .beforeStarting(Commands.waitSeconds(2))));
+  }
+
+  public Waypoint getEndPose() {
+    return forwardToPickup;
   }
 }
