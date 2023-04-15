@@ -27,7 +27,7 @@ public interface Armavator {
       stowed(new ArmavatorPose(new Rotation2d(-0.55), ELEVATOR_SAFE, 0.0, 0.0)),
       cubeStowed(new ArmavatorPose(new Rotation2d(-0.55), 0.2, 0.0, 0.0)),
       intakeCube(new ArmavatorPose(new Rotation2d(0.0398), 0.158575, 0.0, 0.0)),
-      intakeCone(new ArmavatorPose(new Rotation2d(-.2618), .174575, 0.0, 0.0)),
+      intakeCone(new ArmavatorPose(new Rotation2d(-.2618), .16, 0.0, 0.0)),
       coneLow(new ArmavatorPose(new Rotation2d(-0.7), .2, 0.0, 0.0)),
       cubeLow(new ArmavatorPose(new Rotation2d(-.102), .291, 0.0, 0.0)),
       midCone(new ArmavatorPose(new Rotation2d(1.96), ELEVATOR_MIN, 0.0, 0.0)),

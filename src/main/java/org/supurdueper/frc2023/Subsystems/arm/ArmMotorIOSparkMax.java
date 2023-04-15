@@ -48,7 +48,7 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
       // Get and reset encoder objects
       armAbsoluteEncoder.setInverted(false);
       armAbsoluteEncoder.setPositionConversionFactor(Units.rotationsToRadians(1));
-      armAbsoluteEncoder.setZeroOffset(1.2439);
+      armAbsoluteEncoder.setZeroOffset(1.2195);
       // Sync with motor encoder so we can use the built-in soft limits on the motor controller
       // This should be equal to (2 * Pi) / armEncoderToMotorRatio, but I don't know why
       // that didn't work
@@ -62,8 +62,8 @@ public class ArmMotorIOSparkMax implements ArmMotorIO {
       // Setup power parameters
       armSparkMax.enableVoltageCompensation(12.0);
       armFollowSparkMax.enableVoltageCompensation(12.0);
-      armSparkMax.setSmartCurrentLimit(30);
-      armFollowSparkMax.setSmartCurrentLimit(30);
+      armSparkMax.setSmartCurrentLimit(20);
+      armFollowSparkMax.setSmartCurrentLimit(20);
 
       armSparkMax.setSoftLimit(
           SoftLimitDirection.kForward, (float) (Arm.armMaxAngleRad / armEncoderToArmGearRatio));

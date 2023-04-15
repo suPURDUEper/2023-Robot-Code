@@ -46,6 +46,7 @@ public class ConeBalanceAuto extends SequentialCommandGroup {
                 .beforeStarting(Commands.waitSeconds(1)),
             path(drive, coneAuto.getEndPose(), backupToRetract)),
         path(drive, backupToRetract, pastStation),
+        Commands.waitSeconds(2),
         path(drive, pastStation, onStation),
         new AutoBalance(drive));
   }
