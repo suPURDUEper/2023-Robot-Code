@@ -21,10 +21,10 @@ import org.supurdueper.frc2023.subsystems.intake.Intake;
 
 public class ThreeCleanAuto extends SequentialCommandGroup {
 
-  ConeCubeBackupAuto coneCubeBackupAuto;
+  TwoAndBackupCleanAuto coneCubeBackupAuto;
 
   public ThreeCleanAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
-    coneCubeBackupAuto = new ConeCubeBackupAuto(drive, elevator, arm, intake);
+    coneCubeBackupAuto = new TwoAndBackupCleanAuto(drive, elevator, arm, intake);
 
     Waypoint intermediatePoint =
         Autos.waypoint(

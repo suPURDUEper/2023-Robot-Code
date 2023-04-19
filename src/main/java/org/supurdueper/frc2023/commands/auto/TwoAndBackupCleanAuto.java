@@ -16,9 +16,9 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeCubeBackupAuto extends SequentialCommandGroup {
+public class TwoAndBackupCleanAuto extends SequentialCommandGroup {
 
-  ConeCubeAuto coneCubeAuto;
+  TwoCleanAuto coneCubeAuto;
 
   Waypoint forwardToPickup =
       waypoint(
@@ -26,9 +26,9 @@ public class ConeCubeBackupAuto extends SequentialCommandGroup {
           StagingLocations.translations[2].getY() - Units.feetToMeters(1),
           Rotation2d.fromDegrees(-30));
 
-  public ConeCubeBackupAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
+  public TwoAndBackupCleanAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
 
-    coneCubeAuto = new ConeCubeAuto(drive, elevator, arm, intake);
+    coneCubeAuto = new TwoCleanAuto(drive, elevator, arm, intake);
 
     addCommands(
         coneCubeAuto,

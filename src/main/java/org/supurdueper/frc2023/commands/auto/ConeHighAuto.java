@@ -24,11 +24,11 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeAuto extends SequentialCommandGroup {
+public class ConeHighAuto extends SequentialCommandGroup {
 
   Waypoint score;
 
-  public ConeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
+  public ConeHighAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
     Pose2d start =
         new Pose2d(
             Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET,

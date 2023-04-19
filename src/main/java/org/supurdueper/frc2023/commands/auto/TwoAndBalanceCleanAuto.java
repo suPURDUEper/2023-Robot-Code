@@ -17,9 +17,9 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeCubeBalanceAuto extends SequentialCommandGroup {
+public class TwoAndBalanceCleanAuto extends SequentialCommandGroup {
 
-  public ConeCubeBalanceAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
+  public TwoAndBalanceCleanAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
     Pose2d inFrontOfStation =
         new Pose2d(
             Community.chargingStationInnerX - Constants.ROBOT_X_OFFSET - Units.inchesToMeters(8),
@@ -33,7 +33,7 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
             Rotation2d.fromDegrees(180));
 
     addCommands(
-        new ConeCubeAuto(drive, elevator, arm, intake),
+        new TwoCleanAuto(drive, elevator, arm, intake),
 
         // Drive to charging station
         Commands.parallel(
