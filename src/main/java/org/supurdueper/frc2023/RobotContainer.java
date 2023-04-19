@@ -41,12 +41,12 @@ import org.supurdueper.frc2023.commands.arm.SyncArmEncoders;
 import org.supurdueper.frc2023.commands.armavator.ArmavatorGoToPose;
 import org.supurdueper.frc2023.commands.auto.ConeHighAuto;
 import org.supurdueper.frc2023.commands.auto.OneAndBalanceCenterAuto;
-import org.supurdueper.frc2023.commands.auto.TwoCleanAuto;
-import org.supurdueper.frc2023.commands.auto.TwoAndBackupCleanAuto;
-import org.supurdueper.frc2023.commands.auto.TwoAndBalanceCleanAuto;
 import org.supurdueper.frc2023.commands.auto.ThreeBumpAuto;
 import org.supurdueper.frc2023.commands.auto.ThreeCleanAuto;
 import org.supurdueper.frc2023.commands.auto.TwoAndBackupBumpAuto;
+import org.supurdueper.frc2023.commands.auto.TwoAndBackupCleanAuto;
+import org.supurdueper.frc2023.commands.auto.TwoAndBalanceCleanAuto;
+import org.supurdueper.frc2023.commands.auto.TwoCleanAuto;
 import org.supurdueper.frc2023.commands.drive.AutoAim;
 import org.supurdueper.frc2023.commands.elevator.ElevatorGoToPose;
 import org.supurdueper.frc2023.commands.elevator.MoveElevatorWithJoystick;
@@ -122,15 +122,17 @@ public class RobotContainer {
     for (int i = 0; i < Grids.nodeRowCount; i++) {
       autoChooser.addOption("1 [" + i + "]", new ConeHighAuto(drive, elevator, arm, intake, i));
     }
-    autoChooser.addOption("1 + Balance [3]", new OneAndBalanceCenterAuto(drive, elevator, arm, intake, 3));
-    autoChooser.addOption("1 + Balance [5]", new OneAndBalanceCenterAuto(drive, elevator, arm, intake, 5));
+    autoChooser.addOption(
+        "1 + Balance [3]", new OneAndBalanceCenterAuto(drive, elevator, arm, intake, 3));
+    autoChooser.addOption(
+        "1 + Balance [5]", new OneAndBalanceCenterAuto(drive, elevator, arm, intake, 5));
     autoChooser.addOption("2 (Clean)", new TwoCleanAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2.5 (Clean)", new TwoAndBackupCleanAuto(drive, elevator, arm, intake));
-    autoChooser.addOption("2 + Balance (Clean)", new TwoAndBalanceCleanAuto(drive, elevator, arm, intake));
+    autoChooser.addOption(
+        "2 + Balance (Clean)", new TwoAndBalanceCleanAuto(drive, elevator, arm, intake));
     autoChooser.addOption("3 (Clean)", new ThreeCleanAuto(drive, elevator, arm, intake));
     autoChooser.addOption("2.5 (Bump)", new TwoAndBackupBumpAuto(drive, elevator, arm, intake));
     autoChooser.addOption("3 (Bump)", new ThreeBumpAuto(drive, elevator, arm, intake));
-
 
     // Alert if in tuning mode
     if (Constants.tuningMode) {

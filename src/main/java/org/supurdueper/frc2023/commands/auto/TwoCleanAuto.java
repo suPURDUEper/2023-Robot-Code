@@ -19,12 +19,12 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeCubeAuto extends SequentialCommandGroup {
+public class TwoCleanAuto extends SequentialCommandGroup {
 
   Waypoint endPose;
 
-  public ConeCubeAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
-    ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, 8);
+  public TwoCleanAuto(Drive drive, Elevator elevator, Arm arm, Intake intake) {
+    ConeHighAuto coneAuto = new ConeHighAuto(drive, elevator, arm, intake, 8);
 
     Waypoint pickupCube =
         waypoint(

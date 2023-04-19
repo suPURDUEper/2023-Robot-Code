@@ -18,9 +18,10 @@ import org.supurdueper.frc2023.subsystems.arm.Arm;
 import org.supurdueper.frc2023.subsystems.elevator.Elevator;
 import org.supurdueper.frc2023.subsystems.intake.Intake;
 
-public class ConeBalanceAuto extends SequentialCommandGroup {
-  public ConeBalanceAuto(Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
-    ConeAuto coneAuto = new ConeAuto(drive, elevator, arm, intake, stationIndex);
+public class OneAndBalanceCenterAuto extends SequentialCommandGroup {
+  public OneAndBalanceCenterAuto(
+      Drive drive, Elevator elevator, Arm arm, Intake intake, int stationIndex) {
+    ConeHighAuto coneAuto = new ConeHighAuto(drive, elevator, arm, intake, stationIndex);
     Waypoint backupToRetract =
         waypoint(
             Grids.outerX + Constants.ROBOT_X_OFFSET + Units.inchesToMeters(23),

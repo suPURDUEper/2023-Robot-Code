@@ -56,7 +56,6 @@ public class ThreeCleanAuto extends SequentialCommandGroup {
                 communityTransit,
                 thirdScore),
             new ArmavatorGoToPose(ArmavatorPreset.coneLow, arm, elevator),
-            new Score(intake).beforeStarting(Commands.waitSeconds(3)))
-        );
+            new Score(intake).beforeStarting(Commands.waitSeconds(3))));
   }
 }
